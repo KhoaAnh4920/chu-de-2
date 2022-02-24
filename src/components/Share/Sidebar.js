@@ -31,15 +31,15 @@ class Sidebar extends Component {
                         <ul className="nav">
                             <li className="nav__list">
                                 <i className="nav__icon fas fa-home" />
-                                <p className="nav__text">Trang chủ</p>
+                                <p className="nav__text">Home</p>
                             </li>
                             <li className="nav__list">
                                 <i className="nav__icon far fa-compass" />
-                                <p className="nav__text">Tìm kiếm</p>
+                                <p className="nav__text">Search</p>
                             </li>
                             <li className="nav__list">
                                 <i className="nav__icon fas fa-broadcast-tower" />
-                                <p className="nav__text">Bộ sưu tập</p>
+                                <p className="nav__text">Your Library</p>
                             </li>
 
 
@@ -50,7 +50,7 @@ class Sidebar extends Component {
                             </li>
                             <li className="nav__list">
                                 <i className="nav__icon fas fa-broadcast-tower" />
-                                <p className="nav__text">Liked Song</p>
+                                <p className="nav__text">Liked Songs</p>
                             </li>
 
                         </ul>
