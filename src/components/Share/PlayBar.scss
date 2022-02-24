@@ -33,3 +33,14 @@ input[type="range"]:hover {
 input[type=range]:hover::-webkit-slider-thumb {
     opacity: 1;
 }
+
+.react-jinke-music-player-main .music-player-panel {
+    height          : 86px !important;
+    background-color: #181818 !important;
+
+
+}
+
+.progress-bar {
+    background-color: transparent !important;
+}
