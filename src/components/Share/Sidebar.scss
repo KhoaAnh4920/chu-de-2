@@ -1,0 +1,57 @@
+//sidemenu - nav: Top box
+.side {
+    position        : relative;
+    width           : 250px;
+    min-width       : 200px;
+    height          : 100%;
+    background-color: #000;
+
+    .logo {
+        img {
+            width: 160px;
+        }
+
+    }
+
+    &__wrap {
+        box-sizing: border-box;
+        padding   : 0 20px;
+    }
+
+    &__nav {
+        height: 200px;
+
+        .nav {
+            padding-top: 10px;
+
+            &__list {
+                padding: 5px 0;
+
+                &:hover {
+
+                    .nav__icon,
+                    .nav__text {
+                        color: #fff;
+                    }
+                }
+            }
+
+            &__icon {
+                width     : 30px;
+                text-align: center;
+                font-size : 22px;
+                float     : left;
+            }
+
+            &__text {
+                display     : inline-block;
+                padding-left: 12px;
+                line-height : 22px;
+            }
+        }
+    }
+
+
+
+
+}

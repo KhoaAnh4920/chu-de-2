@@ -1,0 +1,35 @@
+$main-color-darker: #1DBA54;
+$main-color       : #1ED761;
+
+//range slider
+input[type="range"] {
+    width             : 100%;
+    outline           : none;
+    padding           : 0;
+    height            : 4px;
+    background-color  : #404040;
+    background-image  : linear-gradient(#b3b3b3, #b3b3b3);
+    background-repeat : no-repeat;
+    border-radius     : 10px;
+    cursor            : pointer;
+    -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    width             : 12px;
+    height            : 12px;
+    border            : 0;
+    background        : #fff;
+    border-radius     : 100%;
+    box-shadow        : 0 0 1px 0px rgba(0, 0, 0, 0.1);
+    -webkit-appearance: none;
+    opacity           : 1
+}
+
+input[type="range"]:hover {
+    background-image: linear-gradient($main-color-darker, $main-color-darker);
+}
+
+input[type=range]:hover::-webkit-slider-thumb {
+    opacity: 1;
+}
