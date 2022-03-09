@@ -27,12 +27,32 @@
     },
     "menu": {
         "admin": {
-            "header": "Hệ thống",
-            "user-management": "Quản lý người dùng"
+            "header": "System",
+            "user-management": "User Management",
+            "genres-management": "Genres Management",
+            "songs-management": "Songs Management",
+            "albums-management": "Albums Management",
+            "playlist-management": "Playlist Management"
         },
         "user-management": {
-            "add": "Thêm mới người dùng",
-            "list-users": "Liệt kê người dùng"
+            "add": "Add new User",
+            "list-users": "List Users"
+        },
+        "genres-management": {
+            "add": "Add Genres",
+            "list-genres": "List Genres"
+        },
+        "songs-management": {
+            "add": "Add Songs",
+            "list-songs": "List Songs"
+        },
+        "albums-management": {
+            "add": "Add Albums",
+            "list-albums": "List Albums"
+        },
+        "playlist-management": {
+            "add": "Add Playlist",
+            "list-playlist": "List Playlist"
         }
     }
 }

@@ -41,7 +41,7 @@ class App extends Component {
                 <Router history={history}>
                     <div className="main-container">
 
-                        {this.props.isLoggedIn && <Header />}
+                        {/* {this.props.isLoggedIn && <Header />} */}
 
                         <span className="content-container">
 
