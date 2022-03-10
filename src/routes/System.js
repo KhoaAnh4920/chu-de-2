@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from 'react-router-dom';
-
+import { ToastContainer } from 'react-toastify';
 import Dashboard from '../containers/System/Admin/Dashboard';
 import AddUser from '../containers/System/Admin/Users/AddUser';
 import ListUser from '../containers/System/Admin/Users/ListUser';
 import AddGenres from '../containers/System/Admin/Genres/AddGenres';
+import EditUser from '../containers/System/Admin/Users/EditUser';
 import ListGenres from '../containers/System/Admin/Genres/ListGenres';
 import CustomScrollbars from '../components/CustomScrollbars';
 
@@ -24,11 +25,25 @@ class System extends Component {
                             <Route path="/admin/list-users" component={ListUser} />
                             <Route path="/admin/add-genres" component={AddGenres} />
                             <Route path="/admin/list-genres" component={ListGenres} />
+                            <Route path="/admin/edit-user/:id" component={EditUser} />
+
 
                             <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                         </Switch>
                     </CustomScrollbars>
                 </div>
+
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
             </div>
         );
     }

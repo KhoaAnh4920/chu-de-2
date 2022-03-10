@@ -8,7 +8,10 @@ import './AddUser.scss';
 import DatePicker from '../../../../components/Input/DatePicker';
 import Select from 'react-select';
 import { CommonUtils } from '../../../../utils';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import * as actions from "../../../../store/actions" // import cả 3 action //
+import { getAllRoles } from '../../../../services/UserService';
+import LoadingOverlay from "react-loading-overlay";
 
 
 class AddUser extends Component {
@@ -22,17 +25,30 @@ class AddUser extends Component {
             fullName: '',
             birthday: '',
             listGender: [],
+            listRoles: [],
             selectedGender: '',
+            selectedRoles: '',
             imagePreviewUrl: '',
             avatar: '',
             errors: {},
+            isShowLoading: false
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        let dataRoles = await getAllRoles();
+
+        if (dataRoles) {
+            let listRoles = this.buildDataInputSelect(dataRoles.dataRoles, 'ROLES');
+            if (listRoles) {
+                this.setState({
+                    listRoles
+                })
+            }
+        }
 
         let listGender = this.buildDataInputSelect([], 'GENDERS');
-        console.log(listGender);
         this.setState({
             listGender
         })
@@ -100,7 +116,8 @@ class AddUser extends Component {
                 this.setState({
                     file: file,
                     imagePreviewUrl: reader.result,
-                    avatar: base64
+                    avatar: base64,
+                    fileName: file.name
                 });
             }
 
@@ -114,7 +131,7 @@ class AddUser extends Component {
     checkValidateInput = () => {
         let isValid = true;
         let errors = {};
-        let arrInput = ['email', 'password', 'userName', 'fullName', 'birthday', 'listGender', 'selectedGender']
+        let arrInput = ['email', 'password', 'userName', 'fullName', 'birthday', 'selectedGender', 'selectedRoles']
         for (let i = 0; i < arrInput.length; i++) {
             // this.state[arrInput[i]] == this.state.email or this.state.password
             if (!this.state[arrInput[i]]) {
@@ -123,21 +140,52 @@ class AddUser extends Component {
             }
         }
 
-        Swal.fire({
-            title: 'Missing data?',
-            text: "Vui lòng điền đầy đủ thông tin!",
-            icon: 'warning',
-        })
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing data?',
+                text: "Vui lòng điền đầy đủ thông tin!",
+                icon: 'warning',
+            })
 
-        this.setState({ errors: errors });
-
+            this.setState({ errors: errors });
+        }
         return isValid;
     }
 
-    handleSaveUser = () => {
+    handleSaveUser = async () => {
         let isValid = this.checkValidateInput();
         if (isValid) {
-            //this.props.addNewUser(this.state);
+            this.setState({
+                isShowLoading: true
+            })
+
+            let formatedDate = new Date(this.state.birthday).getTime(); // convert timestamp //
+            await this.props.createNewUser({
+                email: this.state.email,
+                password: this.state.password,
+                userName: this.state.userName,
+                fullName: this.state.fullName,
+                birthday: formatedDate,
+                gender: this.state.selectedGender,
+                roles: this.state.selectedRoles,
+                avatar: this.state.avatar,
+                fileName: this.state.fileName
+            });
+
+            this.setState({
+                email: '',
+                password: '',
+                userName: '',
+                fullName: '',
+                birthday: '',
+                selectedGender: '',
+                selectedRoles: '',
+                imagePreviewUrl: '',
+                fileName: '',
+                avatar: '',
+                errors: {},
+                isShowLoading: false
+            })
         }
 
     }
@@ -146,7 +194,9 @@ class AddUser extends Component {
 
     render() {
 
-        let { email, password, userName, fullName, birthday, listGender, selectedGender, imagePreviewUrl } = this.state
+        let { email, password, userName, fullName,
+            birthday, listGender, selectedGender,
+            imagePreviewUrl, listRoles, selectedRoles } = this.state
 
         let $imagePreview = null;
         if (imagePreviewUrl) {
@@ -157,143 +207,162 @@ class AddUser extends Component {
 
         return (
             <>
-                <div id="wrapper">
-                    {/* Sidebar */}
+                <LoadingOverlay
+                    active={this.state.isShowLoading}
+                    spinner
+                    text='Vui lòng chờ trong giây lát...'
+                >
+                    <div id="wrapper">
+                        {/* Sidebar */}
 
-                    <Sidebar />
+                        <Sidebar />
 
-                    {/* Sidebar */}
-                    <div id="content-wrapper" className="d-flex flex-column">
-                        <div id="content">
-                            {/* TopBar */}
-                            <Header />
-                            {/* Topbar */}
-                            {/* Container Fluid*/}
-                            <div className="container-fluid" id="container-wrapper">
-                                <div className="d-sm-flex align-items-center justify-content-between mb-4">
-                                    <h1 className="h3 mb-0 text-gray-800">Form Basics</h1>
-                                    <ol className="breadcrumb">
-                                        <li className="breadcrumb-item"><a href="./">Home</a></li>
-                                        <li className="breadcrumb-item">Forms</li>
-                                        <li className="breadcrumb-item active" aria-current="page">Form Basics</li>
-                                    </ol>
-                                </div>
-                                <div className="row">
-                                    <div className='col-3'></div>
-                                    <div className="col-6">
-                                        <div className="card mb-4">
-                                            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                                <h5 className="m-0 font-weight-bold text-primary">Add new usser</h5>
-                                            </div>
-                                            <div className="card-body">
-
-                                                <div className="form-group">
-                                                    <label htmlFor="exampleInputEmail1">Email address</label>
-                                                    <input type="email" className="form-control"
-                                                        value={email}
-                                                        id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                        onChange={(event) => this.handleOnChangeInput(event, 'email')}
-                                                        placeholder="Enter email" />
-                                                    <small id="emailHelp" className="form-text text-muted">We'll never share your
-                                                        email with anyone else.</small>
-
-                                                    <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
-
+                        {/* Sidebar */}
+                        <div id="content-wrapper" className="d-flex flex-column">
+                            <div id="content">
+                                {/* TopBar */}
+                                <Header />
+                                {/* Topbar */}
+                                {/* Container Fluid*/}
+                                <div className="container-fluid" id="container-wrapper">
+                                    <div className="d-sm-flex align-items-center justify-content-between mb-4">
+                                        <h1 className="h3 mb-0 text-gray-800">Form Basics</h1>
+                                        <ol className="breadcrumb">
+                                            <li className="breadcrumb-item"><a href="./">Home</a></li>
+                                            <li className="breadcrumb-item">Forms</li>
+                                            <li className="breadcrumb-item active" aria-current="page">Form Basics</li>
+                                        </ol>
+                                    </div>
+                                    <div className="row">
+                                        <div className='col-3'></div>
+                                        <div className="col-6">
+                                            <div className="card mb-4">
+                                                <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                                    <h5 className="m-0 font-weight-bold text-primary">Add new usser</h5>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="exampleInputEmail1">Username</label>
-                                                    <input type="text"
-                                                        value={userName}
-                                                        className="form-control"
-                                                        id="exampleInputEmail1"
-                                                        onChange={(event) => this.handleOnChangeInput(event, 'userName')}
-                                                        aria-describedby="emailHelp"
-                                                        placeholder="Enter Username" />
+                                                <div className="card-body">
 
-                                                    <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Email address</label>
+                                                        <input type="email" className="form-control"
+                                                            value={email}
+                                                            id="exampleInputEmail1" aria-describedby="emailHelp"
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'email')}
+                                                            placeholder="Enter email" />
+                                                        <small id="emailHelp" className="form-text text-muted">We'll never share your
+                                                            email with anyone else.</small>
 
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="exampleInputPassword1">Password</label>
-                                                    <input type="password"
-                                                        value={password}
-                                                        className="form-control"
-                                                        id="exampleInputPassword1"
-                                                        onChange={(event) => this.handleOnChangeInput(event, 'password')}
-                                                        placeholder="Password" />
-                                                    <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="exampleInputEmail1">FullName</label>
-                                                    <input type="text"
-                                                        value={fullName}
-                                                        className="form-control"
-                                                        id="exampleInputEmail1"
-                                                        aria-describedby="emailHelp"
-                                                        onChange={(event) => this.handleOnChangeInput(event, 'fullName')}
-                                                        placeholder="FullName" />
-                                                    <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="exampleInputEmail1">Birthday</label>
-                                                    <DatePicker
-                                                        onChange={this.handleOnChangeDatePicker}
-                                                        className="form-control"
-                                                        value={birthday}
-                                                    />
-                                                    <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="exampleInputEmail1">Avatar</label>
-                                                    <div className="custom-file">
-                                                        <input type="file"
-                                                            className="custom-file-input"
-                                                            onChange={(e) => this._handleImageChange(e)}
-                                                            id="customFile" />
-                                                        <label className="custom-file-label" htmlFor="customFile">Choose file</label>
                                                     </div>
-                                                    <div className="imgPreview">
-                                                        {$imagePreview}
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Username</label>
+                                                        <input type="text"
+                                                            value={userName}
+                                                            className="form-control"
+                                                            id="exampleInputEmail1"
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'userName')}
+                                                            aria-describedby="emailHelp"
+                                                            placeholder="Enter Username" />
+
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
                                                     </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="exampleInputEmail1">Gender</label>
-                                                    <Select
-                                                        value={selectedGender}
-                                                        onChange={this.handleChangeSelect}
-                                                        options={listGender}
-                                                        placeholder='Select gender'
-                                                        name='selectedGender'
-                                                    />
-                                                    <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputPassword1">Password</label>
+                                                        <input type="password"
+                                                            value={password}
+                                                            className="form-control"
+                                                            id="exampleInputPassword1"
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'password')}
+                                                            placeholder="Password" />
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">FullName</label>
+                                                        <input type="text"
+                                                            value={fullName}
+                                                            className="form-control"
+                                                            id="exampleInputEmail1"
+                                                            aria-describedby="emailHelp"
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'fullName')}
+                                                            placeholder="FullName" />
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Birthday</label>
+                                                        <DatePicker
+                                                            onChange={this.handleOnChangeDatePicker}
+                                                            className="form-control"
+                                                            value={birthday}
+                                                        />
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Avatar</label>
+                                                        <div className="custom-file">
+                                                            <input type="file"
+                                                                className="custom-file-input"
+                                                                onChange={(e) => this._handleImageChange(e)}
+                                                                id="customFile" />
+                                                            <label className="custom-file-label" htmlFor="customFile">Choose file</label>
+                                                        </div>
+                                                        <div className="imgPreview">
+                                                            {$imagePreview}
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Gender</label>
+                                                        <Select
+                                                            value={selectedGender}
+                                                            onChange={this.handleChangeSelect}
+                                                            options={listGender}
+                                                            placeholder='Select gender'
+                                                            name='selectedGender'
+                                                        />
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Roles</label>
+                                                        <Select
+                                                            value={selectedRoles}
+                                                            onChange={this.handleChangeSelect}
+                                                            options={listRoles}
+                                                            placeholder='Select Roles'
+                                                            name='selectedRoles'
+                                                        />
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
+                                                    </div>
+
+
+
+                                                    <button
+                                                        type="submit"
+                                                        onClick={() => this.handleSaveUser()}
+                                                        className="btn btn-primary btn-submit">Submit</button>
 
                                                 </div>
-
-
-
-                                                <button
-                                                    type="submit"
-                                                    onClick={() => this.handleSaveUser()}
-                                                    className="btn btn-primary btn-submit">Submit</button>
-
                                             </div>
+
                                         </div>
 
                                     </div>
 
                                 </div>
-
+                                {/*-Container Fluid*/}
                             </div>
-                            {/*-Container Fluid*/}
+                            {/* Footer */}
+                            <Footer />
+                            {/* Footer */}
                         </div>
-                        {/* Footer */}
-                        <Footer />
-                        {/* Footer */}
                     </div>
-                </div>
-
+                </LoadingOverlay>
             </>
+
         )
     }
 
@@ -306,6 +375,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        createNewUser: (data) => dispatch(actions.createNewUser(data)),
     };
 };
 

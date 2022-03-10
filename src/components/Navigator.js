@@ -9,7 +9,6 @@ class MenuGroup extends Component {
 
     render() {
         const { name, children, id } = this.props;
-        console.log("Check props menu: ", this.props);
         return (
             // render title menu //
             <li className="nav-item">
