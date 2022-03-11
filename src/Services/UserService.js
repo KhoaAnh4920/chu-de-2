@@ -271,7 +271,7 @@ let deleteUser = (id) => {
                 function (err, result) { console.log(result) });
         }
 
-        await db.User.destroy({
+        await db.Users.destroy({
             where: { id: id }
         });
         resolve({
