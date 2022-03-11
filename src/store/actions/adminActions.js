@@ -1,7 +1,8 @@
 import actionTypes from './actionTypes';
 import { createNewUserService, editUserService } from '../../services/UserService';
 import { toast } from 'react-toastify';
-import { push } from 'react-router-redux'
+import { push } from 'react-router-redux';
+import { createNewGenresService, editGenresService } from '../../services/GenresService'
 
 
 
@@ -49,6 +50,47 @@ export const editUser = (data) => {
             if (res && res.errCode == 0) {
                 toast.success("Cập nhật thành công");
                 dispatch(push('/admin/list-users'))
+            } else {
+                toast.error("Cập nhật thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Cập nhật thất bại");
+        }
+    }
+}
+
+export const createNewGenres = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await createNewGenresService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Thêm thể loại mới thành công");
+            } else {
+                toast.error("Thêm thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Thêm thất bại");
+        }
+    }
+}
+
+export const editGenres = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await editGenresService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Cập nhật thành công");
+                dispatch(push('/admin/list-genres'))
             } else {
                 toast.error("Cập nhật thất bại");
             }

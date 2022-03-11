@@ -8,6 +8,7 @@ import ListUser from '../containers/System/Admin/Users/ListUser';
 import AddGenres from '../containers/System/Admin/Genres/AddGenres';
 import EditUser from '../containers/System/Admin/Users/EditUser';
 import ListGenres from '../containers/System/Admin/Genres/ListGenres';
+import EditGenres from '../containers/System/Admin/Genres/EditGenres';
 import CustomScrollbars from '../components/CustomScrollbars';
 
 
@@ -23,9 +24,13 @@ class System extends Component {
                             <Route path="/admin/dashboard" component={Dashboard} />
                             <Route path="/admin/add-users" component={AddUser} />
                             <Route path="/admin/list-users" component={ListUser} />
+                            <Route path="/admin/edit-user/:id" component={EditUser} />
+
+                            // Genres //
                             <Route path="/admin/add-genres" component={AddGenres} />
                             <Route path="/admin/list-genres" component={ListGenres} />
-                            <Route path="/admin/edit-user/:id" component={EditUser} />
+                            <Route path="/admin/edit-genres/:id" component={EditGenres} />
+
 
 
                             <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />

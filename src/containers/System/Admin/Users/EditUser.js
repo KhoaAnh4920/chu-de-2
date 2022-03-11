@@ -53,8 +53,6 @@ class EditUser extends Component {
 
                 let selectedGender = this.setDefaultValue(listGender, (dataUser.user.gender) ? 1 : 0);
                 let selectedRoles = this.setDefaultValue(listRoles, dataUser.user.UserRoles.id)
-                console.log(selectedRoles);
-
 
                 this.setState({
                     listRoles,

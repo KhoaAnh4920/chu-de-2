@@ -4,15 +4,16 @@ import { connect } from 'react-redux';
 import Sidebar from '../../Share/Sidebar';
 import Header from '../../Share/Header';
 import Footer from '../../Share/Footer';
-import './AddGenres.scss';
+import './EditGenres.scss';
 import DatePicker from '../../../../components/Input/DatePicker';
 import Select from 'react-select';
 import { CommonUtils } from '../../../../utils';
 import Swal from 'sweetalert2'
 import LoadingOverlay from "react-loading-overlay";
 import * as actions from "../../../../store/actions" // import cả 3 action //
+import { getEditGenres } from "../../../../services/GenresService"
 
-class AddGenres extends Component {
+class EditGenres extends Component {
 
     constructor(props) {
         super(props);
@@ -24,7 +25,21 @@ class AddGenres extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
+            let id = this.props.match.params.id;
+
+            let dataGenres = await getEditGenres(id);
+            console.log(dataGenres);
+            if (dataGenres && dataGenres.data) {
+                this.setState({
+                    nameGenres: dataGenres.data.genresName,
+                    imagePreviewUrl: (dataGenres.data.image) ? dataGenres.data.image : '',
+                    id
+                })
+            }
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -97,7 +112,7 @@ class AddGenres extends Component {
                 isShowLoading: true
             })
 
-            await this.props.createNewGenres(this.state);
+            await this.props.editGenres(this.state);
 
             this.setState({
                 nameGenres: '',
@@ -225,8 +240,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createNewGenres: (data) => dispatch(actions.createNewGenres(data)),
+        editGenres: (data) => dispatch(actions.editGenres(data)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddGenres);
+export default connect(mapStateToProps, mapDispatchToProps)(EditGenres);
