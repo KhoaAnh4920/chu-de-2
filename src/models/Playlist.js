@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
 
             // 1 playlist có nhiều bài hát //
             Playlists.belongsToMany(models.Songs, { as: 'SongInPlaylist', through: models.PlaylistSong, foreignKey: 'playlistId' });
+
+            // 1 playlist thuộc 1 thể loại nhạc //
+            Playlists.belongsTo(models.Genres, { foreignKey: 'genresId', targetKey: 'id', as: 'PlaylistGenre' })
         }
     };
     Playlists.init({

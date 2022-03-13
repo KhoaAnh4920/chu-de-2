@@ -17,7 +17,8 @@ module.exports = {
                 type: Sequelize.DOUBLE
             },
             countListen: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                defaultValue: 0
             },
 
             image: {

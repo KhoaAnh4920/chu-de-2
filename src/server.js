@@ -31,12 +31,12 @@ app.use(function (req, res, next) {
 
 // config app //
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// Khai báo bodyParser and fix PayloadTooLargeError: request entity too large //
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 viewEngine(app);
 initWebRoutes(app);
-
 // conncect db //
 connectDB();
 

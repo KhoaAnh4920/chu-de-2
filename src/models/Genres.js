@@ -18,6 +18,9 @@ module.exports = (sequelize, DataTypes) => {
             // 1 thể loại nhạc có nhiều albums //
             Genres.hasMany(models.Albums, { foreignKey: 'genresId', as: 'AlbumGenre' })
 
+            // 1 thể loại nhạc có nhiều playlist //
+            Genres.hasMany(models.Playlists, { foreignKey: 'genresId', as: 'PlaylistGenre' })
+
             // 1 thể loại nhạc có nhiều bài hát //
             Genres.hasMany(models.Songs, { foreignKey: 'genresId', as: 'GenresSong' })
 

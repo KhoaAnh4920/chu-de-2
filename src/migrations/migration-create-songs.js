@@ -4,16 +4,16 @@ module.exports = {
     await queryInterface.createTable('Songs', {
 
 
-        // nameSong: DataTypes.STRING,
-        // countListen: DataTypes.INTEGER,
-        // description: DataTypes.STRING,
-        // image: DataTypes.STRING,
-        // lyrics: DataTypes.TEXT('long'),
-        // public_id_image: DataTypes.STRING,
-        // timePlay: DataTypes.DOUBLE,
-        // url: DataTypes.STRING,
-        // public_id_url: DataTypes.STRING,
-        // genresId: DataTypes.INTEGER,
+      // nameSong: DataTypes.STRING,
+      // countListen: DataTypes.INTEGER,
+      // description: DataTypes.STRING,
+      // image: DataTypes.STRING,
+      // lyrics: DataTypes.TEXT('long'),
+      // public_id_image: DataTypes.STRING,
+      // timePlay: DataTypes.DOUBLE,
+      // url: DataTypes.STRING,
+      // public_id_url: DataTypes.STRING,
+      // genresId: DataTypes.INTEGER,
 
       id: {
         allowNull: false,
@@ -25,7 +25,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       countListen: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       description: {
         type: Sequelize.STRING
@@ -35,24 +36,24 @@ module.exports = {
       },
       lyrics: {
         allowNull: true,
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long')
       },
       public_id_image: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       timePlay: {
-        type: Sequelize.STRING
+        type: Sequelize.DOUBLE
       },
       url: {
-        type: Sequelize.BOOLEAN
-      },
-      public_id_url: {
-        type: Sequelize.DATE
-      },
-      genresId: {
         type: Sequelize.STRING
       },
-      
+      public_id_url: {
+        type: Sequelize.STRING
+      },
+      genresId: {
+        type: Sequelize.INTEGER
+      },
+
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE

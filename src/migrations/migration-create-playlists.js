@@ -13,25 +13,28 @@ module.exports = {
                 type: Sequelize.STRING
             },
             playlistTimeLength: {
-                type: Sequelize.DOUBLE
+                type: Sequelize.DOUBLE,
+                defaultValue: 0
             },
             countListen: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                defaultValue: 0
             },
             image: {
                 allowNull: true,
                 type: Sequelize.STRING
             },
             public_id_image: {
+                allowNull: true,
                 type: Sequelize.STRING
             },
             genresId: {
                 type: Sequelize.INTEGER
             },
             userId: {
+                allowNull: true,
                 type: Sequelize.INTEGER
             },
-
 
             createdAt: {
                 allowNull: true,

@@ -134,7 +134,7 @@ let updateUser = (data) => {
                         if (user.avatar && user.public_id_image) // có lưu trong db //
                         {
                             // Xóa hình cũ //
-                            await cloudinary.uploader.destroy(user.public_id_image,
+                            await cloudinary.uploader.destroy(user.public_id_image, { invalidate: true, resource_type: "raw" },
                                 function (err, result) { console.log(result) });
 
                         }
@@ -267,7 +267,7 @@ let deleteUser = (id) => {
 
         if (user.avatar && user.public_id_image) {
             // Xóa hình cũ //
-            await cloudinary.uploader.destroy(user.public_id_image,
+            await cloudinary.uploader.destroy(user.public_id_image, { invalidate: true, resource_type: "raw" },
                 function (err, result) { console.log(result) });
         }
 

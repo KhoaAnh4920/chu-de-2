@@ -2,6 +2,7 @@ import db from "../models/index";
 require('dotenv').config();
 var cloudinary = require('cloudinary').v2;
 
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -15,7 +16,7 @@ let uploadCloud = (image, fName) => {
                 image,
                 {
                     resource_type: "raw",
-                    public_id: `image/avatar/${fName}`,
+                    public_id: `image/artists/${fName}`,
                 },
                 // Send cloudinary response or catch error
                 (err, result) => {
@@ -33,19 +34,49 @@ let uploadCloud = (image, fName) => {
 
 }
 
+let getAllCountry = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataCountry = await db.Country.findAll();
 
-let createNewGenres = (data) => {
+            if (dataCountry) {
+                resolve({
+                    errCode: 0,
+                    dataCountry: dataCountry
+                })
+            } else {
+                resolve({
+                    errCode: 1,
+                    dataCountry: []
+                })
+            }
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let createNewArtists = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let result = {};
+            let image = '';
             if (data.image && data.fileName) {
-                // upload clound //
+                // upload cloud //
                 result = await uploadCloud(data.image, data.fileName);
+            } else {
+                image = 'https://res.cloudinary.com/cdmedia/image/upload/v1646921892/image/avatar/Unknown_b4jgka.png';
             }
-            await db.Genres.create({
-                genresName: data.nameGenres,
-                image: (result && result.secure_url) ? result.secure_url : '',
+
+            await db.Artists.create({
+                fullName: data.fullName,
+                gender: data.gender,
+                country: data.country,
+                description: data.description,
+                image: (result && result.secure_url) ? result.secure_url : image,
                 public_id_image: (result && result.public_id) ? result.public_id : ''
+
             })
 
             resolve({
@@ -53,65 +84,70 @@ let createNewGenres = (data) => {
                 errMessage: 'OK'
             }); // return 
 
-
         } catch (e) {
             reject(e);
         }
     })
 }
 
-let getAllGenres = () => {
+let getAllArtists = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            let genres = await db.Genres.findAll();
-
-            resolve(genres);
-        } catch (e) {
-            reject(e);
-        }
-    })
-}
-
-
-let getEditGenres = (id) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let genres = await db.Genres.findOne({
-                where: { id: id },
-
+            let users = await db.Artists.findAll({
+                include: [
+                    { model: db.Country, as: 'ArtistsCountry' },
+                ],
                 raw: true,
                 nest: true
             });
 
-            resolve(genres);
+            resolve(users);
         } catch (e) {
             reject(e);
         }
     })
 }
 
-let updateGenre = (data) => {
+let getEditArtists = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // check email //
+            let artists = await db.Artists.findOne({
+                where: { id: id },
+                include: [
+                    { model: db.Country, as: 'ArtistsCountry' },
+                ],
+                raw: true,
+                nest: true
+            });
+
+            resolve(artists);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let updateArtists = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             if (!data.id) {
                 resolve({
                     errorCode: 2,
                     errMessage: 'Missing id'
                 })
             } else {
-                let genres = await db.Genres.findOne({
+                let artists = await db.Artists.findOne({
                     where: { id: data.id },
                     raw: false
                 })
-                if (genres) {
+                if (artists) {
 
                     // Có truyền image //
                     if (data.image && data.fileName) {
-                        if (genres.image && genres.public_id_image) // có lưu trong db //
+                        if (artists.image && artists.public_id_image) // có lưu trong db //
                         {
                             // Xóa hình cũ //
-                            await cloudinary.uploader.destroy(genres.public_id_image, { invalidate: true, resource_type: "raw" },
+                            await cloudinary.uploader.destroy(artists.public_id_image, { invalidate: true, resource_type: "raw" },
                                 function (err, result) { console.log(result) });
 
                         }
@@ -121,25 +157,28 @@ let updateGenre = (data) => {
 
                     }
 
-                    genres.genresName = data.nameGenres;
+                    artists.fullName = data.fullName;
+                    artists.gender = data.gender;
+                    artists.country = data.country;
+                    artists.description = data.description;
 
                     if (data.image && data.fileName) {
-                        genres.image = result.secure_url;
-                        genres.public_id_image = result.public_id;
+                        artists.image = result.secure_url;
+                        artists.public_id_image = result.public_id;
                     }
 
 
-                    await genres.save();
+                    await artists.save();
 
                     resolve({
                         errCode: 0,
-                        message: "Update thể loại thanh cong"
+                        message: "Update artists thanh cong"
                     });
 
                 } else {
                     resolve({
                         errorCode: 1,
-                        errMessage: "Không tim thay"
+                        errMessage: "Artists ko tim thay"
                     });
                 }
 
@@ -156,40 +195,41 @@ let updateGenre = (data) => {
     })
 }
 
-
-let deleteGenres = (id) => {
+let deleteArtists = (id) => {
     return new Promise(async (resolve, reject) => {
-        let genres = await db.Genres.findOne({
+        let artists = await db.Artists.findOne({
             where: { id: id }
         })
-        if (!genres) {
+        if (!artists) {
             resolve({
                 errCode: 2,
-                errMessage: 'Thể loại ko ton tai'
+                errMessage: 'Nghệ sĩ ko ton tai'
             })
         }
 
-        if (genres.image && genres.public_id_image) {
+        if (artists.image && artists.public_id_image) {
             // Xóa hình cũ //
-            await cloudinary.uploader.destroy(genres.public_id_image, { invalidate: true, resource_type: "raw" },
+            await cloudinary.uploader.destroy(artists.public_id_image, { invalidate: true, resource_type: "raw" },
                 function (err, result) { console.log(result) });
         }
 
-        await db.Genres.destroy({
+        await db.Artists.destroy({
             where: { id: id }
         });
         resolve({
             errCode: 0,
-            errMessage: "Delete genres ok"
+            errMessage: "Delete artists ok"
         })
     })
 }
 
 
+
 module.exports = {
-    createNewGenres,
-    getAllGenres,
-    getEditGenres,
-    updateGenre,
-    deleteGenres
+    getAllCountry,
+    createNewArtists,
+    getAllArtists,
+    getEditArtists,
+    updateArtists,
+    deleteArtists
 }
