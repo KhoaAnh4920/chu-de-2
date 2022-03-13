@@ -4,61 +4,88 @@ import { connect } from 'react-redux';
 import Sidebar from '../../Share/Sidebar';
 import Header from '../../Share/Header';
 import Footer from '../../Share/Footer';
-import './ListUser.scss';
+import './ListAlbum.scss';
 import MaterialTable from 'material-table'
 import { CommonUtils } from '../../../../utils';
-import { getAllUser, deleteUserService } from '../../../../services/UserService'
+import { deleteAlbumsService } from '../../../../services/AlbumService'
+import * as actions from "../../../../store/actions" // import cả 3 action //
 import Swal from 'sweetalert2';
 import LoadingOverlay from "react-loading-overlay";
 import moment from 'moment';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 
-class ListUser extends Component {
+class ListAlbum extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            listUser: [],
+            listAlbums: [],
             isShowLoading: true
+
         }
     }
 
-    fetchAllUser = async () => {
-        let userData = await getAllUser();
+    fancyTimeFormat = (duration) => {
+        // Hours, minutes and seconds
+        var hrs = ~~(duration / 3600);
+        var mins = ~~((duration % 3600) / 60);
+        var secs = ~~duration % 60;
 
-        if (userData && userData.user) {
-            let result = userData.user.map((item, index) => {
-                if (item.UserRoles)
-                    item.rolesName = item.UserRoles.rolesName;
-                item.birthday = moment(item.birthday).format("DD/MM/YYYY");
-                return item;
-            })
+        // Output like "1:01" or "4:03:59" or "123:03:59"
+        var ret = "";
 
-            this.setState({
-                listUser: result,
-                isShowLoading: false
-            })
+        if (hrs > 0) {
+            ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
         }
+
+        ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+        ret += "" + secs;
+        return ret;
     }
 
     async componentDidMount() {
 
-        await this.fetchAllUser();
+        await this.props.fetchAllAlbums();
     }
 
     componentDidUpdate(prevProps, prevState) {
+        if (prevProps.listAlbums !== this.props.listAlbums) {
+            console.log(this.props.listAlbums);
+            let listAlbums = this.props.listAlbums;
+
+            if (listAlbums) {
+
+                let result = listAlbums.map(item => {
+                    if (item.AlbumForSongs)
+                        item.countSongs = Object.keys(item.AlbumForSongs).length;
+                    if (item.AlbumGenre)
+                        item.genresName = item.AlbumGenre.genresName;
+                    if (item.AlbumOfArtists)
+                        item.fullName = item.AlbumOfArtists[0].fullName;
+                    item.createdAt = moment(item.createdAt).fromNow();
+                    item.albumTimeLength = this.fancyTimeFormat(item.albumTimeLength);
+                    return item;
+                })
+
+                this.setState({
+                    listAlbums: result,
+                    isShowLoading: false
+                })
+            }
+        }
     }
 
-    handleOnDeleteUser = async (id) => {
+    handleOnDeleteAlbums = async (id) => {
         try {
             this.setState({
                 isShowLoading: true
             })
 
-            let res = await deleteUserService(id);
+            let res = await deleteAlbumsService(id);
             if (res && res.errCode === 0) {
-                await this.fetchAllUser();
+                await this.props.fetchAllAlbums();
             } else {
                 alert(res.errMessage)
             }
@@ -74,20 +101,21 @@ class ListUser extends Component {
 
     render() {
 
-        let { listUser } = this.state;
+        let { listAlbums } = this.state;
+
+
 
         const columns = [
             // { title: 'Avatar', field: 'imageUrl', render: rowData => <img src={rowData.avatar} style={{ width: 40, borderRadius: '50%' }} /> },
             { title: 'ID', field: 'id' },
-            { title: 'Avatar', field: 'avatar', render: rowData => <img src={rowData.avatar} style={{ width: 80, height: 80, borderRadius: '50%' }} /> },
-            { title: 'Email', field: 'email' },
-            { title: 'Username', field: 'userName' },
-            { title: 'FullName', field: 'fullName' },
-            { title: 'Birthday', field: 'birthday' },
-            { title: 'Gender', field: 'gender', render: rowData => (rowData.gender) ? 'Nam' : 'Nữ' },
-            { title: 'Role', field: 'rolesName' },
-            { title: 'Status', field: 'isActive', render: rowData => (rowData.isActive) ? <span className="badge badge-success">Active</span> : <span className="badge badge-danger">InActive</span> },
-
+            { title: 'Hình ảnh', field: 'image', render: rowData => <img src={rowData.image} style={{ width: 80, height: 80 }} /> },
+            { title: 'Tên Album', field: 'albumName', render: rowData => <Link to={`/admin/detail-album/${rowData.id}`}>{rowData.albumName}</Link> },
+            { title: 'Ca sĩ', field: 'fullName' },
+            { title: 'Thể loại', field: 'genresName' },
+            { title: 'Thời lượng', field: 'albumTimeLength' },
+            { title: 'Số lượng bài hát', field: 'countSongs' },
+            { title: 'Lượt nghe', field: 'countListen' },
+            { title: 'Thời gian tạo', field: 'createdAt' },
         ]
 
         return (
@@ -110,18 +138,18 @@ class ListUser extends Component {
                                 {/* Topbar */}
                                 <div className="col-lg-12 mb-4">
                                     <MaterialTable
-                                        title="Danh sách người dùng"
+                                        title="Danh sách Albums"
                                         columns={columns}
-                                        data={listUser}
+                                        data={listAlbums}
                                         actions={[
                                             {
                                                 icon: 'edit',
-                                                tooltip: 'Edit User',
-                                                onClick: (event, rowData) => this.props.history.push(`/admin/edit-user/${rowData.id}`)
+                                                tooltip: 'Edit Album',
+                                                onClick: (event, rowData) => this.props.history.push(`/admin/edit-album/${rowData.id}`)
                                             },
                                             {
                                                 icon: 'delete',
-                                                tooltip: 'Delete User',
+                                                tooltip: 'Delete Artists',
                                                 onClick: (event, rowData) => Swal.fire({
                                                     title: 'Are you sure?',
                                                     text: "You won't be able to revert this!",
@@ -132,7 +160,7 @@ class ListUser extends Component {
                                                     confirmButtonText: 'Yes, delete it!'
                                                 }).then((result) => {
                                                     if (result.isConfirmed) {
-                                                        this.handleOnDeleteUser(rowData.id)
+                                                        this.handleOnDeleteAlbums(rowData.id)
                                                     }
                                                 })
                                             }
@@ -160,12 +188,14 @@ class ListUser extends Component {
 
 const mapStateToProps = state => {
     return {
+        listAlbums: state.admin.listAlbums
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        fetchAllAlbums: () => dispatch(actions.fetchAllAlbums()),
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListUser));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListAlbum));

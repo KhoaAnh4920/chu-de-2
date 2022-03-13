@@ -2,7 +2,11 @@ import actionTypes from './actionTypes';
 import { createNewUserService, editUserService } from '../../services/UserService';
 import { toast } from 'react-toastify';
 import { push } from 'react-router-redux';
-import { createNewGenresService, editGenresService } from '../../services/GenresService'
+import { createNewGenresService, editGenresService } from '../../services/GenresService';
+import { createNewArtistsService, editArtistsService } from '../../services/ArtistsService';
+import { createNewSongService, editSongService } from '../../services/SongService';
+import { createNewAlbumsService, getAllAlbums, editAlbumService } from '../../services/AlbumService';
+import { createNewPlaylistService, getAllPlaylist } from '../../services/PlaylistService'
 
 
 
@@ -100,3 +104,211 @@ export const editGenres = (data) => {
         }
     }
 }
+
+export const createNewArtists = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await createNewArtistsService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Thêm nghệ sĩ mới thành công");
+            } else {
+                toast.error("Thêm thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Thêm thất bại");
+        }
+    }
+}
+
+export const editArtists = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await editArtistsService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Cập nhật thành công");
+                dispatch(push('/admin/list-artists'))
+            } else {
+                toast.error("Cập nhật thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Cập nhật thất bại");
+        }
+    }
+}
+
+
+export const createNewSong = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await createNewSongService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Thêm bài hát mới thành công");
+            } else {
+                toast.error("Thêm thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Thêm thất bại");
+        }
+    }
+}
+
+export const editSong = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await editSongService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Cập nhật thành công");
+                dispatch(push('/admin/list-songs'))
+            } else {
+                toast.error("Cập nhật thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Cập nhật thất bại");
+        }
+    }
+}
+
+
+export const createNewAlbum = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await createNewAlbumsService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Thêm album thành công");
+            } else {
+                toast.error("Thêm thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Thêm thất bại");
+        }
+    }
+}
+
+
+export const fetchAllAlbums = () => {
+    return async (dispatch, getState) => {
+        try {
+            let res = await getAllAlbums();
+            if (res && res.errCode == 0) {
+                dispatch({
+                    type: actionTypes.fetchAllAlbumsSuccess,
+                    dataAlbums: res.albums
+                })
+            } else {
+                dispatch(fetchAllAlbumsFailed());
+            }
+
+        } catch (e) {
+            dispatch(fetchAllAlbumsFailed());
+            console.log(e);
+        }
+    }
+
+}
+
+export const fetchAllAlbumsSuccess = (allRequiredData) => ({
+    type: actionTypes.fetchAllAlbumsSuccess,
+    data: allRequiredData
+})
+
+export const fetchAllAlbumsFailed = () => ({
+    type: actionTypes.fetchAllAlbumsFailed
+})
+
+export const editAlbum = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await editAlbumService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Cập nhật thành công");
+                dispatch(push('/admin/list-albums'))
+            } else {
+                toast.error("Cập nhật thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Cập nhật thất bại");
+        }
+    }
+}
+
+
+export const createNewPlaylist = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await createNewPlaylistService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Thêm playlist thành công");
+            } else {
+                toast.error("Thêm thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Thêm thất bại");
+        }
+    }
+}
+
+
+export const fetchAllPlaylist = () => {
+    return async (dispatch, getState) => {
+        try {
+            let res = await getAllPlaylist();
+            if (res && res.errCode == 0) {
+                dispatch({
+                    type: actionTypes.fetchAllPlaylistsSuccess,
+                    dataPlaylist: res.playlist
+                })
+            } else {
+                dispatch(fetchAllPlaylistsFailed());
+            }
+
+        } catch (e) {
+            dispatch(fetchAllPlaylistsFailed());
+            console.log(e);
+        }
+    }
+
+}
+
+export const fetchAllPlaylistSuccess = (allRequiredData) => ({
+    type: actionTypes.fetchAllPlaylistsSuccess,
+    data: allRequiredData
+})
+
+export const fetchAllPlaylistsFailed = () => ({
+    type: actionTypes.fetchAllPlaylistsFailed
+})

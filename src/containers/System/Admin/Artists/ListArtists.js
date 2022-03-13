@@ -4,39 +4,39 @@ import { connect } from 'react-redux';
 import Sidebar from '../../Share/Sidebar';
 import Header from '../../Share/Header';
 import Footer from '../../Share/Footer';
-import './ListUser.scss';
+import './ListArtists.scss';
 import MaterialTable from 'material-table'
 import { CommonUtils } from '../../../../utils';
-import { getAllUser, deleteUserService } from '../../../../services/UserService'
+import { getAllArtists, deleteArtistsService } from '../../../../services/ArtistsService'
 import Swal from 'sweetalert2';
 import LoadingOverlay from "react-loading-overlay";
 import moment from 'moment';
 import { withRouter } from 'react-router';
 
 
-class ListUser extends Component {
+class ListArtists extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            listUser: [],
+            listArtists: [],
             isShowLoading: true
+
         }
     }
 
-    fetchAllUser = async () => {
-        let userData = await getAllUser();
+    fetchAllArtists = async () => {
+        let artistsData = await getAllArtists();
 
-        if (userData && userData.user) {
-            let result = userData.user.map((item, index) => {
-                if (item.UserRoles)
-                    item.rolesName = item.UserRoles.rolesName;
-                item.birthday = moment(item.birthday).format("DD/MM/YYYY");
+        if (artistsData && artistsData.artists) {
+            let result = artistsData.artists.map((item, index) => {
+                if (item.ArtistsCountry)
+                    item.nameCountry = item.ArtistsCountry.nameCountry;
                 return item;
             })
 
             this.setState({
-                listUser: result,
+                listArtists: result,
                 isShowLoading: false
             })
         }
@@ -44,21 +44,21 @@ class ListUser extends Component {
 
     async componentDidMount() {
 
-        await this.fetchAllUser();
+        await this.fetchAllArtists();
     }
 
     componentDidUpdate(prevProps, prevState) {
     }
 
-    handleOnDeleteUser = async (id) => {
+    handleOnDeleteArtists = async (id) => {
         try {
             this.setState({
                 isShowLoading: true
             })
 
-            let res = await deleteUserService(id);
+            let res = await deleteArtistsService(id);
             if (res && res.errCode === 0) {
-                await this.fetchAllUser();
+                await this.fetchAllArtists();
             } else {
                 alert(res.errMessage)
             }
@@ -74,20 +74,15 @@ class ListUser extends Component {
 
     render() {
 
-        let { listUser } = this.state;
+        let { listArtists } = this.state;
 
         const columns = [
             // { title: 'Avatar', field: 'imageUrl', render: rowData => <img src={rowData.avatar} style={{ width: 40, borderRadius: '50%' }} /> },
             { title: 'ID', field: 'id' },
-            { title: 'Avatar', field: 'avatar', render: rowData => <img src={rowData.avatar} style={{ width: 80, height: 80, borderRadius: '50%' }} /> },
-            { title: 'Email', field: 'email' },
-            { title: 'Username', field: 'userName' },
+            { title: 'Hình ảnh', field: 'image', render: rowData => <img src={rowData.image} style={{ width: 80, height: 80, borderRadius: '50%' }} /> },
             { title: 'FullName', field: 'fullName' },
-            { title: 'Birthday', field: 'birthday' },
             { title: 'Gender', field: 'gender', render: rowData => (rowData.gender) ? 'Nam' : 'Nữ' },
-            { title: 'Role', field: 'rolesName' },
-            { title: 'Status', field: 'isActive', render: rowData => (rowData.isActive) ? <span className="badge badge-success">Active</span> : <span className="badge badge-danger">InActive</span> },
-
+            { title: 'Country', field: 'nameCountry' },
         ]
 
         return (
@@ -110,18 +105,18 @@ class ListUser extends Component {
                                 {/* Topbar */}
                                 <div className="col-lg-12 mb-4">
                                     <MaterialTable
-                                        title="Danh sách người dùng"
+                                        title="Danh sách nghệ sĩ"
                                         columns={columns}
-                                        data={listUser}
+                                        data={listArtists}
                                         actions={[
                                             {
                                                 icon: 'edit',
-                                                tooltip: 'Edit User',
-                                                onClick: (event, rowData) => this.props.history.push(`/admin/edit-user/${rowData.id}`)
+                                                tooltip: 'Edit Artists',
+                                                onClick: (event, rowData) => this.props.history.push(`/admin/edit-artists/${rowData.id}`)
                                             },
                                             {
                                                 icon: 'delete',
-                                                tooltip: 'Delete User',
+                                                tooltip: 'Delete Artists',
                                                 onClick: (event, rowData) => Swal.fire({
                                                     title: 'Are you sure?',
                                                     text: "You won't be able to revert this!",
@@ -132,7 +127,7 @@ class ListUser extends Component {
                                                     confirmButtonText: 'Yes, delete it!'
                                                 }).then((result) => {
                                                     if (result.isConfirmed) {
-                                                        this.handleOnDeleteUser(rowData.id)
+                                                        this.handleOnDeleteArtists(rowData.id)
                                                     }
                                                 })
                                             }
@@ -168,4 +163,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListUser));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListArtists));

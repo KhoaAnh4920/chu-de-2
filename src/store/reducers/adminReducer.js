@@ -2,7 +2,9 @@ import actionTypes from '../actions/actionTypes';
 
 const initialState = {
     isLoggedIn: false,
-    adminInfo: null
+    adminInfo: null,
+    listAlbums: [],
+    listPlaylist: []
 }
 
 const appReducer = (state = initialState, action) => {
@@ -25,6 +27,29 @@ const appReducer = (state = initialState, action) => {
                 isLoggedIn: false,
                 adminInfo: null
             }
+
+        case actionTypes.fetchAllAlbumsSuccess:
+            state.listAlbums = action.dataAlbums;
+            return {
+                ...state,
+            }
+        case actionTypes.fetchAllAlbumsFailed:
+            state.listAlbums = [];
+            return {
+                ...state,
+            }
+
+        case actionTypes.fetchAllPlaylistsSuccess:
+            state.listPlaylist = action.dataPlaylist;
+            return {
+                ...state,
+            }
+        case actionTypes.fetchAllPlaylistsFailed:
+            state.listAlbums = [];
+            return {
+                ...state,
+            }
+
         default:
             return state;
     }

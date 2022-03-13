@@ -25,6 +25,19 @@ export const adminMenu = [
 
         ]
     },
+    { // Artists //
+        name: 'menu.admin.artists-management',
+        id: 'tableArtists',
+        menus: [
+            {
+                name: 'menu.artists-management.add', link: '/admin/add-artists'
+            },
+            {
+                name: 'menu.artists-management.list-artists', link: '/admin/list-artists'
+            },
+
+        ]
+    },
     { // Songs //
         name: 'menu.admin.songs-management',
         id: 'tableSongs',

@@ -4,68 +4,102 @@ import { connect } from 'react-redux';
 import Sidebar from '../../Share/Sidebar';
 import Header from '../../Share/Header';
 import Footer from '../../Share/Footer';
-import './ListUser.scss';
+import './ListSong.scss';
 import MaterialTable from 'material-table'
 import { CommonUtils } from '../../../../utils';
-import { getAllUser, deleteUserService } from '../../../../services/UserService'
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'
 import LoadingOverlay from "react-loading-overlay";
-import moment from 'moment';
 import { withRouter } from 'react-router';
+import { toast } from 'react-toastify';
+import { getAllSong, deleteSongService } from '../../../../services/SongService'
 
 
-class ListUser extends Component {
+class ListSong extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            listUser: [],
+            listArtists: [],
             isShowLoading: true
         }
     }
 
-    fetchAllUser = async () => {
-        let userData = await getAllUser();
 
-        if (userData && userData.user) {
-            let result = userData.user.map((item, index) => {
-                if (item.UserRoles)
-                    item.rolesName = item.UserRoles.rolesName;
-                item.birthday = moment(item.birthday).format("DD/MM/YYYY");
+    fancyTimeFormat = (duration) => {
+        // Hours, minutes and seconds
+        var hrs = ~~(duration / 3600);
+        var mins = ~~((duration % 3600) / 60);
+        var secs = ~~duration % 60;
+
+        // Output like "1:01" or "4:03:59" or "123:03:59"
+        var ret = "";
+
+        if (hrs > 0) {
+            ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+        }
+
+        ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+        ret += "" + secs;
+        return ret;
+    }
+
+
+    fetchAllSong = async () => {
+        let songData = await getAllSong();
+
+        if (songData) {
+            let result = songData.map((item, index) => {
+                if (item.SongOfArtists) {
+                    item.fullName = '';
+                    item.SongOfArtists.map(artist => {
+                        item.fullName = item.fullName + artist.fullName + ', ';
+                    })
+                    item.fullName = item.fullName.replace(/,(\s+)?$/, '');
+                }
+                if (item.GenresSong) {
+                    item.genresName = item.GenresSong.genresName;
+                }
+
+                item.timePlay = this.fancyTimeFormat(item.timePlay);
                 return item;
             })
 
             this.setState({
-                listUser: result,
+                listArtists: result,
                 isShowLoading: false
             })
         }
     }
 
     async componentDidMount() {
-
-        await this.fetchAllUser();
+        await this.fetchAllSong();
     }
 
     componentDidUpdate(prevProps, prevState) {
     }
 
-    handleOnDeleteUser = async (id) => {
+    handleOnDeleteSong = async (id) => {
         try {
+
             this.setState({
                 isShowLoading: true
             })
 
-            let res = await deleteUserService(id);
+            let res = await deleteSongService(id);
             if (res && res.errCode === 0) {
-                await this.fetchAllUser();
+                await this.fetchAllSong();
+                toast.success("Xóa thành công");
             } else {
-                alert(res.errMessage)
+                toast.error("Xóa thất bại");
+                console.log(res.errMessage)
             }
+
             this.setState({
                 isShowLoading: false
             })
+
         } catch (e) {
+            toast.error("Xóa thất bại");
             console.log(e);
         }
     }
@@ -73,22 +107,18 @@ class ListUser extends Component {
 
 
     render() {
-
-        let { listUser } = this.state;
-
+        let { listArtists } = this.state;
         const columns = [
             // { title: 'Avatar', field: 'imageUrl', render: rowData => <img src={rowData.avatar} style={{ width: 40, borderRadius: '50%' }} /> },
             { title: 'ID', field: 'id' },
-            { title: 'Avatar', field: 'avatar', render: rowData => <img src={rowData.avatar} style={{ width: 80, height: 80, borderRadius: '50%' }} /> },
-            { title: 'Email', field: 'email' },
-            { title: 'Username', field: 'userName' },
-            { title: 'FullName', field: 'fullName' },
-            { title: 'Birthday', field: 'birthday' },
-            { title: 'Gender', field: 'gender', render: rowData => (rowData.gender) ? 'Nam' : 'Nữ' },
-            { title: 'Role', field: 'rolesName' },
-            { title: 'Status', field: 'isActive', render: rowData => (rowData.isActive) ? <span className="badge badge-success">Active</span> : <span className="badge badge-danger">InActive</span> },
-
+            { title: 'Image', field: 'imageUrl', render: rowData => <img src={rowData.image} style={{ width: 80, height: 80 }} /> },
+            { title: 'Tên bài hát', field: 'nameSong' },
+            { title: 'Ca sĩ', field: 'fullName' },
+            { title: 'Thể loại', field: 'genresName' },
+            { title: 'Thời lượng', field: 'timePlay' },
+            { title: 'Lượt nghe', field: 'countListen' },
         ]
+
 
         return (
             <>
@@ -110,18 +140,18 @@ class ListUser extends Component {
                                 {/* Topbar */}
                                 <div className="col-lg-12 mb-4">
                                     <MaterialTable
-                                        title="Danh sách người dùng"
+                                        title="Danh sách bài hát"
                                         columns={columns}
-                                        data={listUser}
+                                        data={listArtists}
                                         actions={[
                                             {
                                                 icon: 'edit',
-                                                tooltip: 'Edit User',
-                                                onClick: (event, rowData) => this.props.history.push(`/admin/edit-user/${rowData.id}`)
+                                                tooltip: 'Edit Genres',
+                                                onClick: (event, rowData) => this.props.history.push(`/admin/edit-songs/${rowData.id}`)
                                             },
                                             {
                                                 icon: 'delete',
-                                                tooltip: 'Delete User',
+                                                tooltip: 'Delete Genres',
                                                 onClick: (event, rowData) => Swal.fire({
                                                     title: 'Are you sure?',
                                                     text: "You won't be able to revert this!",
@@ -132,7 +162,8 @@ class ListUser extends Component {
                                                     confirmButtonText: 'Yes, delete it!'
                                                 }).then((result) => {
                                                     if (result.isConfirmed) {
-                                                        this.handleOnDeleteUser(rowData.id)
+
+                                                        this.handleOnDeleteSong(rowData.id)
                                                     }
                                                 })
                                             }
@@ -168,4 +199,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListUser));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListSong));

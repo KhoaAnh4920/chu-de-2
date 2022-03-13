@@ -45,12 +45,19 @@ class ListGenres extends Component {
 
     handleOnDeleteGenres = async (id) => {
         try {
+            this.setState({
+                isShowLoading: true
+            })
+
             let res = await deleteGenresService(id);
             if (res && res.errCode === 0) {
                 await this.fetchAllGenres();
             } else {
                 alert(res.errMessage)
             }
+            this.setState({
+                isShowLoading: false
+            })
         } catch (e) {
             console.log(e);
         }
@@ -85,7 +92,7 @@ class ListGenres extends Component {
                                 {/* TopBar */}
                                 <Header />
                                 {/* Topbar */}
-                                <div class="col-lg-12 mb-4">
+                                <div className="col-lg-12 mb-4">
                                     <MaterialTable
                                         title="Multiple Actions Preview"
                                         columns={columns}

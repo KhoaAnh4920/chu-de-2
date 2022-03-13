@@ -10,6 +10,14 @@ const actionTypes = Object.freeze({
 
     //user
     ADD_USER_SUCCESS: 'ADD_USER_SUCCESS',
+
+    // FETCH ALBUMS //
+    fetchAllAlbumsSuccess: 'fetchAllAlbumsSuccess',
+    fetchAllAlbumsFailed: 'fetchAllAlbumsFailed',
+
+    // FETCH Playlist
+    fetchAllPlaylistsSuccess: 'fetchAllPlaylistsSuccess',
+    fetchAllPlaylistsFailed: 'fetchAllPlaylistsFailed'
 })
 
 export default actionTypes;

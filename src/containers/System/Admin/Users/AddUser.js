@@ -194,6 +194,9 @@ class AddUser extends Component {
 
     render() {
 
+        console.log(this.props);
+
+
         let { email, password, userName, fullName,
             birthday, listGender, selectedGender,
             imagePreviewUrl, listRoles, selectedRoles } = this.state
@@ -320,6 +323,7 @@ class AddUser extends Component {
                                                             options={listGender}
                                                             placeholder='Select gender'
                                                             name='selectedGender'
+                                                            styles={this.props.colourStyles}
                                                         />
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
@@ -333,6 +337,7 @@ class AddUser extends Component {
                                                             options={listRoles}
                                                             placeholder='Select Roles'
                                                             name='selectedRoles'
+                                                            styles={this.props.colourStyles}
                                                         />
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 

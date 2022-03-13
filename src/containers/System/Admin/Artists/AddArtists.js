@@ -1,86 +1,54 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import Sidebar from '../../Share/Sidebar';
 import Header from '../../Share/Header';
 import Footer from '../../Share/Footer';
-import './EditUser.scss';
+import './AddArtists.scss';
 import DatePicker from '../../../../components/Input/DatePicker';
 import Select from 'react-select';
 import { CommonUtils } from '../../../../utils';
 import Swal from 'sweetalert2';
-import { getEditUser, getAllRoles } from '../../../../services/UserService'
 import * as actions from "../../../../store/actions" // import cả 3 action //
+import { getAllCountry } from "../../../../services/ArtistsService"
 import LoadingOverlay from "react-loading-overlay";
 
 
-class EditUser extends Component {
+class AddArtists extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            password: '',
-            userName: '',
             fullName: '',
-            birthday: '',
             listGender: [],
-            listRoles: [],
+            listCountry: [],
             selectedGender: '',
-            selectedRoles: '',
+            selectedCountry: '',
             imagePreviewUrl: '',
-            avatar: '',
+            image: '',
             errors: {},
-            isShowLoading: false
+            isShowLoading: false,
+            description: ''
         }
     }
 
     async componentDidMount() {
 
-        console.log(this.props)
+        let dataCountry = await getAllCountry();
 
-        if (this.props.match && this.props.match.params && this.props.match.params.id) {
-            let id = this.props.match.params.id;
-
-            let dataUser = await getEditUser(id);
-            if (dataUser && dataUser.user) {
-                console.log(dataUser);
-
-                let listGender = this.buildDataInputSelect([], 'GENDERS');
-                let listRoles = '';
-                let dataRoles = await getAllRoles();
-
-                if (dataRoles)
-                    listRoles = this.buildDataInputSelect(dataRoles.dataRoles, 'ROLES');
-
-                let selectedGender = this.setDefaultValue(listGender, (dataUser.user.gender) ? 1 : 0);
-                let selectedRoles = this.setDefaultValue(listRoles, dataUser.user.UserRoles.id)
-
+        if (dataCountry) {
+            let listCountry = this.buildDataInputSelect(dataCountry.dataCountry, 'COUNTRY');
+            if (listCountry) {
                 this.setState({
-                    listRoles,
-                    listGender,
-                    selectedGender,
-                    selectedRoles,
-                    email: dataUser.user.email,
-                    userName: dataUser.user.userName,
-                    fullName: dataUser.user.fullName,
-                    birthday: dataUser.user.birthday,
-                    imagePreviewUrl: dataUser.user.avatar,
-                    id
+                    listCountry
                 })
             }
-
-
         }
 
-    }
-
-    setDefaultValue = (inputData, value) => {
-        let result = inputData.filter(item => item.value === value);
-        if (result) {
-            return result;
-        }
+        let listGender = this.buildDataInputSelect([], 'GENDERS');
+        this.setState({
+            listGender
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -119,12 +87,12 @@ class EditUser extends Component {
             ];
         }
         if (inputData && inputData.length > 0) {
-            if (type === 'ROLES') {
+            if (type === 'COUNTRY') {
                 inputData.map((item, index) => {
                     let object = {};
 
-                    object.label = item.rolesName;
-                    object.value = item.id;
+                    object.label = item.nameCountry;
+                    object.value = item.keyCountry;
                     result.push(object);
                 })
             }
@@ -145,7 +113,8 @@ class EditUser extends Component {
                 this.setState({
                     file: file,
                     imagePreviewUrl: reader.result,
-                    avatar: base64
+                    image: base64,
+                    fileName: file.name
                 });
             }
 
@@ -159,9 +128,8 @@ class EditUser extends Component {
     checkValidateInput = () => {
         let isValid = true;
         let errors = {};
-        let arrInput = ['email', 'userName', 'fullName', 'birthday', 'selectedGender', 'selectedRoles']
+        let arrInput = ['fullName', 'selectedGender', 'selectedCountry']
         for (let i = 0; i < arrInput.length; i++) {
-            // this.state[arrInput[i]] == this.state.email or this.state.password
             if (!this.state[arrInput[i]]) {
                 isValid = false;
                 errors[arrInput[i]] = "Cannot be empty";
@@ -180,27 +148,32 @@ class EditUser extends Component {
         return isValid;
     }
 
-    handleEditUser = async () => {
+    handleSaveArtists = async () => {
         let isValid = this.checkValidateInput();
         if (isValid) {
             this.setState({
                 isShowLoading: true
             })
 
-            let formatedDate = new Date(this.state.birthday).getTime(); // convert timestamp //
-            await this.props.editUser({
-                email: this.state.email,
-                password: this.state.password,
-                userName: this.state.userName,
+            await this.props.createNewArtists({
                 fullName: this.state.fullName,
-                birthday: formatedDate,
-                gender: this.state.selectedGender,
-                roles: this.state.selectedRoles,
-                avatar: this.state.avatar,
+                gender: this.state.selectedGender.value,
+                country: this.state.selectedCountry.value,
+                image: this.state.image,
                 fileName: this.state.fileName,
-                id: this.state.id
+                description: this.state.description
             });
 
+            this.setState({
+                fullName: '',
+                selectedGender: '',
+                selectedCountry: '',
+                imagePreviewUrl: '',
+                description: '',
+                image: '',
+                errors: {},
+                isShowLoading: false
+            })
         }
 
     }
@@ -209,9 +182,8 @@ class EditUser extends Component {
 
     render() {
 
-        let { email, userName, fullName,
-            birthday, listGender, selectedGender,
-            imagePreviewUrl, listRoles, selectedRoles } = this.state
+        let { fullName, listGender, selectedGender,
+            imagePreviewUrl, listCountry, selectedCountry } = this.state
 
         let $imagePreview = null;
         if (imagePreviewUrl) {
@@ -253,36 +225,10 @@ class EditUser extends Component {
                                         <div className="col-6">
                                             <div className="card mb-4">
                                                 <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                                    <h5 className="m-0 font-weight-bold text-primary">Edit user</h5>
+                                                    <h5 className="m-0 font-weight-bold text-primary">Add new artists</h5>
                                                 </div>
                                                 <div className="card-body">
 
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Email address</label>
-                                                        <input type="email" className="form-control disabled-input"
-                                                            value={email}
-                                                            disabled
-                                                            onChange={(event) => this.handleOnChangeInput(event, 'email')}
-                                                            placeholder="Enter email" />
-                                                        <small id="emailHelp" className="form-text text-muted">We'll never share your
-                                                            email with anyone else.</small>
-
-                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
-
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Username</label>
-                                                        <input type="text"
-                                                            value={userName}
-                                                            className="form-control"
-                                                            readOnly
-                                                            onChange={(event) => this.handleOnChangeInput(event, 'userName')}
-                                                            aria-describedby="emailHelp"
-                                                            placeholder="Enter Username" />
-
-                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
-
-                                                    </div>
                                                     <div className="form-group">
                                                         <label htmlFor="exampleInputEmail1">FullName</label>
                                                         <input type="text"
@@ -295,28 +241,21 @@ class EditUser extends Component {
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
                                                     </div>
+
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Birthday</label>
-                                                        <DatePicker
-                                                            onChange={this.handleOnChangeDatePicker}
-                                                            className="form-control"
-                                                            value={birthday}
+                                                        <label htmlFor="exampleInputEmail1">Quốc gia</label>
+                                                        <Select
+                                                            value={selectedCountry}
+                                                            onChange={this.handleChangeSelect}
+                                                            options={listCountry}
+                                                            placeholder='Select Roles'
+                                                            name='selectedCountry'
+                                                            styles={this.props.colourStyles}
                                                         />
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
                                                     </div>
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Avatar</label>
-                                                        <div className="custom-file">
-                                                            <input type="file"
-                                                                className="custom-file-input"
-                                                                onChange={(e) => this._handleImageChange(e)}
-                                                                id="customFile" />
-                                                            <label className="custom-file-label" htmlFor="customFile">Choose file</label>
-                                                        </div>
-                                                        <div className="imgPreview">
-                                                            {$imagePreview}
-                                                        </div>
-                                                    </div>
+
                                                     <div className="form-group">
                                                         <label htmlFor="exampleInputEmail1">Gender</label>
                                                         <Select
@@ -332,24 +271,33 @@ class EditUser extends Component {
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Roles</label>
-                                                        <Select
-                                                            value={selectedRoles}
-                                                            onChange={this.handleChangeSelect}
-                                                            options={listRoles}
-                                                            placeholder='Select Roles'
-                                                            name='selectedRoles'
-                                                            styles={this.props.colourStyles}
-                                                        />
+                                                        <label htmlFor="exampleInputEmail1">Description</label>
+                                                        <textarea className='form-control' style={{ 'height': '120px' }}
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'description')}
+                                                            value={this.state.description}
+                                                        >
+                                                        </textarea>
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
                                                     </div>
 
-
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Image</label>
+                                                        <div className="custom-file">
+                                                            <input type="file"
+                                                                className="custom-file-input"
+                                                                onChange={(e) => this._handleImageChange(e)}
+                                                                id="customFile" />
+                                                            <label className="custom-file-label" htmlFor="customFile">Choose file</label>
+                                                        </div>
+                                                        <div className="imgPreview">
+                                                            {$imagePreview}
+                                                        </div>
+                                                    </div>
 
                                                     <button
                                                         type="submit"
-                                                        onClick={() => this.handleEditUser()}
+                                                        onClick={() => this.handleSaveArtists()}
                                                         className="btn btn-primary btn-submit">Submit</button>
 
                                                 </div>
@@ -367,10 +315,9 @@ class EditUser extends Component {
                             {/* Footer */}
                         </div>
                     </div>
-
                 </LoadingOverlay>
-
             </>
+
         )
     }
 
@@ -383,8 +330,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        editUser: (data) => dispatch(actions.editUser(data)),
+        createNewArtists: (data) => dispatch(actions.createNewArtists(data)),
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditUser));
+export default connect(mapStateToProps, mapDispatchToProps)(AddArtists);

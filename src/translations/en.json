@@ -30,6 +30,7 @@
             "header": "System",
             "user-management": "User Management",
             "genres-management": "Genres Management",
+            "artists-management": "Atists Management",
             "songs-management": "Songs Management",
             "albums-management": "Albums Management",
             "playlist-management": "Playlist Management"
@@ -38,9 +39,9 @@
             "add": "Add new User",
             "list-users": "List Users"
         },
-        "genres-management": {
-            "add": "Add Genres",
-            "list-genres": "List Genres"
+        "artists-management": {
+            "add": "Add Artists",
+            "list-artists": "List Artists"
         },
         "songs-management": {
             "add": "Add Songs",
