@@ -24,6 +24,7 @@ import EditAlbums from '../containers/System/Admin/Albums/EditAlbums';
 import AddPlaylist from '../containers/System/Admin/Playlist/AddPlaylist';
 import ListPlaylist from '../containers/System/Admin/Playlist/ListPlaylist';
 import DetailPlaylist from '../containers/System/Admin/Playlist/DetailPlaylist';
+import EditPlayist from '../containers/System/Admin/Playlist/EditPlayist';
 
 
 // Route của admin //
@@ -87,6 +88,7 @@ class System extends Component {
                             <Route path="/admin/add-playlist" component={() => (<AddPlaylist colourStyles={colourStyles} />)} />
                             <Route path="/admin/list-playlist" component={ListPlaylist} />
                             <Route path="/admin/detail-playlist/:id" component={DetailPlaylist} />
+                            <Route path="/admin/edit-playlist/:id" component={() => (<EditPlayist colourStyles={colourStyles} />)} />
 
 
 

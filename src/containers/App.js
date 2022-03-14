@@ -47,8 +47,8 @@ class App extends Component {
 
                             <Switch>
                                 <Route path={path.HOME} exact component={(HomePage)} />
-                                <Route path={path.LOGIN} component={userIsNotAuthenticated(Login)} />
-                                <Route path={path.ADMIN} component={(System)} />
+                                <Route path={path.ADMIN_LOGIN} component={userIsNotAuthenticated(Login)} />
+                                <Route path={path.ADMIN} component={userIsAuthenticated(System)} />
                             </Switch>
 
                         </span>

@@ -11,6 +11,10 @@ const getAllSongsByArtists = (artistsId) => {
     return axios.get(`/api/get-all-songs-by-artists?artistsId=${artistsId}`)
 }
 
+const getAllSongsByGenres = (genresId) => {
+    return axios.get(`/api/get-all-songs-by-genres?genresId=${genresId}`)
+}
+
 const getAllSongsByArtistsGenres = (artistsId, genresId) => {
     return axios.get(`/api/get-all-songs-by-artists-genres?artistsId=${artistsId}&genresId=${genresId}`)
 }
@@ -42,5 +46,6 @@ export {
     editSongService,
     deleteSongService,
     getAllSongsByArtists,
-    getAllSongsByArtistsGenres
+    getAllSongsByArtistsGenres,
+    getAllSongsByGenres
 };

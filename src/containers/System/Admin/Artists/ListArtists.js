@@ -60,7 +60,11 @@ class ListArtists extends Component {
             if (res && res.errCode === 0) {
                 await this.fetchAllArtists();
             } else {
-                alert(res.errMessage)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xóa không thành công',
+                    text: res.errMessage,
+                })
             }
             this.setState({
                 isShowLoading: false
@@ -77,12 +81,14 @@ class ListArtists extends Component {
         let { listArtists } = this.state;
 
         const columns = [
+
             // { title: 'Avatar', field: 'imageUrl', render: rowData => <img src={rowData.avatar} style={{ width: 40, borderRadius: '50%' }} /> },
             { title: 'ID', field: 'id' },
             { title: 'Hình ảnh', field: 'image', render: rowData => <img src={rowData.image} style={{ width: 80, height: 80, borderRadius: '50%' }} /> },
             { title: 'FullName', field: 'fullName' },
             { title: 'Gender', field: 'gender', render: rowData => (rowData.gender) ? 'Nam' : 'Nữ' },
             { title: 'Country', field: 'nameCountry' },
+
         ]
 
         return (
@@ -134,6 +140,9 @@ class ListArtists extends Component {
                                         ]}
                                         options={{
                                             actionsColumnIndex: -1,
+                                            headerStyle: { color: "#6e707e", backgroundColor: "#eaecf4", fontSize: '15px', fontWeight: 700 },
+                                            paginationType: "stepped"
+
                                         }}
                                     />
                                 </div>

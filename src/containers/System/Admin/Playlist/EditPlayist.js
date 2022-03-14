@@ -4,32 +4,28 @@ import { connect } from 'react-redux';
 import Sidebar from '../../Share/Sidebar';
 import Header from '../../Share/Header';
 import Footer from '../../Share/Footer';
-import './AddAlbum.scss';
+import './EditPlaylist.scss';
 import Select from 'react-select';
 import { CommonUtils } from '../../../../utils';
 import Swal from 'sweetalert2';
 import * as actions from "../../../../store/actions" // import cả 3 action //
-import { getAllArtists } from "../../../../services/ArtistsService";
-import { getAllGenres } from '../../../../services/GenresService';
-import { getAllSong, getAllSongsByArtistsGenres, getAllSongsByArtists, getAllSongsByGenres } from '../../../../services/SongService';
-import { createNewAlbum } from '../../../../services/AlbumService';
-
+import { withRouter } from 'react-router-dom';
+import { getEditAlbum } from '../../../../services/AlbumService';
+import { getEditPlaylist } from '../../../../services/PlaylistService';
 import LoadingOverlay from "react-loading-overlay";
 
 
-class AddAlbum extends Component {
+class EditPlaylist extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            albumName: '',
+            playlistName: '',
             listGenres: [],
-            listArtists: [],
-            listSongs: [],
             selectedGenres: '',
-            selectedArtists: '',
             selectedSongs: '',
             imagePreviewUrl: '',
+            fileName: '',
             image: '',
             errors: {},
             isShowLoading: false
@@ -37,22 +33,29 @@ class AddAlbum extends Component {
     }
 
     async componentDidMount() {
-        let dataArtists = await getAllArtists();
-        let dataGenres = await getAllGenres();
-        let dataSongs = await getAllSong();
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
+            let id = this.props.match.params.id;
+            let dataPlaylist = await getEditPlaylist(id);
 
-        if (dataArtists && dataGenres && dataSongs) {
-            let listArtists = this.buildDataInputSelect(dataArtists.artists, 'ARTISTS');
-            let listGenres = this.buildDataInputSelect(dataGenres.genres, 'GENRES');
-            let listSongs = this.buildDataInputSelect(dataSongs, 'SONGS')
+            if (dataPlaylist && dataPlaylist.playlist) {
+                let listGenres = [];
+                if (dataPlaylist.playlist.PlaylistGenre) {
+                    let arr = [];
+                    arr.push(dataPlaylist.playlist.PlaylistGenre);
+                    listGenres = this.buildDataInputSelect(arr, 'GENRES')
+                } else {
+                    listGenres = [{ 'label': 'Tất cả', 'value': 0 }];
+                }
 
-            if (listArtists && listGenres && listSongs) {
                 this.setState({
-                    listArtists,
                     listGenres,
-                    listSongs
+                    selectedGenres: listGenres,
+                    playlistName: dataPlaylist.playlist.playlistName,
+                    imagePreviewUrl: dataPlaylist.playlist.image,
+                    id
                 })
             }
+
         }
     }
 
@@ -83,48 +86,6 @@ class AddAlbum extends Component {
             ...stateCopy
         })
 
-        let { selectedArtists, selectedGenres } = this.state;
-
-        if (name.name === 'selectedArtists') {
-            let dataSongs = [];
-            let listSongs = [];
-            // Đã chọn thể loại ==> lọc bài hát thuộc ca sĩ x thuộc thể loại y //
-            if (selectedGenres) {
-                dataSongs = await getAllSongsByArtistsGenres(selectedArtists.value, selectedGenres.value);
-                if (dataSongs)
-                    listSongs = this.buildDataInputSelect(dataSongs.song, 'SONGS')
-
-            } else { // Chưa chọn thể loại ==> lọc bài hát thuộc ca sĩ x //
-                dataSongs = await getAllSongsByArtists(selectedArtists.value);
-                if (dataSongs)
-                    listSongs = this.buildDataInputSelect(dataSongs.song, 'SONGS')
-            }
-            if (listSongs) {
-                this.setState({
-                    listSongs
-                })
-            }
-
-        } else if (name.name === 'selectedGenres') {
-            let dataSongs = [];
-            let listSongs = [];
-            // Đã chọn ca sĩ ==> lọc bài hát thuộc ca sĩ x thuộc thể loại y //
-            if (selectedArtists) {
-                dataSongs = await getAllSongsByArtistsGenres(selectedArtists.value, selectedGenres.value);
-                if (dataSongs)
-                    listSongs = this.buildDataInputSelect(dataSongs.song, 'SONGS')
-            } else {
-                dataSongs = await getAllSongsByGenres(selectedGenres.value);
-                if (dataSongs)
-                    listSongs = this.buildDataInputSelect(dataSongs.song, 'SONGS')
-            }
-            if (listSongs) {
-                this.setState({
-                    listSongs
-                })
-            }
-
-        }
     }
 
     buildDataInputSelect = (inputData, type) => {
@@ -193,7 +154,7 @@ class AddAlbum extends Component {
     checkValidateInput = () => {
         let isValid = true;
         let errors = {};
-        let arrInput = ['albumName', 'selectedGenres', 'selectedArtists', 'image']
+        let arrInput = ['playlistName']
         for (let i = 0; i < arrInput.length; i++) {
             if (!this.state[arrInput[i]]) {
                 isValid = false;
@@ -213,30 +174,22 @@ class AddAlbum extends Component {
         return isValid;
     }
 
-    handleSaveAlbum = async () => {
+    handleSavePlaylist = async () => {
         let isValid = this.checkValidateInput();
         if (isValid) {
+
             this.setState({
                 isShowLoading: true
             })
 
-            await this.props.createNewAlbum({
-                albumName: this.state.albumName,
+            await this.props.editPlaylist({
+                playlistName: this.state.playlistName,
                 image: this.state.image,
                 fileName: this.state.fileName,
-                artists: this.state.selectedArtists.value,
-                genres: this.state.selectedGenres.value,
-                songsData: this.state.selectedSongs
+                id: this.state.id
             });
 
             this.setState({
-                albumName: '',
-                selectedGenres: '',
-                selectedArtists: '',
-                selectedSongs: '',
-                imagePreviewUrl: '',
-                image: '',
-                errors: {},
                 isShowLoading: false,
             })
         }
@@ -247,8 +200,8 @@ class AddAlbum extends Component {
 
     render() {
 
-        let { albumName, listGenres, selectedGenres, selectedSongs,
-            imagePreviewUrl, listArtists, selectedArtists, listSongs
+        let { playlistName, listGenres, selectedGenres,
+            imagePreviewUrl
         } = this.state
 
         let $imagePreview = null;
@@ -291,31 +244,17 @@ class AddAlbum extends Component {
                                         <div className="col-6">
                                             <div className="card mb-4">
                                                 <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                                    <h5 className="m-0 font-weight-bold text-primary">Add new album</h5>
+                                                    <h5 className="m-0 font-weight-bold text-primary">Edit Playlist</h5>
                                                 </div>
                                                 <div className="card-body">
 
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Tên album</label>
+                                                        <label htmlFor="exampleInputEmail1">Tên Playlist</label>
                                                         <input type="text"
-                                                            value={albumName}
+                                                            value={playlistName}
                                                             className="form-control"
-                                                            onChange={(event) => this.handleOnChangeInput(event, 'albumName')}
-                                                            placeholder="Tên Album" />
-                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
-
-                                                    </div>
-
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Ca sĩ</label>
-                                                        <Select
-                                                            value={selectedArtists}
-                                                            onChange={this.handleChangeSelect}
-                                                            options={listArtists}
-                                                            placeholder='Select Artists'
-                                                            name='selectedArtists'
-                                                            styles={this.props.colourStyles}
-                                                        />
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'playlistName')}
+                                                            placeholder="Tên Playlist" />
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
                                                     </div>
@@ -329,25 +268,13 @@ class AddAlbum extends Component {
                                                             placeholder='Select genres'
                                                             name='selectedGenres'
                                                             styles={this.props.colourStyles}
+                                                            isDisabled
                                                         />
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
                                                     </div>
 
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Bài hát</label>
-                                                        <Select
-                                                            value={selectedSongs}
-                                                            onChange={this.handleChangeSelect}
-                                                            options={listSongs}
-                                                            placeholder='Select song'
-                                                            name='selectedSongs'
-                                                            isMulti
-                                                            styles={this.props.colourStyles}
-                                                        />
-                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
-                                                    </div>
 
                                                     <div className="form-group">
                                                         <label htmlFor="exampleInputEmail1">Image</label>
@@ -365,7 +292,7 @@ class AddAlbum extends Component {
 
                                                     <button
                                                         type="submit"
-                                                        onClick={() => this.handleSaveAlbum()}
+                                                        onClick={() => this.handleSavePlaylist()}
                                                         className="btn btn-primary btn-submit">Submit</button>
 
                                                 </div>
@@ -398,8 +325,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createNewAlbum: (data) => dispatch(actions.createNewAlbum(data)),
+        editPlaylist: (data) => dispatch(actions.editPlaylist(data)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddAlbum);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditPlaylist));

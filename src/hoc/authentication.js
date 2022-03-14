@@ -7,7 +7,7 @@ const locationHelper = locationHelperBuilder({});
 export const userIsAuthenticated = connectedRouterRedirect({
     authenticatedSelector: state => state.admin.isLoggedIn,
     wrapperDisplayName: 'UserIsAuthenticated',
-    redirectPath: '/login'
+    redirectPath: '/admin-login'
 });
 
 export const userIsNotAuthenticated = connectedRouterRedirect({

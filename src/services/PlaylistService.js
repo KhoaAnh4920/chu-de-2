@@ -6,33 +6,33 @@ const getAllPlaylist = () => {
     return axios.get(`/api/get-all-playlist`)
 }
 
-const getEditAlbum = (id) => {
-    return axios.get(`/api/get-edit-album?id=${id}`)
+const getEditPlaylist = (id) => {
+    return axios.get(`/api/get-edit-playlist?id=${id}`)
 }
 
 const createNewPlaylistService = (data) => {
     return axios.post('/api/create-new-playlist', data)
 }
 
-const createNewSongInAlbum = (data) => {
-    return axios.post('/api/create-new-song-in-albums', data)
+const createNewSongInPlaylist = (data) => {
+    return axios.post('/api/create-new-song-in-playlist', data)
 }
 
-const editAlbumService = (data) => {
-    return axios.put('/api/edit-album', data);
+const editPlaylistService = (data) => {
+    return axios.put('/api/edit-playlist', data);
 }
 
-const deleteSongInAlbum = (albumId, songId) => {
-    return axios.delete('/api/delete-song-in-album', {
+const deleteSongInPlaylist = (playlistId, songId) => {
+    return axios.delete('/api/delete-song-in-playlist', {
         data: {
-            albumId,
+            playlistId,
             songId
         }
     });
 }
 
-const deleteAlbumsService = (id) => {
-    return axios.delete('/api/delete-album', {
+const deletePlaylistService = (id) => {
+    return axios.delete('/api/delete-playlist', {
         data: {
             id: id
         }
@@ -41,5 +41,10 @@ const deleteAlbumsService = (id) => {
 
 export {
     createNewPlaylistService,
-    getAllPlaylist
+    getAllPlaylist,
+    createNewSongInPlaylist,
+    deleteSongInPlaylist,
+    getEditPlaylist,
+    editPlaylistService,
+    deletePlaylistService
 };

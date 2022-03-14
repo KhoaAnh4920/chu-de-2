@@ -7,7 +7,7 @@ import Footer from '../../Share/Footer';
 import './ListPlaylist.scss';
 import MaterialTable from 'material-table'
 import { CommonUtils } from '../../../../utils';
-import { deleteAlbumsService } from '../../../../services/AlbumService'
+import { deletePlaylistService } from '../../../../services/PlaylistService'
 import * as actions from "../../../../store/actions" // import cả 3 action //
 import Swal from 'sweetalert2';
 import LoadingOverlay from "react-loading-overlay";
@@ -77,13 +77,13 @@ class ListPlaylist extends Component {
         }
     }
 
-    handleOnDeleteAlbums = async (id) => {
+    handleOnDeletePlaylist = async (id) => {
         try {
             this.setState({
                 isShowLoading: true
             })
 
-            let res = await deleteAlbumsService(id);
+            let res = await deletePlaylistService(id);
             if (res && res.errCode === 0) {
                 await this.props.fetchAllPlaylist();
             } else {
@@ -146,7 +146,7 @@ class ListPlaylist extends Component {
                                             },
                                             {
                                                 icon: 'delete',
-                                                tooltip: 'Delete Artists',
+                                                tooltip: 'Delete Playlist',
                                                 onClick: (event, rowData) => Swal.fire({
                                                     title: 'Are you sure?',
                                                     text: "You won't be able to revert this!",
@@ -157,13 +157,16 @@ class ListPlaylist extends Component {
                                                     confirmButtonText: 'Yes, delete it!'
                                                 }).then((result) => {
                                                     if (result.isConfirmed) {
-                                                        this.handleOnDeleteAlbums(rowData.id)
+                                                        this.handleOnDeletePlaylist(rowData.id)
                                                     }
                                                 })
                                             }
                                         ]}
                                         options={{
                                             actionsColumnIndex: -1,
+                                            headerStyle: { color: "#6e707e", backgroundColor: "#eaecf4", fontSize: '15px', fontWeight: 700 },
+                                            paginationType: "stepped"
+
                                         }}
                                     />
                                 </div>

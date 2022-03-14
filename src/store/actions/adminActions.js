@@ -6,7 +6,7 @@ import { createNewGenresService, editGenresService } from '../../services/Genres
 import { createNewArtistsService, editArtistsService } from '../../services/ArtistsService';
 import { createNewSongService, editSongService } from '../../services/SongService';
 import { createNewAlbumsService, getAllAlbums, editAlbumService } from '../../services/AlbumService';
-import { createNewPlaylistService, getAllPlaylist } from '../../services/PlaylistService'
+import { createNewPlaylistService, getAllPlaylist, editPlaylistService } from '../../services/PlaylistService'
 
 
 
@@ -22,6 +22,8 @@ export const adminLoginFail = () => ({
 export const processLogout = () => ({
     type: actionTypes.PROCESS_LOGOUT
 })
+
+
 
 export const createNewUser = (data) => {
     return async (dispatch, getState) => {
@@ -312,3 +314,24 @@ export const fetchAllPlaylistSuccess = (allRequiredData) => ({
 export const fetchAllPlaylistsFailed = () => ({
     type: actionTypes.fetchAllPlaylistsFailed
 })
+
+export const editPlaylist = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            if (!data) {
+                alert("Undefine");
+                return
+            }
+            let res = await editPlaylistService(data);
+            if (res && res.errCode == 0) {
+                toast.success("Cập nhật thành công");
+                dispatch(push('/admin/list-playlist'))
+            } else {
+                toast.error("Cập nhật thất bại");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Cập nhật thất bại");
+        }
+    }
+}

@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { getAllSong, getAllSongsByArtistsGenres, getAllSongsByArtists } from '../../../../services/SongService';
+import { getAllSong, getAllSongsByArtistsGenres, getAllSongsByArtists, getAllSongsByGenres } from '../../../../services/SongService';
 import './ModalAddSong.scss';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
-
+import { getAllArtists } from '../../../../services/ArtistsService'
 
 
 class ModalAddSong extends Component {
@@ -36,8 +36,6 @@ class ModalAddSong extends Component {
 
                 let listSongs = await getAllSongsByArtistsGenres(listArtists[0].value, listGenres[0].value)
 
-                console.log("Truoc khi loc 1: ", data.AlbumForSongs);
-                console.log("Truoc khi loc 2: ", listSongs.song);
                 // lọc những bài chưa đc chọn //
 
                 if (data.AlbumForSongs.length > 0) {
@@ -53,11 +51,41 @@ class ModalAddSong extends Component {
                 })
             }
         } else {
-            console.log('Playlist')
+            let data = this.props.listPlaylist[0];
+
+            let dataArtists = await getAllArtists();
+            let dataSong = [];
+
+            if (data) {
+                let arr = [];
+                let listGenres = [];
+                if (data.genresId && data.PlaylistGenre) {
+                    dataSong = await getAllSongsByGenres(data.genresId);
+                    arr.push(data.PlaylistGenre);
+                    listGenres = this.buildDataInputSelect(arr, 'GENRES');
+                    dataSong = dataSong.song;
+                } else {
+                    dataSong = await getAllSong();
+                    listGenres = [{ 'label': 'Tất cả', 'value': 0 }];
+                }
+
+                let listArtists = this.buildDataInputSelect(dataArtists.artists, 'ARTISTS');
+
+                // lọc những bài chưa đc chọn //
+                if (data.SongInPlaylist.length > 0) {
+                    dataSong = dataSong.filter(o1 => !data.SongInPlaylist.some(o2 => o1.id === o2.id));
+                    dataSong = this.buildDataInputSelect(dataSong, 'SONGS');
+                }
+
+                await this.setState({
+                    selectedGenres: listGenres,
+                    listArtists,
+                    listSongs: dataSong
+                })
+
+            }
+
         }
-
-
-
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -117,6 +145,53 @@ class ModalAddSong extends Component {
         await this.setState({
             ...stateCopy
         })
+
+        let { type } = this.props;
+        if (type === 'Playlist') {
+            let dataPlaylist = this.props.listPlaylist[0];
+            let { selectedArtists, selectedGenres } = this.state;
+
+            if (name.name === 'selectedArtists') {
+                let dataSongs = new Array();
+                let listSongs = [];
+                let result = [];
+                // Đã chọn thể loại ==> lọc bài hát thuộc ca sĩ x thuộc thể loại y //
+
+                if (selectedGenres && selectedGenres[0]) {
+                    await Promise.all(selectedArtists.map(async item => {
+                        let data = await getAllSongsByArtistsGenres(item.value, selectedGenres[0].value);
+                        console.log("data: ", data)
+                        if (data)
+                            dataSongs.push(data.song);
+                    }))
+                }
+                if (dataSongs) {
+                    //listSongs = this.buildDataInputSelect(dataSongs, 'SONGS')
+                    dataSongs.map(async (item, index) => {
+                        await item.map(song => {
+
+                            if (!dataPlaylist.SongInPlaylist.some(x => x.id === song.id)) {
+                                let object = {};
+
+                                object.label = song.nameSong;
+                                object.value = song.id;
+                                object.timePlay = song.timePlay;
+                                result.push(object);
+                            }
+                        })
+
+                    })
+                    // Lọc bài bị trùng //
+                    var uniq = {};
+                    result = result.filter(obj => !uniq[obj.value] && (uniq[obj.value] = true));
+
+                    this.setState({
+                        listSongs: result
+                    })
+
+                }
+            }
+        }
     }
 
     checkValidateInput = () => {
@@ -153,7 +228,10 @@ class ModalAddSong extends Component {
 
 
     render() {
-        let { selectedArtists, selectedGenres, listSongs, selectedSongs } = this.state
+        let { selectedArtists, selectedGenres, listSongs, selectedSongs, listArtists } = this.state
+        let { type } = this.props;
+
+        console.log("Type: ", type);
 
         console.log(listSongs);
         return (
@@ -173,11 +251,12 @@ class ModalAddSong extends Component {
                             <Select
                                 value={selectedArtists}
                                 onChange={this.handleChangeSelect}
-                                options={selectedArtists}
+                                options={(type === 'Albums') ? selectedArtists : listArtists}
                                 placeholder='Select Artists'
                                 name='selectedArtists'
-                                isDisabled
                                 styles={this.props.colourStyles}
+                                isDisabled={(type === 'Albums') ? true : false}
+                                isMulti={(type === 'Albums') ? false : true}
                             />
 
 

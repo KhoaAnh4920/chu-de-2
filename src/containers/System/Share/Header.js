@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import * as actions from "../../../store/actions" // import cả 3 action //
 
 
 
@@ -9,10 +10,20 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            fullName: '',
+            avatar: ''
         }
     }
 
     componentDidMount() {
+        console.log("Check adminInfo: ", this.props.adminInfo)
+        let { adminInfo } = this.props;
+        if (adminInfo && adminInfo.fullName && adminInfo.avatar) {
+            this.setState({
+                fullName: adminInfo.fullName,
+                avatar: adminInfo.avatar
+            })
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -20,6 +31,8 @@ class Header extends Component {
 
 
     render() {
+        let { fullName, avatar } = this.state;
+        let { processLogout } = this.props;
         return (
             <>
                 <nav className="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top">
@@ -165,24 +178,12 @@ class Header extends Component {
                         <div className="topbar-divider d-none d-sm-block" />
                         <li className="nav-item dropdown no-arrow">
                             <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img className="img-profile rounded-circle" src="/img/boy.png" style={{ maxWidth: '60px' }} />
-                                <span className="ml-2 d-none d-lg-inline text-white small">Maman Ketoprak</span>
+                                <img className="img-profile rounded-circle" src={avatar} style={{ maxWidth: '60px' }} />
+                                <span className="ml-2 d-none d-lg-inline text-white small">{fullName}</span>
                             </a>
                             <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a className="dropdown-item" href="#">
-                                    <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400" />
-                                    Profile
-                                </a>
-                                <a className="dropdown-item" href="#">
-                                    <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400" />
-                                    Settings
-                                </a>
-                                <a className="dropdown-item" href="#">
-                                    <i className="fas fa-list fa-sm fa-fw mr-2 text-gray-400" />
-                                    Activity Log
-                                </a>
                                 <div className="dropdown-divider" />
-                                <a className="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal">
+                                <a className="dropdown-item" onClick={processLogout} data-toggle="modal" data-target="#logoutModal">
                                     <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400" />
                                     Logout
                                 </a>
@@ -198,11 +199,13 @@ class Header extends Component {
 
 const mapStateToProps = state => {
     return {
+        adminInfo: state.admin.adminInfo
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        processLogout: () => dispatch(actions.processLogout()),
     };
 };
 

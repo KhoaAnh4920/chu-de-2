@@ -7,7 +7,7 @@ import Footer from '../../Share/Footer';
 import './DetailPlaylist.scss';
 import MaterialTable from 'material-table'
 import { CommonUtils } from '../../../../utils';
-import { getAllAlbums, deleteSongInAlbum, createNewSongInAlbum } from '../../../../services/AlbumService'
+import { deleteSongInPlaylist, createNewSongInPlaylist } from '../../../../services/PlaylistService'
 import * as actions from "../../../../store/actions" // import cả 3 action //
 import Swal from 'sweetalert2';
 import LoadingOverlay from "react-loading-overlay";
@@ -43,9 +43,9 @@ class DetailPlaylist extends Component {
             isShowLoading: true
         })
         if (data && data.selectedSongs) {
-            data.albumId = this.state.albumId;
+            data.playlistId = this.state.playlistId;
 
-            let response = await createNewSongInAlbum(data);
+            let response = await createNewSongInPlaylist(data);
             if (response && response.errCode !== 0) {
                 toast.error("Them that bai")
             } else {
@@ -98,7 +98,7 @@ class DetailPlaylist extends Component {
                 await this.setState({
                     listSongs: result,
                     isShowLoading: false,
-                    albumId: +this.props.match.params.id
+                    playlistId: +this.props.match.params.id
                 })
             }
         }
@@ -128,7 +128,7 @@ class DetailPlaylist extends Component {
                 isShowLoading: true
             })
 
-            let res = await deleteSongInAlbum(this.state.albumId, songid);
+            let res = await deleteSongInPlaylist(this.state.playlistId, songid);
             if (res && res.errCode === 0) {
                 toast.success("Xóa thành công");
                 await this.props.fetchAllPlaylist();

@@ -123,6 +123,9 @@ class ListGenres extends Component {
                                         ]}
                                         options={{
                                             actionsColumnIndex: -1,
+                                            headerStyle: { color: "#6e707e", backgroundColor: "#eaecf4", fontSize: '15px', fontWeight: 700 },
+                                            paginationType: "stepped"
+
                                         }}
                                     />
                                 </div>

@@ -2,6 +2,10 @@ import axios from '../axios';
 
 // Móc API //
 
+const hanedleLoginAPI = (userEmail, userPassword) => {
+    return axios.post('/api/admin-login', { email: userEmail, password: userPassword }) // req.body.email, req.body.password //
+}
+
 const getAllRoles = () => {
     return axios.get(`/api/get-roles`) // truyen API method GET 
 }
@@ -36,5 +40,6 @@ export {
     getAllUser,
     getEditUser,
     editUserService,
-    deleteUserService
+    deleteUserService,
+    hanedleLoginAPI
 };
