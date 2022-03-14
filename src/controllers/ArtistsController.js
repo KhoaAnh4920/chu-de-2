@@ -29,6 +29,8 @@ let handleGetAllArtists = async (req, res) => {
 
 }
 
+
+
 let getEditArtists = async (req, res) => {
     let id = req.query.id;
     if (id) {
@@ -70,5 +72,5 @@ module.exports = {
     handleGetAllArtists,
     getEditArtists,
     handleEditArtists,
-    handleDeleteArtists
+    handleDeleteArtists,
 }

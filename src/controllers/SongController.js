@@ -74,6 +74,23 @@ let getAllSongsByArtists = async (req, res) => {
     }
 }
 
+let getAllSongsByGenres = async (req, res) => {
+    let genresId = req.query.genresId;
+    if (genresId) {
+        let song = await SongService.getAllSongsByGenres(genresId);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            song
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
 let getAllSongsByArtistsGenres = async (req, res) => {
     let artistsId = req.query.artistsId;
     let genresId = req.query.genresId;
@@ -101,5 +118,6 @@ module.exports = {
     handleDeleteSong,
     getAllSongsByArtists,
     getAllSongsByArtistsGenres,
-    getAllSongsByArtistsGenres
+    getAllSongsByArtistsGenres,
+    getAllSongsByGenres
 }

@@ -153,6 +153,25 @@ let getAllSongsByArtists = (id) => {
     })
 }
 
+let getAllSongsByGenres = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let song = await db.Songs.findAll({
+
+                include: [
+                    { model: db.Genres, as: 'GenresSong', where: { id: id }, attributes: ['id', 'genresName'] },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(song);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let getAllSongsByArtistsGenres = (artistsId, genresId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -330,5 +349,6 @@ module.exports = {
     updateSong,
     deleteSong,
     getAllSongsByArtists,
-    getAllSongsByArtistsGenres
+    getAllSongsByArtistsGenres,
+    getAllSongsByGenres
 }

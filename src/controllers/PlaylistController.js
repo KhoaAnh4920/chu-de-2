@@ -20,30 +20,30 @@ let getAllPlaylist = async (req, res) => {
     }
 }
 
-let handleDeleteSongInAlbum = async (req, res) => {
-    if (!req.body.albumId || !req.body.songId) {
+let handleDeleteSongInPlaylist = async (req, res) => {
+    if (!req.body.playlistId || !req.body.songId) {
         return res.status(200).json({
             errCode: 1,
             errMessage: "Missing id"
         })
     }
-    let message = await AlbumService.deleteSongInAlbum(req.body.albumId, req.body.songId);
+    let message = await PlaylistService.deleteSongInPlaylist(req.body.playlistId, req.body.songId);
     return res.status(200).json(message);
 }
 
-let handleCreateNewSongInAlbum = async (req, res) => {
-    let message = await AlbumService.createNewSongInAlbum(req.body);
+let handleCreateNewSongInPlaylist = async (req, res) => {
+    let message = await PlaylistService.createNewSongInPlaylist(req.body);
     return res.status(200).json(message);
 }
 
-let getEditAlbum = async (req, res) => {
+let getEditPlaylist = async (req, res) => {
     let id = req.query.id;
     if (id) {
-        let album = await AlbumService.getEditAlbum(id);
+        let playlist = await PlaylistService.getEditPlaylist(id);
         return res.status(200).json({
             errCode: 0,
             errMessage: 'OK',
-            album
+            playlist
         })
     } else {
         return res.status(200).json({
@@ -53,21 +53,21 @@ let getEditAlbum = async (req, res) => {
     }
 }
 
-let handleEditAlbum = async (req, res) => {
+let handleEditPlaylist = async (req, res) => {
     let data = req.body;
-    let message = await AlbumService.updateAlbum(data);
+    let message = await PlaylistService.updatePlaylist(data);
     return res.status(200).json(message)
 }
 
 
-let handleDeleteAlbum = async (req, res) => {
+let handleDeletePlaylist = async (req, res) => {
     if (!req.body.id) {
         return res.status(200).json({
             errCode: 1,
             errMessage: "Missing id"
         })
     }
-    let message = await AlbumService.deleteAlbum(req.body.id);
+    let message = await PlaylistService.deletePlaylist(req.body.id);
     return res.status(200).json(message);
 }
 
@@ -75,5 +75,10 @@ let handleDeleteAlbum = async (req, res) => {
 
 module.exports = {
     handleCreateNewPlaylist,
-    getAllPlaylist
+    getAllPlaylist,
+    handleCreateNewSongInPlaylist,
+    handleDeleteSongInPlaylist,
+    getEditPlaylist,
+    handleDeletePlaylist,
+    handleEditPlaylist
 }

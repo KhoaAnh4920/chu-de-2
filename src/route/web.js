@@ -17,6 +17,7 @@ let initWebRoutes = (app) => {
         return res.send('Hello world')
     });
 
+    router.post('/api/admin-login', UserController.handleLogin);
 
     // CRUD User //
     router.get('/api/get-roles', UserController.getAllRoles);
@@ -52,6 +53,7 @@ let initWebRoutes = (app) => {
     // CRUD Albums //
     router.get('/api/get-all-songs-by-artists', SongController.getAllSongsByArtists);
     router.get('/api/get-all-songs-by-artists-genres', SongController.getAllSongsByArtistsGenres);
+    router.get('/api/get-all-songs-by-genres', SongController.getAllSongsByGenres);
 
     router.post('/api/create-new-albums', AlbumController.handleCreateNewAlbum);
     router.get('/api/get-all-albums', AlbumController.getAllAlbums);
@@ -64,6 +66,11 @@ let initWebRoutes = (app) => {
     // Playlist //
     router.post('/api/create-new-playlist', PlaylistControler.handleCreateNewPlaylist);
     router.get('/api/get-all-playlist', PlaylistControler.getAllPlaylist);
+    router.post('/api/create-new-song-in-playlist', PlaylistControler.handleCreateNewSongInPlaylist);
+    router.delete('/api/delete-song-in-playlist', PlaylistControler.handleDeleteSongInPlaylist);
+    router.get('/api/get-edit-playlist', PlaylistControler.getEditPlaylist);
+    router.put('/api/edit-playlist', PlaylistControler.handleEditPlaylist);
+    router.delete('/api/delete-playlist', PlaylistControler.handleDeletePlaylist);
 
 
 

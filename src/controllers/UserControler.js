@@ -2,6 +2,28 @@ import db from "../models/index";
 import UserService from '../Services/UserService'
 
 
+let handleLogin = async (req, res) => {
+
+    console.log("Check: ", req.body);
+
+    let email = req.body.email;
+    let password = req.body.password;
+
+    if (!email || !password) {
+        return res.status(500).json({
+            errorCode: 1,
+            message: 'Missing inputs parameter!'
+        })
+    }
+
+    let userData = await UserService.handleUserLogin(email, password);
+
+    return res.status(200).json({
+        errorCode: userData.errorCode,
+        message: userData.errMessage,
+        admin: (userData.user) ? userData.user : {}
+    })
+}
 
 let getAllRoles = async (req, res) => {
     try {
@@ -69,6 +91,7 @@ let handleDeleteUser = async (req, res) => {
 
 
 module.exports = {
+    handleLogin,
     getAllRoles,
     handleCreateNewUser,
     handleGetAllUser,

@@ -29,6 +29,7 @@ module.exports = {
                 type: Sequelize.STRING
             },
             genresId: {
+                allowNull: true,
                 type: Sequelize.INTEGER
             },
             userId: {

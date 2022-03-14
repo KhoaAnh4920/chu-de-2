@@ -69,7 +69,7 @@ let createNewPlaylist = (data) => {
 
             await db.Playlists.create({
                 playlistName: data.playlistName,
-                genresId: (data.genres !== 0) ? data.genres : '',
+                genresId: (data.genres !== 0) ? data.genres : null,
                 playlistTimeLength: playlistTimeLength,
                 image: (result && result.secure_url) ? result.secure_url : image,
                 public_id_image: (result && result.public_id) ? result.public_id : ''
@@ -136,46 +136,46 @@ let getAllPlaylist = () => {
     })
 }
 
-let deleteSongInAlbum = (albumId, songId) => {
+let deleteSongInPlaylist = (playlistId, songId) => {
     return new Promise(async (resolve, reject) => {
 
         let song = await db.Songs.findOne({
             where: { id: songId },
             raw: false
         })
-        let album = await db.Albums.findOne({
-            where: { id: albumId },
+        let playlist = await db.Playlists.findOne({
+            where: { id: playlistId },
             raw: false
         })
-        if (song && album) {
+        if (song && playlist) {
             let timePlay = song.timePlay;
-            album.albumTimeLength -= timePlay;
+            playlist.playlistTimeLength -= timePlay;
 
-            await album.save();
+            await playlist.save();
             // Xoa bang trung gian //
-            await db.AlbumSong.destroy({
-                where: { albumsId: albumId, songId: songId }
+            await db.PlaylistSong.destroy({
+                where: { playlistId: playlistId, songId: songId }
             })
 
             resolve({
                 errCode: 0,
-                errMessage: "Delete song in album ok"
+                errMessage: "Delete song in playlist ok"
             })
         } else {
             resolve({
                 errCode: 2,
-                errMessage: "Album hoặc Bài hát không tồn tại"
+                errMessage: "Playlist hoặc Bài hát không tồn tại"
             })
         }
 
     })
 }
 
-let createNewSongInAlbum = (data) => {
+let createNewSongInPlaylist = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let album = await db.Albums.findOne({
-                where: { id: data.albumId },
+            let playlist = await db.Playlists.findOne({
+                where: { id: data.playlistId },
                 raw: false
             })
 
@@ -183,15 +183,15 @@ let createNewSongInAlbum = (data) => {
 
             if (data.selectedSongs) {
                 data.selectedSongs.map(item => {
-                    album.albumTimeLength += item.timePlay;
+                    playlist.playlistTimeLength += item.timePlay;
 
                     let obj = {};
-                    obj.albumsId = data.albumId;
+                    obj.playlistId = data.playlistId;
                     obj.songId = item.value;
                     result.push(obj);
                 })
-                await db.AlbumSong.bulkCreate(result);
-                await album.save();
+                await db.PlaylistSong.bulkCreate(result);
+                await playlist.save();
             }
 
             resolve({
@@ -207,27 +207,26 @@ let createNewSongInAlbum = (data) => {
 }
 
 
-let getEditAlbum = (id) => {
+let getEditPlaylist = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let album = await db.Albums.findOne({
+            let playlist = await db.Playlists.findOne({
                 where: { id: id },
                 include: [
-                    { model: db.Artists, as: 'AlbumOfArtists', attributes: ['id', 'fullName'] },
-                    { model: db.Genres, as: 'AlbumGenre', attributes: ['id', 'genresName'] },
+                    { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
                 ],
                 raw: false,
                 nest: true
             });
 
-            resolve(album);
+            resolve(playlist);
         } catch (e) {
             reject(e);
         }
     })
 }
 
-let updateAlbum = (data) => {
+let updatePlaylist = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             // check email //
@@ -237,18 +236,18 @@ let updateAlbum = (data) => {
                     errMessage: 'Missing id'
                 })
             } else {
-                let album = await db.Albums.findOne({
+                let playlist = await db.Playlists.findOne({
                     where: { id: data.id },
                     raw: false
                 })
-                if (album) {
+                if (playlist) {
 
                     // Có truyền image //
                     if (data.image && data.fileName) {
-                        if (album.image && album.public_id_image) // có lưu trong db //
+                        if (playlist.image && playlist.public_id_image) // có lưu trong db //
                         {
                             // Xóa hình cũ //
-                            await cloudinary.uploader.destroy(album.public_id_image, { invalidate: true, resource_type: "raw" },
+                            await cloudinary.uploader.destroy(playlist.public_id_image, { invalidate: true, resource_type: "raw" },
                                 function (err, result) { console.log(result) });
 
                         }
@@ -256,19 +255,19 @@ let updateAlbum = (data) => {
                         result = await uploadCloud(data.image, data.fileName);
                     }
 
-                    album.albumName = data.albumName;
+                    playlist.playlistName = data.playlistName;
 
                     if (data.image && data.fileName) {
-                        album.image = result.secure_url;
-                        album.public_id_image = result.public_id;
+                        playlist.image = result.secure_url;
+                        playlist.public_id_image = result.public_id;
                     }
 
 
-                    await album.save();
+                    await playlist.save();
 
                     resolve({
                         errCode: 0,
-                        message: "Update album thanh cong"
+                        message: "Update playlist thanh cong"
                     });
 
                 } else {
@@ -293,39 +292,36 @@ let updateAlbum = (data) => {
 
 
 
-let deleteAlbum = (id) => {
+let deletePlaylist = (id) => {
     return new Promise(async (resolve, reject) => {
-        let album = await db.Albums.findOne({
+        let playlist = await db.Playlists.findOne({
             where: { id: id }
         })
-        if (!album) {
+        if (!playlist) {
             resolve({
                 errCode: 2,
-                errMessage: 'Album ko ton tai'
+                errMessage: 'Playlist ko ton tai'
             })
         }
 
-        if (album.image && album.public_id_image) {
+        if (playlist.image && playlist.public_id_image) {
             // Xóa hình cũ //
-            await cloudinary.uploader.destroy(album.public_id_image, { invalidate: true, resource_type: "raw" },
+            await cloudinary.uploader.destroy(playlist.public_id_image, { invalidate: true, resource_type: "raw" },
                 function (err, result) { console.log(result) });
         }
 
         // Xoa bang trung gian //
-        await db.AlbumSong.destroy({
-            where: { albumsId: id }
+        await db.PlaylistSong.destroy({
+            where: { playlistId: id }
         })
 
-        await db.ArtistsAlbum.destroy({
-            where: { albumsId: id }
-        });
 
-        await db.Albums.destroy({
+        await db.Playlists.destroy({
             where: { id: id }
         })
         resolve({
             errCode: 0,
-            errMessage: "Delete song ok"
+            errMessage: "Delete playlist ok"
         })
     })
 }
@@ -334,5 +330,10 @@ let deleteAlbum = (id) => {
 
 module.exports = {
     createNewPlaylist,
-    getAllPlaylist
+    getAllPlaylist,
+    createNewSongInPlaylist,
+    deleteSongInPlaylist,
+    getEditPlaylist,
+    deletePlaylist,
+    updatePlaylist
 }

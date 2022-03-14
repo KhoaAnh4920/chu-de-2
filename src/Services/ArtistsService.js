@@ -1,3 +1,4 @@
+import e from "express";
 import db from "../models/index";
 require('dotenv').config();
 var cloudinary = require('cloudinary').v2;
@@ -207,19 +208,41 @@ let deleteArtists = (id) => {
             })
         }
 
-        if (artists.image && artists.public_id_image) {
-            // Xóa hình cũ //
-            await cloudinary.uploader.destroy(artists.public_id_image, { invalidate: true, resource_type: "raw" },
-                function (err, result) { console.log(result) });
+        let song = await db.Songs.findAll({
+            include: [
+                { model: db.Artists, as: 'SongOfArtists', where: { id: id } },
+            ],
+            raw: true,
+            nest: true
+        });
+
+        resolve({
+            errCode: 3,
+            errMessage: 'Không thể xóa ca sĩ đã có bài hát'
+        })
+
+        if (song && song.id) {
+            resolve({
+                errCode: 3,
+                errMessage: 'Không thể xóa ca sĩ đã có bài hát'
+            })
+        } else {
+            if (artists.image && artists.public_id_image) {
+                // Xóa hình cũ //
+                await cloudinary.uploader.destroy(artists.public_id_image, { invalidate: true, resource_type: "raw" },
+                    function (err, result) { console.log(result) });
+            }
+
+            await db.Artists.destroy({
+                where: { id: id }
+            });
+            resolve({
+                errCode: 0,
+                errMessage: "Delete artists ok"
+            })
         }
 
-        await db.Artists.destroy({
-            where: { id: id }
-        });
-        resolve({
-            errCode: 0,
-            errMessage: "Delete artists ok"
-        })
+
     })
 }
 

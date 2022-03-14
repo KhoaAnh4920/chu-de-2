@@ -64,6 +64,46 @@ let checkUserEmail = (email) => {
     })
 }
 
+let handleUserLogin = async (email, password) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userData = {};
+            let isExist = await checkUserEmail(email);
+            if (isExist) {
+                let user = await db.Users.findOne({
+                    where: { email: email },
+                    attributes: ['id', 'email', 'roleId', 'password', 'fullName', 'avatar'],
+                    raw: true
+                })
+                if (user) {
+                    // compare pass //
+                    let check = bcrypt.compareSync(password, user.password);
+                    if (check) {
+                        userData.errorCode = 0;
+                        userData.errMessage = `Ok`;
+
+                        delete user.password; // ko lay password cua user //
+                        userData.user = user;
+                    } else {
+                        userData.errorCode = 3;
+                        userData.errMessage = `Wrong pass`;
+                    }
+                } else {
+                    userData.errorCode = 2;
+                    userData.errMessage = `User isn't exist`;
+                }
+            } else {
+                userData.errorCode = 1;
+                userData.errMessage = `Your's email isn't exist in our system`
+
+            }
+            resolve(userData);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let createNewUser = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -289,5 +329,6 @@ module.exports = {
     getAllUser,
     getEditUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    handleUserLogin
 }
