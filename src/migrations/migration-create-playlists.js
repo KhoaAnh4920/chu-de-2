@@ -20,6 +20,9 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 defaultValue: 0
             },
+            description: {
+                type: Sequelize.STRING
+            },
             image: {
                 allowNull: true,
                 type: Sequelize.STRING

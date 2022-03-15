@@ -65,12 +65,11 @@ let createNewAlbum = (data) => {
                 image = 'https://res.cloudinary.com/cdmedia/image/upload/v1646921892/image/avatar/Unknown_b4jgka.png';
             }
 
-            console.log(result);
-
             await db.Albums.create({
                 albumName: data.albumName,
                 genresId: data.genres,
                 albumTimeLength: albumTimeLength,
+                description: data.description,
                 image: (result && result.secure_url) ? result.secure_url : image,
                 public_id_image: (result && result.public_id) ? result.public_id : ''
 
@@ -260,6 +259,7 @@ let updateAlbum = (data) => {
                     }
 
                     album.albumName = data.albumName;
+                    album.description = data.description;
 
                     if (data.image && data.fileName) {
                         album.image = result.secure_url;

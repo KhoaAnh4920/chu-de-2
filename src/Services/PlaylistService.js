@@ -1,5 +1,6 @@
 import db from "../models/index";
 require('dotenv').config();
+import { sequelize } from "../models/index";
 var cloudinary = require('cloudinary').v2;
 
 
@@ -72,11 +73,12 @@ let createNewPlaylist = (data) => {
                 genresId: (data.genres !== 0) ? data.genres : null,
                 playlistTimeLength: playlistTimeLength,
                 image: (result && result.secure_url) ? result.secure_url : image,
-                public_id_image: (result && result.public_id) ? result.public_id : ''
+                public_id_image: (result && result.public_id) ? result.public_id : '',
+                description: data.description
 
             }).then(function (x) {
                 if (x.id) {
-                    // insert AlbumSong //
+                    // insert PlaylistSong //
 
                     let dataSong = data.songsData;
                     let result = [];
@@ -91,12 +93,6 @@ let createNewPlaylist = (data) => {
 
                         db.PlaylistSong.bulkCreate(result);
                     }
-
-                    // Insert ArtistsAlbum //
-                    // db.ArtistsAlbum.create({
-                    //     artistsId: data.artists,
-                    //     albumsId: x.id
-                    // })
                 }
             });
 
@@ -118,9 +114,16 @@ let getAllPlaylist = () => {
         try {
             let playlist = await db.Playlists.findAll({
                 include: [
-                    { model: db.Songs, as: 'SongInPlaylist' },
+                    {
+                        model: db.Songs, as: 'SongInPlaylist',
+                        include: [
+                            { model: db.Artists, as: 'SongOfArtists' },
+                        ],
+                        order: [[{ model: db.Songs }, 'id', 'desc']]
+                    },
                     { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
                 ],
+                // order: sequelize.random(),
                 raw: false,
                 nest: true
             });
@@ -256,6 +259,7 @@ let updatePlaylist = (data) => {
                     }
 
                     playlist.playlistName = data.playlistName;
+                    playlist.description = data.description;
 
                     if (data.image && data.fileName) {
                         playlist.image = result.secure_url;

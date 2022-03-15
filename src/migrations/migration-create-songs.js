@@ -3,18 +3,6 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Songs', {
 
-
-      // nameSong: DataTypes.STRING,
-      // countListen: DataTypes.INTEGER,
-      // description: DataTypes.STRING,
-      // image: DataTypes.STRING,
-      // lyrics: DataTypes.TEXT('long'),
-      // public_id_image: DataTypes.STRING,
-      // timePlay: DataTypes.DOUBLE,
-      // url: DataTypes.STRING,
-      // public_id_url: DataTypes.STRING,
-      // genresId: DataTypes.INTEGER,
-
       id: {
         allowNull: false,
         autoIncrement: true,

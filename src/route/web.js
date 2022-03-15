@@ -18,10 +18,13 @@ let initWebRoutes = (app) => {
     });
 
     router.post('/api/admin-login', UserController.handleLogin);
+    router.post('/api/user-login', UserController.handleLogin);
+    router.post('/api/user-login-social', UserController.handleLoginSocial);
 
     // CRUD User //
     router.get('/api/get-roles', UserController.getAllRoles);
     router.post('/api/create-new-user', UserController.handleCreateNewUser);
+    router.post('/api/sign-up-new-user', UserController.handleSignUpNewUser);
     router.get('/api/get-all-user', UserController.handleGetAllUser);
     router.get('/api/get-edit-user', UserController.getEditUser);
     router.put('/api/edit-user', UserController.handleEditUser);

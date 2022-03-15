@@ -1,5 +1,6 @@
 import db from "../models/index";
 import bcrypt from 'bcryptjs';
+import { raw } from "body-parser";
 require('dotenv').config();
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require('cloudinary').v2;
@@ -104,6 +105,34 @@ let handleUserLogin = async (email, password) => {
     })
 }
 
+let handleUserLoginSocial = async (email, id, name, avatar) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+
+            await db.Users.findOrCreate({
+                where: { email: email, userName: name },
+                defaults: {
+                    userName: name,
+                    avatar: avatar,
+                    roleId: 1,
+                    password: "",
+                    fullName: name,
+                    isActive: true,
+                    gender: 1
+                },
+            })
+
+            resolve({
+                errCode: 0,
+                errMessage: "Login OK"
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let createNewUser = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -143,6 +172,61 @@ let createNewUser = (data) => {
                     errCode: 0,
                     errMessage: 'OK'
                 }); // return 
+            }
+
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let signUpNewUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // check email //
+            let check = await checkUserEmail(data.email);
+            if (check === true) {
+                resolve({
+                    errCode: 1,
+                    message: "Email da ton tai"
+                })
+            } else {
+                let hashPass = await hashUserPassword(data.password);
+
+                let avatar = 'https://res.cloudinary.com/cdmedia/image/upload/v1646921892/image/avatar/Unknown_b4jgka.png';
+
+                await db.Users.create({
+                    email: data.email,
+                    password: hashPass,
+                    fullName: data.fullName,
+                    isActive: true,
+                    gender: data.gender,
+                    birthday: data.birthday,
+                    userName: data.userName,
+                    roleId: 1,
+                    avatar: avatar,
+                    public_id_image: ''
+
+                }).then(function (x) {
+                    if (x.id) {
+                        // 'email', 'roleId', 'password', 'fullName', 'avatar'],
+                        let user = [{
+                            id: x.id,
+                            email: data.email,
+                            roleId: data.roleId,
+                            password: data.password,
+                            fullName: data.fullName,
+                            avatar: avatar
+                        }]
+                        resolve({
+                            errCode: 0,
+                            errMessage: 'OK',
+                            user: user
+                        })
+                    }
+
+                })
             }
 
 
@@ -330,5 +414,7 @@ module.exports = {
     getEditUser,
     updateUser,
     deleteUser,
-    handleUserLogin
+    handleUserLogin,
+    signUpNewUser,
+    handleUserLoginSocial
 }

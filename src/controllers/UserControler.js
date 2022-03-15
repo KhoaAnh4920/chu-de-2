@@ -21,7 +21,30 @@ let handleLogin = async (req, res) => {
     return res.status(200).json({
         errorCode: userData.errorCode,
         message: userData.errMessage,
-        admin: (userData.user) ? userData.user : {}
+        data: (userData.user) ? userData.user : {}
+    })
+}
+
+let handleLoginSocial = async (req, res) => {
+
+
+    let email = req.body.email;
+    let id = req.body.userID;
+    let name = req.body.name;
+    let avatar = req.body.avatar
+
+    if (!email || !id || !name) {
+        return res.status(500).json({
+            errorCode: 1,
+            message: 'Missing inputs parameter!'
+        })
+    }
+
+    let message = await UserService.handleUserLoginSocial(email, id, name, avatar);
+
+    return res.status(200).json({
+        errCode: message.errCode,
+        errMessage: message.errMessage,
     })
 }
 
@@ -40,6 +63,11 @@ let getAllRoles = async (req, res) => {
 
 let handleCreateNewUser = async (req, res) => {
     let message = await UserService.createNewUser(req.body);
+    return res.status(200).json(message);
+}
+
+let handleSignUpNewUser = async (req, res) => {
+    let message = await UserService.signUpNewUser(req.body);
     return res.status(200).json(message);
 }
 
@@ -97,5 +125,7 @@ module.exports = {
     handleGetAllUser,
     getEditUser,
     handleEditUser,
-    handleDeleteUser
+    handleDeleteUser,
+    handleSignUpNewUser,
+    handleLoginSocial
 }

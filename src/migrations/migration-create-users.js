@@ -23,15 +23,19 @@ module.exports = {
         type: Sequelize.STRING
       },
       isActive: {
+        allowNull: true,
         type: Sequelize.BOOLEAN
       },
       public_id_image: {
+        allowNull: true,
         type: Sequelize.STRING
       },
       gender: {
+        allowNull: true,
         type: Sequelize.BOOLEAN
       },
       birthday: {
+        allowNull: true,
         type: Sequelize.DATE
       },
       userName: {
