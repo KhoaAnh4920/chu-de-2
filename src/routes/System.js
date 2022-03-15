@@ -10,7 +10,6 @@ import AddGenres from '../containers/System/Admin/Genres/AddGenres';
 import EditUser from '../containers/System/Admin/Users/EditUser';
 import ListGenres from '../containers/System/Admin/Genres/ListGenres';
 import EditGenres from '../containers/System/Admin/Genres/EditGenres';
-import CustomScrollbars from '../components/CustomScrollbars';
 import AddArtists from '../containers/System/Admin/Artists/AddArtists';
 import ListArtists from '../containers/System/Admin/Artists/ListArtists';
 import EditArtists from '../containers/System/Admin/Artists/EditArtists';
@@ -56,46 +55,42 @@ class System extends Component {
         return (
             <div className="system-container">
                 <div className="system-list">
-                    <CustomScrollbars style={{ height: '100vh', width: '100%' }}>
-                        <Switch>
-                            <Route path="/admin/dashboard" component={Dashboard} />
-                            <Route path="/admin/add-users" component={() => (<AddUser colourStyles={colourStyles} />)} />
-                            <Route path="/admin/list-users" component={ListUser} />
-                            <Route path="/admin/edit-user/:id" component={() => (<EditUser colourStyles={colourStyles} />)} />
+                    <Switch>
+                        <Route path="/admin/dashboard" component={Dashboard} />
+                        <Route path="/admin/add-users" component={() => (<AddUser colourStyles={colourStyles} />)} />
+                        <Route path="/admin/list-users" component={ListUser} />
+                        <Route path="/admin/edit-user/:id" component={() => (<EditUser colourStyles={colourStyles} />)} />
 
                             // Genres //
-                            <Route path="/admin/add-genres" component={AddGenres} />
-                            <Route path="/admin/list-genres" component={ListGenres} />
-                            <Route path="/admin/edit-genres/:id" component={EditGenres} />
+                        <Route path="/admin/add-genres" component={AddGenres} />
+                        <Route path="/admin/list-genres" component={ListGenres} />
+                        <Route path="/admin/edit-genres/:id" component={EditGenres} />
 
                             // Artists //
-                            <Route path="/admin/add-artists" component={() => (<AddArtists colourStyles={colourStyles} />)} />
-                            <Route path="/admin/list-artists" component={ListArtists} />
-                            <Route path="/admin/edit-artists/:id" component={() => (<EditArtists colourStyles={colourStyles} />)} />
+                        <Route path="/admin/add-artists" component={() => (<AddArtists colourStyles={colourStyles} />)} />
+                        <Route path="/admin/list-artists" component={ListArtists} />
+                        <Route path="/admin/edit-artists/:id" component={() => (<EditArtists colourStyles={colourStyles} />)} />
 
                             // Songs //
-                            <Route path="/admin/add-songs" component={() => (<AddSong colourStyles={colourStyles} />)} />
-                            <Route path="/admin/list-songs" component={ListSong} />
-                            <Route path="/admin/edit-songs/:id" component={() => (<EditSong colourStyles={colourStyles} />)} />
+                        <Route path="/admin/add-songs" component={() => (<AddSong colourStyles={colourStyles} />)} />
+                        <Route path="/admin/list-songs" component={ListSong} />
+                        <Route path="/admin/edit-songs/:id" component={() => (<EditSong colourStyles={colourStyles} />)} />
 
                             // Album //
-                            <Route path="/admin/add-albums" component={() => (<AddAlbum colourStyles={colourStyles} />)} />
-                            <Route path="/admin/list-albums" component={ListAlbum} />
-                            <Route path="/admin/detail-album/:id" component={DetailAlbums} />
-                            <Route path="/admin/edit-album/:id" component={() => (<EditAlbums colourStyles={colourStyles} />)} />
+                        <Route path="/admin/add-albums" component={() => (<AddAlbum colourStyles={colourStyles} />)} />
+                        <Route path="/admin/list-albums" component={ListAlbum} />
+                        <Route path="/admin/detail-album/:id" component={DetailAlbums} />
+                        <Route path="/admin/edit-album/:id" component={() => (<EditAlbums colourStyles={colourStyles} />)} />
 
                             // Playlist //
-                            <Route path="/admin/add-playlist" component={() => (<AddPlaylist colourStyles={colourStyles} />)} />
-                            <Route path="/admin/list-playlist" component={ListPlaylist} />
-                            <Route path="/admin/detail-playlist/:id" component={DetailPlaylist} />
-                            <Route path="/admin/edit-playlist/:id" component={() => (<EditPlayist colourStyles={colourStyles} />)} />
+                        <Route path="/admin/add-playlist" component={() => (<AddPlaylist colourStyles={colourStyles} />)} />
+                        <Route path="/admin/list-playlist" component={ListPlaylist} />
+                        <Route path="/admin/detail-playlist/:id" component={DetailPlaylist} />
+                        <Route path="/admin/edit-playlist/:id" component={() => (<EditPlayist colourStyles={colourStyles} />)} />
 
 
-
-
-                            <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
-                        </Switch>
-                    </CustomScrollbars>
+                        <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
+                    </Switch>
                 </div>
 
                 <ToastContainer

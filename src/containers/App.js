@@ -3,19 +3,34 @@ import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'connected-react-router';
 import { history } from '../redux'
-import { userIsAuthenticated, userIsNotAuthenticated } from '../hoc/authentication';
+import { userIsAuthenticated, userIsNotAuthenticated, adminIsAuthenticated, adminIsNotAuthenticated } from '../hoc/authentication';
 import CustomScrollbars from '../components/CustomScrollbars';
 import { path } from '../utils'
 
 import Home from '../routes/Home';
 import Login from '../routes/Login';
+import UserLogin from '../components/Auth/UserLogin';
+import SignUp from '../components/Auth/SignUp';
 import Header from './Header/Header';
 import System from '../routes/System';
 import HomePage from '../components/HomePage/HomePage';
+import allProduct from '../components/HomePage/allProduct';
+import PlayBar from '../components/Share/PlayBar';
+import Playlist from '../components/HomePage/Playlist';
+import { withRouter } from 'react-router';
+import SearchPage from '../components/HomePage/SearchPage';
+import LikedSongPage from '../components/HomePage/LikedSongPage';
+import Libary from '../components/HomePage/Libary';
 
 
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoggedInUser: false
+        }
+    }
 
     handlePersistorState = () => {
         const { persistor } = this.props;
@@ -32,10 +47,25 @@ class App extends Component {
     };
 
     componentDidMount() {
+        console.log("Is login: ", this.props.isLoggedInUser)
+        console.log("Check: ", window.location.href);
+
         this.handlePersistorState();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.isLoggedInUser !== this.props.isLoggedInUser) {
+            this.setState({
+                isLoggedInUser: this.props.isLoggedInUser
+            })
+        }
+    }
+
     render() {
+
+        console.log('Check state: ', this.state.isLoggedInUser)
+        let { isLoggedInUser } = this.state;
+
         return (
             <Fragment>
                 <Router history={history}>
@@ -44,17 +74,42 @@ class App extends Component {
                         {/* {this.props.isLoggedIn && <Header />} */}
 
                         <span className="content-container">
+                            <CustomScrollbars style={{ height: '100vh', width: '100%' }}>
+                                <Switch>
+                                    <Route path={path.HOME} exact component={(HomePage)} />
+                                    <Route path={path.ADMIN_LOGIN} component={adminIsNotAuthenticated(Login)} />
+                                    <Route path={path.LOGIN} component={userIsNotAuthenticated(UserLogin)} />
+                                    <Route path={path.ALL} component={(allProduct)} />
+                                    <Route path={path.SIGNUP} component={userIsNotAuthenticated(SignUp)} />
+                                    <Route path={path.ADMIN} component={adminIsAuthenticated(System)} />
+                                    <Route path={path.PLAYLIST} component={(Playlist)} />
+                                    <Route path={path.SEARCH} component={(SearchPage)} />
+                                    <Route path={path.LIKE_SONG} component={(LikedSongPage)} />
+                                    <Route path={path.LIBARY} component={(Libary)} />
 
-                            <Switch>
-                                <Route path={path.HOME} exact component={(HomePage)} />
-                                <Route path={path.ADMIN_LOGIN} component={userIsNotAuthenticated(Login)} />
-                                <Route path={path.ADMIN} component={userIsAuthenticated(System)} />
-                            </Switch>
+                                    {/* <Route path={path.HOME} exact component={(HomePage)} />
+                                <Route path={path.LOGIN} component={(Login)} />
+                                <Route path={path.ADMIN} component={(System)} />
+                                <Route path={path.ALL} component={(allProduct)} />
+                                <Route path={path.PLAYLIST} component={(Playlist)} />
+                                <Route path={path.SEARCH} component={(SearchPage)} />
+                                <Route path={path.LIKE_SONG} component={(LikedSongPage)} />
+                                <Route path={path.LIBARY} component={(Libary)} /> */}
+                                </Switch>
+                            </CustomScrollbars>
 
                         </span>
 
                     </div>
                 </Router>
+
+
+                {(window.location.href.indexOf("/login") === -1 && window.location.href.indexOf("/admin") === -1 &&
+                    window.location.href.indexOf("/sign-up") === -1) &&
+
+                    <PlayBar />
+                }
+
             </Fragment>
         )
     }
@@ -63,7 +118,8 @@ class App extends Component {
 const mapStateToProps = state => {
     return {
         started: state.app.started,
-        isLoggedIn: state.admin.isLoggedIn
+        isLoggedIn: state.admin.isLoggedIn,
+        isLoggedInUser: state.user.isLoggedInUser
     };
 };
 

@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { Route, Switch, NavLink } from 'react-router-dom';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './HomePage.scss';
 import Slider from "react-slick";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Header from '../Share/Header';
 import Sidebar from '../Share/Sidebar';
-import { withRouter } from 'react-router';
 import PlayBar from '../Share/PlayBar';
 import $ from "jquery";
 import imgHotHit from '../../assets/images/music/HotHit.jpg';
 
 
-class HomePage extends Component {
+class allProduct extends Component {
 
     constructor(props) {
         super(props);
@@ -29,6 +24,8 @@ class HomePage extends Component {
     }
 
     componentDidMount() {
+
+
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -47,9 +44,6 @@ class HomePage extends Component {
 
 
     }
-    handlePlaylist = () => {
-        this.props.history.push(`/play-list/`)
-    }
 
 
     render() {
@@ -57,7 +51,6 @@ class HomePage extends Component {
 
         return (
             <>
-
                 <div className="wrap">
                     <div className="list-area">
                         <Sidebar />
@@ -66,70 +59,6 @@ class HomePage extends Component {
 
                             <div className="main__wrap">
                                 <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Lựa chọn của Spotifake</h4>
-                                        <NavLink activeClassName="active1" to="/all" exact>SEE ALL</NavLink>
-                                    </div>
-                                    <div className='list-item row'>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'
-                                                    onClick={() => this.handlePlaylist()}
-                                                ><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Charts</h4>
-                                    </div>
                                     <div className='list-item row'>
                                         <div className='cart-music col-2' >
                                             <div className='music-img'>
@@ -151,20 +80,35 @@ class HomePage extends Component {
                                         <div className='cart-music col-2' >
                                             <div className='music-img'>
                                                 <img src={imgHotHit} />
-                                                <div className='button-play' onClick={() => this.handlePlaylist()}><i class='fas fa-play'></i> </div>
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
                                             </div>
                                             <div className='music-name'>Hot Hits Vietnam</div>
                                             <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
                                         </div>
-
-
-
-                                    </div>
-                                </div>
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Sleep</h4>
-                                        <NavLink activeClassName="active1" to="/all" exact>SEE ALL</NavLink>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
                                     </div>
                                     <div className='list-item row'>
                                         <div className='cart-music col-2' >
@@ -200,18 +144,80 @@ class HomePage extends Component {
                                             <div className='music-name'>Hot Hits Vietnam</div>
                                             <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
                                         </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                    </div>
+                                    <div className='list-item row'>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
 
-
-
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
+                                        <div className='cart-music col-2' >
+                                            <div className='music-img'>
+                                                <img src={imgHotHit} />
+                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                            <div className='music-name'>Hot Hits Vietnam</div>
+                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {/* PlayBar */}
-                    {/* < PlayBar /> */}
                 </div>
-
+                {/* < PlayBar /> */}
             </>
         )
     }
@@ -220,7 +226,6 @@ class HomePage extends Component {
 
 const mapStateToProps = state => {
     return {
-        isLoggedInUser: state.user.isLoggedInUser
     };
 };
 
@@ -229,4 +234,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HomePage));
+export default connect(mapStateToProps, mapDispatchToProps)(allProduct);

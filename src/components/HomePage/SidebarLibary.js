@@ -11,10 +11,10 @@ import 'tippy.js/themes/light.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 
-import './Sidebar.scss';
+import '../Share/Sidebar.scss';
 
 
-class Sidebar extends Component {
+class SidebarLibary extends Component {
 
     constructor(props) {
         super(props);
@@ -133,4 +133,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
+export default connect(mapStateToProps, mapDispatchToProps)(SidebarLibary);

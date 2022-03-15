@@ -1,9 +1,15 @@
 export const path = {
     HOME: '/',
     LOGIN: '/login',
+    SIGNUP: '/sign-up',
     LOG_OUT: '/logout',
     ADMIN: '/admin',
-    ADMIN_LOGIN: '/admin-login'
+    ADMIN_LOGIN: '/admin-login',
+    ALL: '/all',
+    PLAYLIST: '/play-list',
+    SEARCH: '/search',
+    LIKE_SONG: '/liked-song',
+    LIBARY: '/libary',
 };
 
 export const languages = {

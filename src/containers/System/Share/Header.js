@@ -16,7 +16,6 @@ class Header extends Component {
     }
 
     componentDidMount() {
-        console.log("Check adminInfo: ", this.props.adminInfo)
         let { adminInfo } = this.props;
         if (adminInfo && adminInfo.fullName && adminInfo.avatar) {
             this.setState({

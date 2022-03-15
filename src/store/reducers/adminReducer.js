@@ -21,6 +21,7 @@ const appReducer = (state = initialState, action) => {
                 isLoggedIn: false,
                 adminInfo: null
             }
+
         case actionTypes.PROCESS_LOGOUT:
             return {
                 ...state,

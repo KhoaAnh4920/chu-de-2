@@ -48,10 +48,10 @@ class Login extends Component {
             }
             if (data && data.errorCode === 0) {
                 console.log('---login ok---');
-                console.log(data.admin);
+                console.log(data.data);
                 //this.props.testRedux();
 
-                this.props.adminLoginSuccess(data.admin);
+                this.props.adminLoginSuccess(data.data);
             }
         } catch (e) {
             // Lấy mã lỗi // 
