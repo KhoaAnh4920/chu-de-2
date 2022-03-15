@@ -11,3 +11,8 @@ export const userLoginSuccess = (userInfo) => ({
 export const processLogoutUser = () => ({
     type: actionTypes.PROCESS_LOGOUT_USER
 })
+
+export const playAllPlaylist = (listSongs) => ({
+    type: actionTypes.PLAY_ALL_PLAYLIST,
+    listSongs: listSongs
+})

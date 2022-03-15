@@ -69,111 +69,117 @@ body {
     overflow-y      : scroll;
 
     .wrapcontent {
-        height: 320px;
-        background-color: #3d2a86;
-        box-sizing: border-box;
-        padding   : 0 26px;
+        height           : 320px;
+        background-color : #3d2a86;
+        box-sizing       : border-box;
+        padding          : 0 26px;
         background-repeat: no-repeat;
-        
-        .imgLikedPage{
+
+        .imgLikedPage {
             padding-top: 50px;
-            float: left;
-            width: 250px;
-            height: 300px;
+            float      : left;
+            width      : 250px;
+            height     : 300px;
 
         }
-        .title-playlist{
-            color: white;
-            font-size: 15px;
-            float: left;
+
+        .title-playlist {
+            color       : white;
+            font-size   : 15px;
+            float       : left;
             padding-left: 30px;
-            padding-top: 150px;
-            font-weight: bold;
-            font-family:Arial, Helvetica, sans-serif; 
-            
-        .title-likedsong{
-            width: 100%;
-            font-size: 96px;
-            line-height: 96px;
-              color: white;
-              font-weight: bold;
-              font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-              padding-top: 5px;
+            padding-top : 150px;
+            font-weight : bold;
+            font-family : Arial, Helvetica, sans-serif;
+
+            .title-likedsong {
+                width      : 100%;
+                font-size  : 96px;
+                line-height: 96px;
+                color      : white;
+                font-weight: bold;
+                font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+                padding-top: 5px;
+            }
         }
-        }
-        
-       
+
+
     }
-    .song-content{
-        
-        color: white;
-        text-align: center;
-        width: auto;
-        height: 500px;
-        font-size: 30px;
+
+    .song-content {
+
+        color      : white;
+        text-align : center;
+        width      : auto;
+        height     : 500px;
+        font-size  : 30px;
         font-weight: bold;
         padding-top: 80px;
-        .icon-song{
-            align-items: center;
+
+        .icon-song {
+            align-items   : center;
             padding-bottom: 20px;
         }
-        .save-song{
-            font-size: 15px;
-            padding-top: 8px;
+
+        .save-song {
+            font-size     : 15px;
+            padding-top   : 8px;
             padding-bottom: 15px;
         }
-        .buttonfind{
 
-            border: 2px solid transparent;
-            border-radius: 500px;
-            color: black;
-            cursor: pointer;
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1.76px;
-            line-height: 18px;
-            padding: 8px 34px;
-            text-align: center;
-            text-transform: uppercase;
-            -webkit-transition: all 33ms cubic-bezier(.3,0,0,1);
-            transition: all 33ms cubic-bezier(.3,0,0,1);
-            white-space: nowrap;
-            will-change: transform;
-            
-        
+        .buttonfind {
+
+            border            : 2px solid transparent;
+            border-radius     : 500px;
+            color             : black;
+            cursor            : pointer;
+            display           : inline-block;
+            font-size         : 12px;
+            font-weight       : 700;
+            letter-spacing    : 1.76px;
+            line-height       : 18px;
+            padding           : 8px 34px;
+            text-align        : center;
+            text-transform    : uppercase;
+            -webkit-transition: all 33ms cubic-bezier(.3, 0, 0, 1);
+            transition        : all 33ms cubic-bezier(.3, 0, 0, 1);
+            white-space       : nowrap;
+            will-change       : transform;
+
+
         }
-        
-       
-        
-        
+
+
+
+
 
     }
+
     .list-music-container {
         padding: 20px 10px;
-        
-
-        
 
 
-                
 
-               
 
-                .music-name {
-                    margin-top   : 10px;
-                    margin-bottom: 7px;
-                    font-weight  : 700;
-                    color        : #fff;
-                }
 
-                .music-description {
-                    font-size: 14px;
-                }
 
-            }
-        
-    
+
+
+
+        .music-name {
+            margin-top   : 10px;
+            margin-bottom: 7px;
+            font-weight  : 700;
+            color        : #fff;
+        }
+
+        .music-description {
+            font-size: 14px;
+        }
+
+    }
+
+
 }
 
 // play list - top area
@@ -595,175 +601,175 @@ body {
 
 /*==================================================================*/
 /* modal */
-.bg-area {
-    @include position(fixed, 0, 0);
-    width           : 100%;
-    height          : 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index         : 10;
+// .bg-area {
+//     @include position(fixed, 0, 0);
+//     width           : 100%;
+//     height          : 100%;
+//     background-color: rgba(0, 0, 0, 0.6);
+//     z-index         : 10;
 
-    display: none;
-}
+//     display: none;
+// }
 
-.modal {
-    width : 680px;
-    height: 368px;
-    @include position(fixed, 50%, 50%);
-    transform       : translate(-50%, -50%);
-    padding         : 30px;
-    color           : #fff;
-    font-size       : 13px;
-    box-sizing      : border-box;
-    background-color: #282828;
-    border-radius   : 10px;
-    z-index         : 20;
+// .modal {
+//     width : 680px;
+//     height: 368px;
+//     @include position(fixed, 50%, 50%);
+//     transform       : translate(-50%, -50%);
+//     padding         : 30px;
+//     color           : #fff;
+//     font-size       : 13px;
+//     box-sizing      : border-box;
+//     background-color: #282828;
+//     border-radius   : 10px;
+//     z-index         : 20;
 
-    display: none;
+//     display: none;
 
-    &__title {
-        font-size  : 18px;
-        font-weight: 500;
-        text-align : center;
-    }
+//     &__title {
+//         font-size  : 18px;
+//         font-weight: 500;
+//         text-align : center;
+//     }
 
-    &__close-btn {
-        @include position(absolute, 0, 0);
-        font-size: 24px;
-        padding  : 18px;
-    }
+//     &__close-btn {
+//         @include position(absolute, 0, 0);
+//         font-size: 24px;
+//         padding  : 18px;
+//     }
 
-    &__contents {
-        display   : flex;
-        margin-top: 24px;
-    }
+//     &__contents {
+//         display   : flex;
+//         margin-top: 24px;
+//     }
 
-    &__image {
-        position        : relative;
-        width           : 218px;
-        height          : 218px;
-        background-color: #404040;
+//     &__image {
+//         position        : relative;
+//         width           : 218px;
+//         height          : 218px;
+//         background-color: #404040;
 
-        &--box {
-            @include position(absolute, 52%, 50%);
-            transform : translate(-50%, -50%);
-            text-align: center;
-        }
+//         &--box {
+//             @include position(absolute, 52%, 50%);
+//             transform : translate(-50%, -50%);
+//             text-align: center;
+//         }
 
-        &--icon {
-            font-size    : 60px;
-            margin-bottom: 10px;
-        }
-    }
+//         &--icon {
+//             font-size    : 60px;
+//             margin-bottom: 10px;
+//         }
+//     }
 
-    &__text-box {
-        padding-left: 20px;
-        box-sizing  : border-box;
-    }
+//     &__text-box {
+//         padding-left: 20px;
+//         box-sizing  : border-box;
+//     }
 
-    &__name {
-        margin-bottom: 8px;
-    }
+//     &__name {
+//         margin-bottom: 8px;
+//     }
 
-    &__text {
-        color      : #b3b3b3;
-        line-height: 24px;
-    }
+//     &__text {
+//         color      : #b3b3b3;
+//         line-height: 24px;
+//     }
 
-    &__text-input {
-        width        : 390px;
-        height       : 32px;
-        font-size    : 14px;
-        padding      : 0 10px;
-        outline      : none;
-        border       : none;
-        box-sizing   : border-box;
-        border-radius: 10px;
-    }
+//     &__text-input {
+//         width        : 390px;
+//         height       : 32px;
+//         font-size    : 14px;
+//         padding      : 0 10px;
+//         outline      : none;
+//         border       : none;
+//         box-sizing   : border-box;
+//         border-radius: 10px;
+//     }
 
-    &__text-area {
-        width        : 390px;
-        height       : 128px;
-        font-size    : 14px;
-        padding      : 10px;
-        outline      : none;
-        border       : none;
-        box-sizing   : border-box;
-        border-radius: 10px;
-        resize       : none;
-    }
+//     &__text-area {
+//         width        : 390px;
+//         height       : 128px;
+//         font-size    : 14px;
+//         padding      : 10px;
+//         outline      : none;
+//         border       : none;
+//         box-sizing   : border-box;
+//         border-radius: 10px;
+//         resize       : none;
+//     }
 
-    &__btn {
-        width           : 108px;
-        margin          : 20px auto 0;
-        border-radius   : 17px;
-        background-color: $main-color-darker;
-        border          : 1px $main-color-darker;
+//     &__btn {
+//         width           : 108px;
+//         margin          : 20px auto 0;
+//         border-radius   : 17px;
+//         background-color: $main-color-darker;
+//         border          : 1px $main-color-darker;
 
-        &:hover {
-            background-color: $main-color;
-            border          : 1px $main-color;
-            transform       : scale(1.05);
-        }
+//         &:hover {
+//             background-color: $main-color;
+//             border          : 1px $main-color;
+//             transform       : scale(1.05);
+//         }
 
-        &--text {
-            text-align    : center;
-            font-size     : 12px;
-            line-height   : 32px;
-            letter-spacing: 1.8px;
-        }
-    }
-}
-
-
-
-/*==================================================================*/
-
-@media all and (max-width: 1085px) and (min-width: 1020px) {
-    .playlist {
-
-        &__th--album,
-        &__td--album {
-            display: none;
-        }
-    }
-
-}
+//         &--text {
+//             text-align    : center;
+//             font-size     : 12px;
+//             line-height   : 32px;
+//             letter-spacing: 1.8px;
+//         }
+//     }
+// }
 
 
-/*==================================================================*/
-@media all and (max-width: 1019px) {
-    .summary {
-        &__img {
-            min-width: 133px;
-            height   : 133px;
-        }
 
-        .will-hidden {
-            display: none;
-        }
+// /*==================================================================*/
 
-        &__button {
-            margin-left: -148px;
-        }
-    }
+// @media all and (max-width: 1085px) and (min-width: 1020px) {
+//     .playlist {
 
-    .playlist {
+//         &__th--album,
+//         &__td--album {
+//             display: none;
+//         }
+//     }
 
-        &__th--album,
-        &__td--album {
-            display: none;
-        }
-    }
-}
+// }
 
-@media all and (max-width: 966px) {
-    .playlist {
 
-        &__th--album,
-        &__th--hour,
-        &__td--album,
-        &__td--hour {
-            display: none;
-        }
-    }
-}
+// /*==================================================================*/
+// @media all and (max-width: 1019px) {
+//     .summary {
+//         &__img {
+//             min-width: 133px;
+//             height   : 133px;
+//         }
+
+//         .will-hidden {
+//             display: none;
+//         }
+
+//         &__button {
+//             margin-left: -148px;
+//         }
+//     }
+
+//     .playlist {
+
+//         &__th--album,
+//         &__td--album {
+//             display: none;
+//         }
+//     }
+// }
+
+// @media all and (max-width: 966px) {
+//     .playlist {
+
+//         &__th--album,
+//         &__th--hour,
+//         &__td--album,
+//         &__td--hour {
+//             display: none;
+//         }
+//     }
+// }

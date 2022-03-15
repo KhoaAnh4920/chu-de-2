@@ -61,6 +61,7 @@ class EditSong extends Component {
                             selectedArtists,
                             selectedGenres,
                             nameSong: dataSong.song.nameSong,
+                            fileNameSong: dataSong.song.nameSong,
                             description: dataSong.song.description,
                             imagePreviewUrl: dataSong.song.image,
                             lyrics: dataSong.song.lyrics,
@@ -255,7 +256,7 @@ class EditSong extends Component {
 
     render() {
 
-        let { nameSong, imagePreviewUrl, selectedGenres, selectedArtists, listArtists, listGenres } = this.state
+        let { nameSong, imagePreviewUrl, selectedGenres, selectedArtists, listArtists, listGenres, fileNameSong } = this.state
 
         let $imagePreview = null;
         if (imagePreviewUrl) {
@@ -376,6 +377,7 @@ class EditSong extends Component {
                                                         </div>
 
                                                         <div className='previewAudio' style={{ marginTop: '10px' }}>
+                                                            <p>File: {fileNameSong}</p>
                                                             <audio id="sound" controls></audio>
                                                         </div>
                                                     </div>

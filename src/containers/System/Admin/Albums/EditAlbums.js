@@ -30,6 +30,7 @@ class EditAlbum extends Component {
             imagePreviewUrl: '',
             fileName: '',
             image: '',
+            description: '',
             errors: {},
             isShowLoading: false
         }
@@ -52,6 +53,7 @@ class EditAlbum extends Component {
                     selectedArtists: listArtists,
                     selectedGenres: listGenres,
                     albumName: dataAlbums.album.albumName,
+                    description: dataAlbums.album.description,
                     imagePreviewUrl: dataAlbums.album.image,
                     id
                 })
@@ -187,7 +189,8 @@ class EditAlbum extends Component {
                 albumName: this.state.albumName,
                 image: this.state.image,
                 fileName: this.state.fileName,
-                id: this.state.id
+                id: this.state.id,
+                description: this.state.description
             });
 
             this.setState({
@@ -202,7 +205,7 @@ class EditAlbum extends Component {
     render() {
 
         let { albumName, listGenres, selectedGenres,
-            imagePreviewUrl, listArtists, selectedArtists
+            imagePreviewUrl, listArtists, selectedArtists, description
         } = this.state
 
         let $imagePreview = null;
@@ -289,6 +292,17 @@ class EditAlbum extends Component {
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
                                                     </div>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Description</label>
+                                                        <textarea className='form-control' style={{ 'height': '120px' }}
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'description')}
+                                                            value={description}
+                                                        >
+                                                        </textarea>
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
+                                                    </div>
+
 
 
 

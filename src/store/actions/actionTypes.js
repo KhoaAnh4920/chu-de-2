@@ -22,7 +22,10 @@ const actionTypes = Object.freeze({
 
     // FETCH Playlist
     fetchAllPlaylistsSuccess: 'fetchAllPlaylistsSuccess',
-    fetchAllPlaylistsFailed: 'fetchAllPlaylistsFailed'
+    fetchAllPlaylistsFailed: 'fetchAllPlaylistsFailed',
+
+    //
+    PLAY_ALL_PLAYLIST: 'PLAY_ALL_PLAYLIST'
 })
 
 export default actionTypes;

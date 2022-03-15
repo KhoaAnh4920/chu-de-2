@@ -238,7 +238,7 @@ class ModalAddSong extends Component {
             <>
                 <Modal isOpen={this.props.isOpen}
                     toggle={() => this.toggle()}
-                    className={'modal-user-container'}
+                    className={'modal-add-song-container'}
                     size='lg'
                 >
                     <ModalHeader toggle={() => this.toggle()}>

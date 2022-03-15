@@ -16,6 +16,7 @@ import { withRouter } from 'react-router';
 import PlayBar from '../Share/PlayBar';
 import $ from "jquery";
 import imgHotHit from '../../assets/images/music/HotHit.jpg';
+import * as actions from "../../store/actions";
 
 
 class HomePage extends Component {
@@ -24,14 +25,20 @@ class HomePage extends Component {
         super(props);
         this.state = {
             isPlaying: false,
-
+            listPlaylist: []
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await this.props.fetchAllPlaylist();
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    async componentDidUpdate(prevProps, prevState) {
+        if (prevProps.listPlaylist !== this.props.listPlaylist) {
+            this.setState({
+                listPlaylist: this.props.listPlaylist
+            })
+        }
     }
 
 
@@ -47,13 +54,15 @@ class HomePage extends Component {
 
 
     }
-    handlePlaylist = () => {
-        this.props.history.push(`/play-list/`)
+    handlePlaylist = (id) => {
+        this.props.history.push(`/play-list/${id}`)
     }
 
 
     render() {
+        let { listPlaylist } = this.props;
 
+        console.log(listPlaylist);
 
         return (
             <>
@@ -71,18 +80,25 @@ class HomePage extends Component {
                                         <NavLink activeClassName="active1" to="/all" exact>SEE ALL</NavLink>
                                     </div>
                                     <div className='list-item row'>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'
-                                                    onClick={() => this.handlePlaylist()}
-                                                ><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
+                                        {listPlaylist.map((item, index) => {
 
-                                        <div className='cart-music col-2' >
+                                            return (
+                                                <div className='cart-music col-2' key={index}>
+                                                    <div className='music-img'>
+                                                        <img src={item.image} />
+                                                        <div className='button-play'
+                                                            onClick={() => this.handlePlaylist(item.id)}
+                                                        ><i class='fas fa-play'></i> </div>
+                                                    </div>
+                                                    <div className='music-name'>{item.playlistName}</div>
+                                                    <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                                </div>
+                                            )
+
+                                        })}
+
+
+                                        {/* <div className='cart-music col-2' >
                                             <div className='music-img'>
                                                 <img src={imgHotHit} />
                                                 <div className='button-play'><i class='fas fa-play'></i> </div>
@@ -121,7 +137,7 @@ class HomePage extends Component {
                                             </div>
                                             <div className='music-name'>Hot Hits Vietnam</div>
                                             <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
+                                        </div> */}
 
 
                                     </div>
@@ -220,12 +236,14 @@ class HomePage extends Component {
 
 const mapStateToProps = state => {
     return {
-        isLoggedInUser: state.user.isLoggedInUser
+        isLoggedInUser: state.user.isLoggedInUser,
+        listPlaylist: state.admin.listPlaylist
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        fetchAllPlaylist: () => dispatch(actions.fetchAllPlaylist()),
     };
 };
 

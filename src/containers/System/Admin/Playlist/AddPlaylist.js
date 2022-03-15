@@ -32,7 +32,8 @@ class AddPlaylist extends Component {
             imagePreviewUrl: '',
             image: '',
             errors: {},
-            isShowLoading: false
+            isShowLoading: false,
+            description: ''
         }
     }
 
@@ -280,7 +281,8 @@ class AddPlaylist extends Component {
                 fileName: this.state.fileName,
                 artists: this.state.selectedArtists,
                 genres: this.state.selectedGenres.value,
-                songsData: this.state.selectedSongs
+                songsData: this.state.selectedSongs,
+                description: this.state.description
             });
 
             this.setState({
@@ -302,7 +304,7 @@ class AddPlaylist extends Component {
     render() {
 
         let { playlistName, listGenres, selectedGenres, selectedSongs,
-            imagePreviewUrl, listArtists, selectedArtists, listSongs
+            imagePreviewUrl, listArtists, selectedArtists, listSongs, description
         } = this.state
 
         let $imagePreview = null;
@@ -403,6 +405,17 @@ class AddPlaylist extends Component {
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
                                                     </div>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Description</label>
+                                                        <textarea className='form-control' style={{ 'height': '120px' }}
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'description')}
+                                                            value={description}
+                                                        >
+                                                        </textarea>
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
+                                                    </div>
+
 
                                                     <div className="form-group">
                                                         <label htmlFor="exampleInputEmail1">Image</label>

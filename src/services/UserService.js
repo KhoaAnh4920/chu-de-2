@@ -10,6 +10,10 @@ const hanedleLoginUser = (userEmail, userPassword) => {
     return axios.post('/api/user-login', { email: userEmail, password: userPassword }) // req.body.email, req.body.password //
 }
 
+const handleLoginSocial = (data) => {
+    return axios.post('/api/user-login-social', data)
+}
+
 const signUpNewUser = (data) => {
     return axios.post('/api/sign-up-new-user', data)
 }
@@ -52,5 +56,6 @@ export {
     deleteUserService,
     hanedleLoginAPI,
     hanedleLoginUser,
-    signUpNewUser
+    signUpNewUser,
+    handleLoginSocial
 };

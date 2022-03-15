@@ -32,6 +32,7 @@ class AddAlbum extends Component {
             imagePreviewUrl: '',
             image: '',
             errors: {},
+            description: '',
             isShowLoading: false
         }
     }
@@ -226,7 +227,8 @@ class AddAlbum extends Component {
                 fileName: this.state.fileName,
                 artists: this.state.selectedArtists.value,
                 genres: this.state.selectedGenres.value,
-                songsData: this.state.selectedSongs
+                songsData: this.state.selectedSongs,
+                description: this.state.description
             });
 
             this.setState({
@@ -345,6 +347,16 @@ class AddAlbum extends Component {
                                                             isMulti
                                                             styles={this.props.colourStyles}
                                                         />
+                                                        <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
+
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label htmlFor="exampleInputEmail1">Description</label>
+                                                        <textarea className='form-control' style={{ 'height': '120px' }}
+                                                            onChange={(event) => this.handleOnChangeInput(event, 'description')}
+                                                            value={this.state.description}
+                                                        >
+                                                        </textarea>
                                                         <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
 
                                                     </div>

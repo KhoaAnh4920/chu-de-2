@@ -200,6 +200,9 @@ class AddSong extends Component {
 
             await this.props.createNewSong(formData, config);
 
+            var sound = document.getElementById('sound');
+            sound.src = "";
+
             this.setState({
                 nameSong: '',
                 lyrics: '',
@@ -215,6 +218,7 @@ class AddSong extends Component {
                 file: '',
                 imagePreviewUrl: '',
             })
+
         }
 
     }
@@ -223,7 +227,7 @@ class AddSong extends Component {
 
     render() {
 
-        let { nameSong, imagePreviewUrl, selectedGenres, selectedArtists, listArtists, listGenres } = this.state
+        let { nameSong, imagePreviewUrl, selectedGenres, selectedArtists, listArtists, listGenres, fileNameSong } = this.state
 
         let $imagePreview = null;
         if (imagePreviewUrl) {
@@ -343,7 +347,9 @@ class AddSong extends Component {
                                                             <label className="custom-file-label" htmlFor="customFile">Choose file</label>
                                                         </div>
 
-                                                        <div className='previewAudio'>
+
+                                                        <div className='previewAudio' style={{ marginTop: '10px' }}>
+                                                            <p>File: {fileNameSong}</p>
                                                             <audio id="sound" controls></audio>
                                                         </div>
                                                     </div>

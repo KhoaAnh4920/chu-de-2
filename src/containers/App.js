@@ -59,12 +59,21 @@ class App extends Component {
                 isLoggedInUser: this.props.isLoggedInUser
             })
         }
+
+        if (prevProps.listSongs !== this.props.listSongs) {
+            this.setState({
+                listSongs: this.props.listSongs
+            })
+        }
     }
 
     render() {
 
         console.log('Check state: ', this.state.isLoggedInUser)
         let { isLoggedInUser } = this.state;
+        let { listSongs } = this.props;
+
+        console.log("Check app: ", listSongs);
 
         return (
             <Fragment>
@@ -107,7 +116,7 @@ class App extends Component {
                 {(window.location.href.indexOf("/login") === -1 && window.location.href.indexOf("/admin") === -1 &&
                     window.location.href.indexOf("/sign-up") === -1) &&
 
-                    <PlayBar />
+                    <PlayBar listSongs={listSongs} />
                 }
 
             </Fragment>
@@ -119,7 +128,8 @@ const mapStateToProps = state => {
     return {
         started: state.app.started,
         isLoggedIn: state.admin.isLoggedIn,
-        isLoggedInUser: state.user.isLoggedInUser
+        isLoggedInUser: state.user.isLoggedInUser,
+        listSongs: state.user.listSongs
     };
 };
 

@@ -18,9 +18,16 @@ class PlayBar extends Component {
     }
 
     componentDidMount() {
+        console.log('componentDidMount');
+        console.log("Check in playbar: ", this.props.listSongs);
     }
 
     componentDidUpdate(prevProps, prevState) {
+        if (prevProps.listSongs !== this.props.listSongs) {
+            this.setState({
+                listSongs: this.props.listSongs
+            })
+        }
     }
 
     playAudio() {
@@ -28,33 +35,68 @@ class PlayBar extends Component {
         audioEl.play()
     }
 
+    buildAudioList = (listSong) => {
+        let result = [];
+
+        if (listSong) {
+            listSong.map(item => {
+                let obj = {};
+
+                obj.cover = item.image;
+                obj.musicSrc = item.url;
+                obj.name = item.nameSong;
+
+                if (item.SongOfArtists) {
+                    item.fullName = '';
+                    item.SongOfArtists.map(artist => {
+                        item.fullName = item.fullName + artist.fullName + ', ';
+                    })
+                    obj.singer = item.fullName.replace(/,(\s+)?$/, '');
+                }
+
+                result.push(obj)
+            })
+        }
+
+        return result;
+
+    }
+
 
     render() {
 
 
 
-        const audioList = [
-            {
-                cover: 'https://res.cloudinary.com/dpo9d3otr/image/upload/v1645694146/Image/3107_wvdq6r.jpg',
-                musicSrc: 'https://res.cloudinary.com/dpo9d3otr/video/upload/v1645694160/audio/3107_wwc1o4.mp3',
-                name: '3107',
-                singer: 'W/n ft. Nâu, Duongg'
-            },
-            {
-                cover: 'https://res.cloudinary.com/dpo9d3otr/image/upload/v1645693166/Image/aiBiet_ossbtg.jpg',
-                musicSrc: 'https://res.cloudinary.com/dpo9d3otr/video/upload/v1645693014/audio/WEAN-AI_BIET_eslvvc.mp3',
-                name: 'Ai biết',
-                singer: 'Wean'
-            },
+        let { listSongs } = this.state;
 
-            {
-                cover: 'https://res.cloudinary.com/dpo9d3otr/image/upload/v1645694991/Image/BuildABitch_jzlp3g.jpg',
-                musicSrc: 'https://res.cloudinary.com/dpo9d3otr/video/upload/v1645695017/audio/Build_a_Btch_gi7jaj.mp3',
-                name: 'Build a B*tch',
-                singer: 'Bella Poarch'
-            },
+        console.log('Playbar render: ', listSongs);
 
-        ]
+        let audioList = this.buildAudioList(listSongs);
+
+        console.log("audioList: ", audioList);
+
+        // const audioList = [
+        //     {
+        //         cover: 'https://res.cloudinary.com/dpo9d3otr/image/upload/v1645694146/Image/3107_wvdq6r.jpg',
+        //         musicSrc: 'https://res.cloudinary.com/dpo9d3otr/video/upload/v1645694160/audio/3107_wwc1o4.mp3',
+        //         name: '3107',
+        //         singer: 'W/n ft. Nâu, Duongg'
+        //     },
+        //     {
+        //         cover: 'https://res.cloudinary.com/dpo9d3otr/image/upload/v1645693166/Image/aiBiet_ossbtg.jpg',
+        //         musicSrc: 'https://res.cloudinary.com/dpo9d3otr/video/upload/v1645693014/audio/WEAN-AI_BIET_eslvvc.mp3',
+        //         name: 'Ai biết',
+        //         singer: 'Wean'
+        //     },
+
+        //     {
+        //         cover: 'https://res.cloudinary.com/dpo9d3otr/image/upload/v1645694991/Image/BuildABitch_jzlp3g.jpg',
+        //         musicSrc: 'https://res.cloudinary.com/dpo9d3otr/video/upload/v1645695017/audio/Build_a_Btch_gi7jaj.mp3',
+        //         name: 'Build a B*tch',
+        //         singer: 'Bella Poarch'
+        //     },
+
+        // ]
 
         return (
             <>
@@ -62,6 +104,7 @@ class PlayBar extends Component {
                     audioLists={audioList}
                     toggleMode={false}
                     mode="full"
+                    onAudioReload={true}
                     showThemeSwitch={false}
                     defaultVolume={0.5}
                 />

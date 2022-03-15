@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import './UserLogin.scss';
 import { Link, withRouter } from 'react-router-dom';
 import * as actions from "../../store/actions";
-import { hanedleLoginUser } from '../../services/UserService';
+import { hanedleLoginUser, handleLoginSocial } from '../../services/UserService';
+import FacebookLogin from 'react-facebook-login';
 
 class UserLogin extends Component {
 
@@ -13,13 +14,41 @@ class UserLogin extends Component {
         this.state = {
             email: '',
             password: '',
+            userID: "",
+            name: "",
+            picture: ""
         }
     }
 
     componentDidMount() {
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    async componentDidUpdate(prevProps, prevState) {
+        console.log("Có chạy")
+        if (prevState.userID !== this.state.userID && prevState.name !== this.name
+            && prevState.email !== this.state.email && prevState.avatar !== this.state) {
+            console.log("Login fb ok");
+            let result = await handleLoginSocial({
+                userID: this.state.userID,
+                name: this.state.name,
+                email: this.state.email,
+                avatar: this.state.avatar
+            });
+            console.log("Check result: ", result);
+            if (result && result.errCode === 0) {
+                console.log("Fire Redux Ok");
+                this.props.userLoginSuccess({
+                    id: this.state.userID,
+                    fullName: this.state.name,
+                    email: this.state.email,
+                    avatar: this.state.avatar,
+                    roleId: 1
+                });
+                this.props.history.push('/')
+            }
+        }
+
+
     }
 
     redirectSignUp = () => {
@@ -81,8 +110,33 @@ class UserLogin extends Component {
         }
     }
 
+    componentClicked = () => {
+        console.log("Clicked")
+    }
+
+    responseFacebook = (response) => {
+        console.log(response);
+
+        if (response && response.userID) {
+            this.setState({
+                userID: response.userID,
+                name: response.name,
+                email: response.email,
+                avatar: response.picture.data.url
+            })
+        }
+
+
+
+        // let result = await handleLoginSocial(data);
+
+        // console.log(result);
+    }
+
+
 
     render() {
+        console.log(this.state);
         return (
             <>
                 <div className='login-user-container'>
@@ -95,7 +149,18 @@ class UserLogin extends Component {
                             <div className='col-3'></div>
                             <div className='login-container col-6'>
                                 <p className='textLogin'>To continue, log in to Spotify.</p>
-                                <button className='btn btn-login-facebook'><i class="fab fa-facebook-square"></i>CONTINUE WITH FACEBOOK</button>
+                                {/* <button className='btn btn-login-facebook'><i class="fab fa-facebook-square"></i>CONTINUE WITH FACEBOOK</button> */}
+                                <div className='social-login'>
+                                    <FacebookLogin
+                                        appId="1099784044200990"
+                                        autoLoad={true}
+                                        fields="name,email,picture"
+                                        onClick={this.componentClicked}
+                                        cssClass="btn btn-login-facebook"
+                                        icon={<i class="fab fa-facebook-square"></i>}
+                                        callback={this.responseFacebook} />
+                                </div>
+
                                 <div className='dash-or'>
                                     <hr className='dash-hr' />
                                     <span>OR</span>
