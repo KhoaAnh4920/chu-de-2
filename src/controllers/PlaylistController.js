@@ -53,6 +53,23 @@ let getEditPlaylist = async (req, res) => {
     }
 }
 
+let getDetailPlaylist = async (req, res) => {
+    let id = req.query.id;
+    if (id) {
+        let playlist = await PlaylistService.getDetailPlaylist(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            playlist
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
 let handleEditPlaylist = async (req, res) => {
     let data = req.body;
     let message = await PlaylistService.updatePlaylist(data);
@@ -80,5 +97,6 @@ module.exports = {
     handleDeleteSongInPlaylist,
     getEditPlaylist,
     handleDeletePlaylist,
-    handleEditPlaylist
+    handleEditPlaylist,
+    getDetailPlaylist
 }

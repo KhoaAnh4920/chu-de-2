@@ -119,7 +119,6 @@ let getAllPlaylist = () => {
                         include: [
                             { model: db.Artists, as: 'SongOfArtists' },
                         ],
-                        order: [[{ model: db.Songs }, 'id', 'desc']]
                     },
                     { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
                 ],
@@ -218,6 +217,32 @@ let getEditPlaylist = (id) => {
                 include: [
                     { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
                 ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(playlist);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getDetailPlaylist = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let playlist = await db.Playlists.findAll({
+                where: { id: id },
+                include: [
+                    {
+                        model: db.Songs, as: 'SongInPlaylist',
+                        include: [
+                            { model: db.Artists, as: 'SongOfArtists' },
+                        ],
+                    },
+                    { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
+                ],
+                // order: sequelize.random(),
                 raw: false,
                 nest: true
             });
@@ -339,5 +364,6 @@ module.exports = {
     deleteSongInPlaylist,
     getEditPlaylist,
     deletePlaylist,
-    updatePlaylist
+    updatePlaylist,
+    getDetailPlaylist
 }

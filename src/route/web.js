@@ -72,6 +72,7 @@ let initWebRoutes = (app) => {
     router.post('/api/create-new-song-in-playlist', PlaylistControler.handleCreateNewSongInPlaylist);
     router.delete('/api/delete-song-in-playlist', PlaylistControler.handleDeleteSongInPlaylist);
     router.get('/api/get-edit-playlist', PlaylistControler.getEditPlaylist);
+    router.get('/api/get-detail-playlist', PlaylistControler.getDetailPlaylist);
     router.put('/api/edit-playlist', PlaylistControler.handleEditPlaylist);
     router.delete('/api/delete-playlist', PlaylistControler.handleDeletePlaylist);
 
