@@ -10,6 +10,10 @@ const getEditAlbum = (id) => {
     return axios.get(`/api/get-edit-album?id=${id}`)
 }
 
+const getDetailAlbum = (id) => {
+    return axios.get(`/api/get-detail-album?id=${id}`)
+}
+
 const createNewAlbumsService = (data) => {
     return axios.post('/api/create-new-albums', data)
 }
@@ -46,5 +50,6 @@ export {
     createNewSongInAlbum,
     getEditAlbum,
     editAlbumService,
-    deleteAlbumsService
+    deleteAlbumsService,
+    getDetailAlbum
 };

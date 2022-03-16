@@ -7,6 +7,7 @@ export const path = {
     ADMIN_LOGIN: '/admin-login',
     ALL: '/all',
     PLAYLIST: '/play-list/:id',
+    ALBUM: '/album/:id',
     SEARCH: '/search',
     LIKE_SONG: '/liked-song',
     LIBARY: '/libary',

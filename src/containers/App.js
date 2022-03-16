@@ -89,6 +89,7 @@ class App extends Component {
                                     <Route path={path.SIGNUP} component={userIsNotAuthenticated(SignUp)} />
                                     <Route path={path.ADMIN} component={adminIsAuthenticated(System)} />
                                     <Route path={path.PLAYLIST} component={(Playlist)} />
+                                    <Route path={path.ALBUM} component={(Playlist)} />
                                     <Route path={path.SEARCH} component={(SearchPage)} />
                                     <Route path={path.LIKE_SONG} component={(LikedSongPage)} />
                                     <Route path={path.LIBARY} component={(Libary)} />

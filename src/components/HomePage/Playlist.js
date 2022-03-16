@@ -22,6 +22,7 @@ import AboutArtist from './AboutArtist';
 import sol7 from '../../assets/images/artist/sol7.jpg'
 import * as actions from "../../store/actions";
 import { getDetailPlaylist } from "../../services/PlaylistService"
+import { getDetailAlbum } from "../../services/AlbumService"
 import moment from 'moment';
 
 
@@ -70,32 +71,73 @@ class Playlist extends Component {
 
     async componentDidMount() {
 
-        if (this.props.match && this.props.match.params && this.props.match.params.id) {
-            let detailPlaylist = await getDetailPlaylist(+this.props.match.params.id)
+        console.log(this.props.match.url)
 
-            console.log("detailPlaylist: ", detailPlaylist.playlist[0].SongInPlaylist);
-            if (detailPlaylist && detailPlaylist.playlist) {
+        let url = this.props.match.url
 
-                let result = detailPlaylist.playlist[0].SongInPlaylist.map(item => {
-                    if (!isNaN(item.timePlay)) {
-                        item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
-                    }
-                    return item;
-                })
+        console.log(url.indexOf("play-list"))
+        if (url.indexOf("play-list") === 1) {
+            if (this.props.match && this.props.match.params && this.props.match.params.id) {
+                let detailPlaylist = await getDetailPlaylist(+this.props.match.params.id)
 
-                let playlistTimeLength = this.fancyTimeFormat(detailPlaylist.playlist[0].playlistTimeLength, 'PLAYLIST');
+                console.log("detailPlaylist: ", detailPlaylist.playlist[0].SongInPlaylist);
+                if (detailPlaylist && detailPlaylist.playlist) {
 
-                await this.setState({
-                    listSongs: result,
-                    playlistId: +this.props.match.params.id,
-                    namePlaylist: detailPlaylist.playlist[0].playlistName,
-                    image: detailPlaylist.playlist[0].image,
-                    description: detailPlaylist.playlist[0].description,
-                    countSongs: Object.keys(detailPlaylist.playlist[0].SongInPlaylist).length,
-                    playlistTimeLength: playlistTimeLength
-                })
+                    let result = detailPlaylist.playlist[0].SongInPlaylist.map(item => {
+                        if (!isNaN(item.timePlay)) {
+                            item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
+                        }
+                        return item;
+                    })
+
+                    let playlistTimeLength = this.fancyTimeFormat(detailPlaylist.playlist[0].playlistTimeLength, 'PLAYLIST');
+
+                    await this.setState({
+                        listSongs: result,
+                        playlistId: +this.props.match.params.id,
+                        namePlaylist: detailPlaylist.playlist[0].playlistName,
+                        image: detailPlaylist.playlist[0].image,
+                        description: detailPlaylist.playlist[0].description,
+                        countSongs: Object.keys(detailPlaylist.playlist[0].SongInPlaylist).length,
+                        playlistTimeLength: playlistTimeLength,
+                        type: 'Playlist'
+                    })
+                }
+            }
+        } else {
+            if (this.props.match && this.props.match.params && this.props.match.params.id) {
+                let detailAlbum = await getDetailAlbum(+this.props.match.params.id)
+
+
+                console.log("detailAlbum: ", detailAlbum);
+                if (detailAlbum && detailAlbum.album) {
+
+                    let result = detailAlbum.album[0].AlbumForSongs.map(item => {
+                        if (!isNaN(item.timePlay)) {
+                            item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
+                        }
+                        return item;
+                    })
+
+                    let albumTimeLength = this.fancyTimeFormat(detailAlbum.album[0].albumTimeLength, 'PLAYLIST');
+
+                    await this.setState({
+                        listSongs: result,
+                        playlistId: +this.props.match.params.id,
+                        namePlaylist: detailAlbum.album[0].albumName,
+                        image: detailAlbum.album[0].image,
+                        description: detailAlbum.album[0].description,
+                        countSongs: Object.keys(detailAlbum.album[0].AlbumForSongs).length,
+                        playlistTimeLength: albumTimeLength,
+                        type: 'Album'
+                    })
+
+
+                }
             }
         }
+
+
 
         console.log(this.state)
     }

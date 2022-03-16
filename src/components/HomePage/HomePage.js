@@ -63,6 +63,10 @@ class HomePage extends Component {
         this.props.history.push(`/play-list/${id}`)
     }
 
+    handleAlbum = (id) => {
+        this.props.history.push(`/album/${id}`)
+    }
+
 
     render() {
 
@@ -112,7 +116,7 @@ class HomePage extends Component {
                                     <div className='list-item row'>
                                         {listAlbums.map((item, index) => {
                                             return (
-                                                <div className='cart-music col-2' key={index} >
+                                                <div className='cart-music col-2' key={index} onClick={() => this.handleAlbum(item.id)}>
                                                     <div className='music-img'>
                                                         <img src={item.image} />
                                                         <div className='button-play'><i class='fas fa-play'></i> </div>
