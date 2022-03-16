@@ -98,6 +98,9 @@ let getAllArtists = () => {
                 include: [
                     { model: db.Country, as: 'ArtistsCountry' },
                 ],
+                order: [
+                    ['id', 'DESC'],
+                ],
                 raw: true,
                 nest: true
             });
@@ -128,6 +131,27 @@ let getEditArtists = (id) => {
     })
 }
 
+let getDetailArtists = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let artists = await db.Artists.findOne({
+                where: { id: id },
+                include: [
+                    { model: db.Country, as: 'ArtistsCountry' },
+                    { model: db.Songs, as: 'ArtistsForSong' },
+                    { model: db.Albums, as: 'ArtistsForAlbums' },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(artists);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let updateArtists = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -142,6 +166,7 @@ let updateArtists = (data) => {
                     raw: false
                 })
                 if (artists) {
+                    let result = {};
 
                     // Có truyền image //
                     if (data.image && data.fileName) {
@@ -254,5 +279,6 @@ module.exports = {
     getAllArtists,
     getEditArtists,
     updateArtists,
-    deleteArtists
+    deleteArtists,
+    getDetailArtists
 }

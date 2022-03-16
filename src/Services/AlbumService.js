@@ -265,6 +265,7 @@ let updateAlbum = (data) => {
                     raw: false
                 })
                 if (album) {
+                    let result = {};
 
                     // Có truyền image //
                     if (data.image && data.fileName) {

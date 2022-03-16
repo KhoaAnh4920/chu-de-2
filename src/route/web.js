@@ -44,6 +44,7 @@ let initWebRoutes = (app) => {
     router.get('/api/get-edit-artists', ArtistsController.getEditArtists);
     router.put('/api/edit-artists', ArtistsController.handleEditArtists);
     router.delete('/api/delete-artists', ArtistsController.handleDeleteArtists);
+    router.get('/api/get-detail-artists', ArtistsController.getDetailArtists);
 
     // CRUD Song //
     let upload = multer();
@@ -70,6 +71,7 @@ let initWebRoutes = (app) => {
     // Playlist //
     router.post('/api/create-new-playlist', PlaylistControler.handleCreateNewPlaylist);
     router.get('/api/get-all-playlist', PlaylistControler.getAllPlaylist);
+    router.get('/api/get-random-playlist', PlaylistControler.getRandomPlaylist);
     router.post('/api/create-new-song-in-playlist', PlaylistControler.handleCreateNewSongInPlaylist);
     router.delete('/api/delete-song-in-playlist', PlaylistControler.handleDeleteSongInPlaylist);
     router.get('/api/get-edit-playlist', PlaylistControler.getEditPlaylist);

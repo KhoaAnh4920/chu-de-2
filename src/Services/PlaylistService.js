@@ -138,6 +138,37 @@ let getAllPlaylist = () => {
     })
 }
 
+
+let getRandomPlaylist = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let playlist = await db.Playlists.findAll({
+                include: [
+                    {
+                        model: db.Songs, as: 'SongInPlaylist',
+                        include: [
+                            { model: db.Artists, as: 'SongOfArtists' },
+                        ],
+                    },
+                    { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
+                ],
+                order: sequelize.random(),
+                raw: false,
+                nest: true
+            });
+
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                playlist
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+
 let deleteSongInPlaylist = (playlistId, songId) => {
     return new Promise(async (resolve, reject) => {
 
@@ -269,6 +300,7 @@ let updatePlaylist = (data) => {
                     raw: false
                 })
                 if (playlist) {
+                    let result = {};
 
                     // Có truyền image //
                     if (data.image && data.fileName) {
@@ -290,7 +322,6 @@ let updatePlaylist = (data) => {
                         playlist.image = result.secure_url;
                         playlist.public_id_image = result.public_id;
                     }
-
 
                     await playlist.save();
 
@@ -365,5 +396,6 @@ module.exports = {
     getEditPlaylist,
     deletePlaylist,
     updatePlaylist,
-    getDetailPlaylist
+    getDetailPlaylist,
+    getRandomPlaylist
 }

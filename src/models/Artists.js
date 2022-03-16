@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         fullName: DataTypes.STRING,
         country: DataTypes.STRING,
         gender: DataTypes.BOOLEAN,
-        description: DataTypes.STRING,
+        description: DataTypes.TEXT('long'),
         image: DataTypes.STRING,
         public_id_image: DataTypes.STRING,
 

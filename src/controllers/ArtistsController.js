@@ -48,6 +48,23 @@ let getEditArtists = async (req, res) => {
     }
 }
 
+let getDetailArtists = async (req, res) => {
+    let id = req.query.id;
+    if (id) {
+        let artists = await ArtistsService.getDetailArtists(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            artists
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
 let handleEditArtists = async (req, res) => {
     let data = req.body;
     let message = await ArtistsService.updateArtists(data);
@@ -73,4 +90,5 @@ module.exports = {
     getEditArtists,
     handleEditArtists,
     handleDeleteArtists,
+    getDetailArtists
 }

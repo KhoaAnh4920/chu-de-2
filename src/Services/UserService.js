@@ -252,6 +252,7 @@ let updateUser = (data) => {
                     raw: false
                 })
                 if (user) {
+                    let result = {};
 
                     // Có truyền image //
                     if (data.avatar && data.fileName) {

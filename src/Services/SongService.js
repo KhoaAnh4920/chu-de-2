@@ -102,6 +102,9 @@ let getAllSongs = () => {
                     { model: db.Artists, as: 'SongOfArtists' },
                     { model: db.Genres, as: 'GenresSong', attributes: ['genresName'] },
                 ],
+                order: [
+                    ['id', 'DESC'],
+                ],
                 raw: false,
                 nest: true
             });

@@ -105,6 +105,7 @@ let updateGenre = (data) => {
                     raw: false
                 })
                 if (genres) {
+                    let result = {};
 
                     // Có truyền image //
                     if (data.image && data.fileName) {

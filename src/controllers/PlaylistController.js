@@ -20,6 +20,19 @@ let getAllPlaylist = async (req, res) => {
     }
 }
 
+let getRandomPlaylist = async (req, res) => {
+    try {
+        let data = await PlaylistService.getRandomPlaylist();
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log('Get all roles error: ', e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
 let handleDeleteSongInPlaylist = async (req, res) => {
     if (!req.body.playlistId || !req.body.songId) {
         return res.status(200).json({
@@ -98,5 +111,6 @@ module.exports = {
     getEditPlaylist,
     handleDeletePlaylist,
     handleEditPlaylist,
-    getDetailPlaylist
+    getDetailPlaylist,
+    getRandomPlaylist
 }

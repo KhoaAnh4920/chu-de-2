@@ -30,7 +30,7 @@ module.exports = {
             },
             description: {
                 allowNull: true,
-                type: Sequelize.STRING
+                type: Sequelize.TEXT('long')
             },
             image: {
                 type: Sequelize.STRING
