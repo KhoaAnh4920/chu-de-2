@@ -7,16 +7,13 @@ import './Playlist.scss';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Header from '../Share/Header';
-import Sidebar from '../Share/Sidebar';
 import { Route, Switch, NavLink, Link } from 'react-router-dom';
-import PlayBar from '../Share/PlayBar';
 import $ from "jquery";
-import sol7 from '../../assets/images/artist/sol7.jpg';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+import { withRouter } from 'react-router';
 
 class FanAlsoLike extends Component {
 
@@ -24,16 +21,26 @@ class FanAlsoLike extends Component {
         super(props);
         this.state = {
             isPlaying: false,
-            visible: false
+            visible: false,
+            listArtists: []
         }
     }
 
     componentDidMount() {
-
+        if (this.props.listArtists) {
+            this.setState({
+                listArtists: this.props.listArtists
+            })
+        }
 
     }
 
     componentDidUpdate(prevProps, prevState) {
+        if (prevProps.listArtists !== this.props.listArtists) {
+            this.setState({
+                listArtists: this.props.listArtists
+            })
+        }
     }
 
 
@@ -48,43 +55,44 @@ class FanAlsoLike extends Component {
         });
     }
 
+    handleDetailArtists = (id) => {
+        this.props.history.push(`/detail-artists/${id}`)
+    }
+
 
     render() {
         let visible = this.state.visible;
+
+        let { listArtists } = this.state;
+
+
+
         return (
             <>
                 <div className='list-music-container'>
                     <div className='title-list'>
-                        <h4>Fan Also Like</h4>
-                        <NavLink activeClassName="active1" to="/all-artist" exact>SEE ALL</NavLink>
+                        <h4>Nghệ sĩ nổi bật</h4>
+                        <NavLink activeClassName="active1" to="/all/artist" exact>SEE ALL</NavLink>
                     </div>
                     <div className='list-item row'>
-                        <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'
-                                ><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div>
-                        <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div>
-                        <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div>
-                        <div className='cart-music col-2' >
+                        {listArtists.map((item, index) => {
+                            if (index < 6) {
+                                return (
+                                    <div className='cart-music col-2' key={index} onClick={() => this.handleDetailArtists(item.id)}  >
+                                        <div className='artist-img'>
+                                            <img src={item.image} />
+                                            <div className='button-play'
+                                            ><i class='fas fa-play'></i> </div>
+                                        </div>
+                                        <div className='music-name'>{item.fullName}</div>
+                                        <div className='music-description'>Nghệ sĩ</div>
+                                    </div>
+                                )
+                            }
+
+                        })}
+
+                        {/* <div className='cart-music col-2' >
                             <div className='artist-img'>
                                 <img src={sol7} />
                                 <div className='button-play'><i class='fas fa-play'></i> </div>
@@ -108,6 +116,22 @@ class FanAlsoLike extends Component {
                             <div className='music-name'>Sol 7</div>
                             <div className='music-description'>Nghệ sĩ</div>
                         </div>
+                        <div className='cart-music col-2' >
+                            <div className='artist-img'>
+                                <img src={sol7} />
+                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                            </div>
+                            <div className='music-name'>Sol 7</div>
+                            <div className='music-description'>Nghệ sĩ</div>
+                        </div>
+                        <div className='cart-music col-2' >
+                            <div className='artist-img'>
+                                <img src={sol7} />
+                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                            </div>
+                            <div className='music-name'>Sol 7</div>
+                            <div className='music-description'>Nghệ sĩ</div>
+                        </div> */}
 
 
                     </div>
@@ -128,4 +152,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FanAlsoLike);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FanAlsoLike));

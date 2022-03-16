@@ -21,6 +21,7 @@ import { withRouter } from 'react-router';
 import SearchPage from '../components/HomePage/SearchPage';
 import LikedSongPage from '../components/HomePage/LikedSongPage';
 import Libary from '../components/HomePage/Libary';
+import DetailArtists from '../components/HomePage/DetailArtists';
 
 
 
@@ -85,7 +86,10 @@ class App extends Component {
                                     <Route path={path.HOME} exact component={(HomePage)} />
                                     <Route path={path.ADMIN_LOGIN} component={adminIsNotAuthenticated(Login)} />
                                     <Route path={path.LOGIN} component={userIsNotAuthenticated(UserLogin)} />
-                                    <Route path={path.ALL} component={(allProduct)} />
+                                    <Route path={path.ALL_ARTISTS} component={(allProduct)} />
+                                    <Route path={path.ALL_PLAYLISTS} component={(allProduct)} />
+                                    <Route path={path.ALL_MADE_FOR_YOU} component={(allProduct)} />
+                                    <Route path={path.DETAIL_ARTISTS} component={(DetailArtists)} />
                                     <Route path={path.SIGNUP} component={userIsNotAuthenticated(SignUp)} />
                                     <Route path={path.ADMIN} component={adminIsAuthenticated(System)} />
                                     <Route path={path.PLAYLIST} component={(Playlist)} />

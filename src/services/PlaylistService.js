@@ -14,6 +14,10 @@ const getDetailPlaylist = (id) => {
     return axios.get(`/api/get-detail-playlist?id=${id}`)
 }
 
+const getRandomPlaylist = (id) => {
+    return axios.get(`/api/get-random-playlist`)
+}
+
 
 const createNewPlaylistService = (data) => {
     return axios.post('/api/create-new-playlist', data)
@@ -52,5 +56,6 @@ export {
     getEditPlaylist,
     editPlaylistService,
     deletePlaylistService,
-    getDetailPlaylist
+    getDetailPlaylist,
+    getRandomPlaylist
 };

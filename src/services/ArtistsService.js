@@ -13,6 +13,10 @@ const getEditArtists = (id) => {
     return axios.get(`/api/get-edit-artists?id=${id}`)
 }
 
+const getDetailArtists = (id) => {
+    return axios.get(`/api/get-detail-artists?id=${id}`)
+}
+
 const createNewArtistsService = (data) => {
     return axios.post('/api/create-new-artists', data)
 }
@@ -35,5 +39,6 @@ export {
     getAllArtists,
     deleteArtistsService,
     getEditArtists,
-    editArtistsService
+    editArtistsService,
+    getDetailArtists
 };

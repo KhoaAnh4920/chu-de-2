@@ -14,18 +14,23 @@ class PlayBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            listSongs: []
         }
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
         console.log("Check in playbar: ", this.props.listSongs);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    async componentDidUpdate(prevProps, prevState) {
         if (prevProps.listSongs !== this.props.listSongs) {
+            await this.setState({
+                listSongs: []
+            })
+            console.log("Check update after reset: ", this.state.listSongs)
+            let audioList = this.buildAudioList(this.props.listSongs);
             this.setState({
-                listSongs: this.props.listSongs
+                listSongs: audioList
             })
         }
     }
@@ -64,16 +69,11 @@ class PlayBar extends Component {
 
 
     render() {
-
-
-
         let { listSongs } = this.state;
 
-        console.log('Playbar render: ', listSongs);
+        // let audioList = this.buildAudioList(listSongs);
 
-        let audioList = this.buildAudioList(listSongs);
-
-        console.log("audioList: ", audioList);
+        // console.log("audioList: ", audioList);
 
         // const audioList = [
         //     {
@@ -101,12 +101,16 @@ class PlayBar extends Component {
         return (
             <>
                 <ReactJkMusicPlayer
-                    audioLists={audioList}
+                    audioLists={listSongs}
                     toggleMode={false}
                     mode="full"
                     onAudioReload={true}
                     showThemeSwitch={false}
                     defaultVolume={0.5}
+                    quietUpdate
+                    clearPriorAudioLists
+                    autoPlayInitLoadPlayList={false}
+
                 />
 
             </>

@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './HomePage.scss';
-import './Playlist.scss';
+import './DetailArtists.scss';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -21,19 +21,22 @@ import FanAlsoLike from './FanAlsoLike';
 import AboutArtist from './AboutArtist';
 import sol7 from '../../assets/images/artist/sol7.jpg'
 import * as actions from "../../store/actions";
-import { getDetailPlaylist } from "../../services/PlaylistService"
-import { getDetailAlbum } from "../../services/AlbumService"
+import { getDetailArtists } from "../../services/ArtistsService"
 import moment from 'moment';
 
 
 
-class Playlist extends Component {
+class DetailArtists extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             isPlaying: false,
-            visible: false
+            visible: false,
+            listSongs: '',
+            namePlaylist: '',
+            image: '',
+            description: '',
         }
     }
     fancyTimeFormat = (duration, type) => {
@@ -71,71 +74,76 @@ class Playlist extends Component {
 
     async componentDidMount() {
 
-        console.log(this.props.match.url)
+        console.log(this.props.match.params.id)
 
         let url = this.props.match.url
 
-        console.log(url.indexOf("play-list"))
-        if (url.indexOf("play-list") !== -1) {
-            if (this.props.match && this.props.match.params && this.props.match.params.id) {
-                let detailPlaylist = await getDetailPlaylist(+this.props.match.params.id)
-
-                console.log("detailPlaylist: ", detailPlaylist.playlist[0].SongInPlaylist);
-                if (detailPlaylist && detailPlaylist.playlist) {
-
-                    let result = detailPlaylist.playlist[0].SongInPlaylist.map(item => {
-                        if (!isNaN(item.timePlay)) {
-                            item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
-                        }
-                        return item;
-                    })
-
-                    let playlistTimeLength = this.fancyTimeFormat(detailPlaylist.playlist[0].playlistTimeLength, 'PLAYLIST');
-
-                    await this.setState({
-                        listSongs: result,
-                        playlistId: +this.props.match.params.id,
-                        namePlaylist: detailPlaylist.playlist[0].playlistName,
-                        image: detailPlaylist.playlist[0].image,
-                        description: detailPlaylist.playlist[0].description,
-                        countSongs: Object.keys(detailPlaylist.playlist[0].SongInPlaylist).length,
-                        playlistTimeLength: playlistTimeLength,
-                        type: 'Playlist'
-                    })
-                }
-            }
-        } else {
-            if (this.props.match && this.props.match.params && this.props.match.params.id) {
-                let detailAlbum = await getDetailAlbum(+this.props.match.params.id)
-
-
-                console.log("detailAlbum: ", detailAlbum);
-                if (detailAlbum && detailAlbum.album) {
-
-                    let result = detailAlbum.album[0].AlbumForSongs.map(item => {
-                        if (!isNaN(item.timePlay)) {
-                            item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
-                        }
-                        return item;
-                    })
-
-                    let albumTimeLength = this.fancyTimeFormat(detailAlbum.album[0].albumTimeLength, 'PLAYLIST');
-
-                    await this.setState({
-                        listSongs: result,
-                        playlistId: +this.props.match.params.id,
-                        namePlaylist: detailAlbum.album[0].albumName,
-                        image: detailAlbum.album[0].image,
-                        description: detailAlbum.album[0].description,
-                        countSongs: Object.keys(detailAlbum.album[0].AlbumForSongs).length,
-                        playlistTimeLength: albumTimeLength,
-                        type: 'Album'
-                    })
-
-
-                }
-            }
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
+            let id = this.props.match.params.id;
+            let dataArtists = await getDetailArtists(id);
+            console.log("Check dataArtists: ", dataArtists)
         }
+
+        // if (url.indexOf("play-list") !== -1) {
+        //     if (this.props.match && this.props.match.params && this.props.match.params.id) {
+        //         let detailPlaylist = await getDetailPlaylist(+this.props.match.params.id)
+
+        //         console.log("detailPlaylist: ", detailPlaylist.playlist[0].SongInPlaylist);
+        //         if (detailPlaylist && detailPlaylist.playlist) {
+
+        //             let result = detailPlaylist.playlist[0].SongInPlaylist.map(item => {
+        //                 if (!isNaN(item.timePlay)) {
+        //                     item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
+        //                 }
+        //                 return item;
+        //             })
+
+        //             let playlistTimeLength = this.fancyTimeFormat(detailPlaylist.playlist[0].playlistTimeLength, 'PLAYLIST');
+
+        //             await this.setState({
+        //                 listSongs: result,
+        //                 playlistId: +this.props.match.params.id,
+        //                 namePlaylist: detailPlaylist.playlist[0].playlistName,
+        //                 image: detailPlaylist.playlist[0].image,
+        //                 description: detailPlaylist.playlist[0].description,
+        //                 countSongs: Object.keys(detailPlaylist.playlist[0].SongInPlaylist).length,
+        //                 playlistTimeLength: playlistTimeLength,
+        //                 type: 'Playlist'
+        //             })
+        //         }
+        //     }
+        // } else {
+        //     if (this.props.match && this.props.match.params && this.props.match.params.id) {
+        //         let detailAlbum = await getDetailAlbum(+this.props.match.params.id)
+
+
+        //         console.log("detailAlbum: ", detailAlbum);
+        //         if (detailAlbum && detailAlbum.album) {
+
+        //             let result = detailAlbum.album[0].AlbumForSongs.map(item => {
+        //                 if (!isNaN(item.timePlay)) {
+        //                     item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
+        //                 }
+        //                 return item;
+        //             })
+
+        //             let albumTimeLength = this.fancyTimeFormat(detailAlbum.album[0].albumTimeLength, 'PLAYLIST');
+
+        //             await this.setState({
+        //                 listSongs: result,
+        //                 playlistId: +this.props.match.params.id,
+        //                 namePlaylist: detailAlbum.album[0].albumName,
+        //                 image: detailAlbum.album[0].image,
+        //                 description: detailAlbum.album[0].description,
+        //                 countSongs: Object.keys(detailAlbum.album[0].AlbumForSongs).length,
+        //                 playlistTimeLength: albumTimeLength,
+        //                 type: 'Album'
+        //             })
+
+
+        //         }
+        //     }
+        // }
 
 
 
@@ -238,7 +246,7 @@ class Playlist extends Component {
 
                                     </div>
                                 </div>
-                                <table class="table table-dark table-hover" style={{ backgroundColor: '#1a1a1a', paddingLeft: '20px' }}>
+                                <table class="table table-dark table-hover">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
@@ -253,20 +261,10 @@ class Playlist extends Component {
                                         {listSongs && listSongs.map((item, index) => {
                                             return (
                                                 <tr key={index} onClick={() => this.playSong(index, listSongs)}>
-                                                    <th scope="row">{index + 1}</th>
+                                                    <th scope="row">{item.id}</th>
                                                     <td className="info-song-play">
-                                                        <div className='content-song' style={{ display: 'flex' }}>
-                                                            <div className='img-song'>
-                                                                <img src={item.image} style={{ width: '40px', height: '40px' }} />
-                                                            </div>
-                                                            <div className='title-song' style={{ height: 'flex' }}>
-                                                                <p className="name-song" style={{ fontSize: '17px', marginBottom: '0px', paddingLeft: '10px' }}>{item.nameSong}</p>
-                                                                <p style={{ marginBottom: '0px', paddingLeft: '10px' }}>AAAA</p>
-                                                            </div>
-
-
-                                                        </div>
-
+                                                        <img src={item.image} style={{ width: '40px', height: '40px' }} />
+                                                        <p className="name-song">{item.nameSong}</p>
                                                     </td>
                                                     <td>{namePlaylist}</td>
                                                     <td>{moment(item.createdAt).fromNow()}</td>
@@ -349,13 +347,13 @@ class Playlist extends Component {
                                         </tr> */}
                                     </tbody>
                                 </table>
-                                {/* <div className=''>
+                                <div className=''>
                                     SEE ALL
                                 </div>
                                 <hr />
                                 <FanAlsoLike />
-                                <hr /> */}
-                                {/* <AboutArtist /> */}
+                                <hr />
+                                <AboutArtist />
                             </div>
                         </div>
                     </div >
@@ -382,4 +380,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Playlist);
+export default connect(mapStateToProps, mapDispatchToProps)(DetailArtists);
