@@ -21,6 +21,8 @@ import FanAlsoLike from './FanAlsoLike';
 import AboutArtist from './AboutArtist';
 import sol7 from '../../assets/images/artist/sol7.jpg'
 import * as actions from "../../store/actions";
+import { getDetailPlaylist } from "../../services/PlaylistService"
+import moment from 'moment';
 
 
 
@@ -33,46 +35,64 @@ class Playlist extends Component {
             visible: false
         }
     }
-    fancyTimeFormat = (duration) => {
-        // Hours, minutes and seconds
-        var hrs = ~~(duration / 3600);
-        var mins = ~~((duration % 3600) / 60);
-        var secs = ~~duration % 60;
+    fancyTimeFormat = (duration, type) => {
+        if (type === 'SONGS') {
+            // Hours, minutes and seconds
+            var hrs = ~~(duration / 3600);
+            var mins = ~~((duration % 3600) / 60);
+            var secs = ~~duration % 60;
 
-        // Output like "1:01" or "4:03:59" or "123:03:59"
-        var ret = "";
+            // Output like "1:01" or "4:03:59" or "123:03:59"
+            var ret = "";
 
-        if (hrs > 0) {
-            ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+            if (hrs > 0) {
+                ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+            }
+
+            ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+            ret += "" + secs;
+            return ret;
+        } else {
+            duration = Number(duration);
+            var h = Math.floor(duration / 3600);
+            var m = Math.floor(duration % 3600 / 60);
+            var s = Math.floor(duration % 3600 % 60);
+
+            var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+            var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+            var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+            return hDisplay + mDisplay + sDisplay;
         }
 
-        ret += "" + mins + ":" + (secs < 10 ? "0" : "");
-        ret += "" + secs;
-        return ret;
     }
+
 
 
     async componentDidMount() {
 
-        let { listPlaylist } = this.props;
-        console.log(listPlaylist);
-        if (listPlaylist) {
-            let detailPlaylist = listPlaylist.filter(item => item.id === +this.props.match.params.id);
-            if (detailPlaylist && detailPlaylist[0].SongInPlaylist) {
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
+            let detailPlaylist = await getDetailPlaylist(+this.props.match.params.id)
 
-                let result = detailPlaylist[0].SongInPlaylist.map(item => {
+            console.log("detailPlaylist: ", detailPlaylist.playlist[0].SongInPlaylist);
+            if (detailPlaylist && detailPlaylist.playlist) {
+
+                let result = detailPlaylist.playlist[0].SongInPlaylist.map(item => {
                     if (!isNaN(item.timePlay)) {
-                        item.timePlay = this.fancyTimeFormat(item.timePlay);
+                        item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
                     }
                     return item;
                 })
 
+                let playlistTimeLength = this.fancyTimeFormat(detailPlaylist.playlist[0].playlistTimeLength, 'PLAYLIST');
+
                 await this.setState({
                     listSongs: result,
-                    isShowLoading: false,
                     playlistId: +this.props.match.params.id,
-                    namePlaylist: detailPlaylist[0].playlistName,
-                    image: detailPlaylist[0].image
+                    namePlaylist: detailPlaylist.playlist[0].playlistName,
+                    image: detailPlaylist.playlist[0].image,
+                    description: detailPlaylist.playlist[0].description,
+                    countSongs: Object.keys(detailPlaylist.playlist[0].SongInPlaylist).length,
+                    playlistTimeLength: playlistTimeLength
                 })
             }
         }
@@ -110,23 +130,20 @@ class Playlist extends Component {
         await this.props.playAllPlaylist(listSongs);
     }
 
-    testClick = async (pos, listSongs) => {
-        alert(pos);
-        await this.props.playAllPlaylist([]);
+    playSong = async (pos, listSongs) => {
+        // alert(pos);
+        // await this.props.playAllPlaylist([]);
 
-        // let result = listSongs.filter((item, index) => index >= pos)
-        // console.log(result);
-
-        // await this.props.playAllPlaylist(result);
+        let result = listSongs.filter((item, index) => index >= pos)
+        await this.props.playAllPlaylist(result);
     }
 
 
     render() {
         let visible = this.state.visible;
 
-        let { listSongs, namePlaylist, image } = this.state
+        let { listSongs, namePlaylist, image, description, countSongs, playlistTimeLength } = this.state
 
-        console.log(this.state)
         return (
             <>
                 <div className="wrap">
@@ -136,19 +153,21 @@ class Playlist extends Component {
                             <Header />
 
                             <div className="main main-playlist">
-                                <div className='content'>
-                                    <div className='avatar'>
+                                <div className='content row'>
+                                    <div className='avatar col-3'>
                                         <img src={image} />
                                     </div>
-                                    <div className='title-playlist'>
+                                    <div className='title-playlist col-9'>
                                         <div>
-                                            kkkkkkk
+                                            Playlist
                                         </div>
                                         <div className="song-Name">
                                             {namePlaylist}
                                         </div>
                                         <div>
-                                            Duc Fuc.  SINGLE 2021 1 song, 3 min 25 sec
+                                            {/* Duc Fuc.  SINGLE 2021 1 song, 3 min 25 sec */}
+                                            <p>{description}</p>
+                                            <p>{countSongs} songs, {playlistTimeLength} </p>
                                         </div>
                                     </div>
 
@@ -191,14 +210,14 @@ class Playlist extends Component {
                                     <tbody>
                                         {listSongs && listSongs.map((item, index) => {
                                             return (
-                                                <tr key={index} onClick={() => this.testClick(index, listSongs)}>
+                                                <tr key={index} onClick={() => this.playSong(index, listSongs)}>
                                                     <th scope="row">{item.id}</th>
                                                     <td className="info-song-play">
                                                         <img src={item.image} style={{ width: '40px', height: '40px' }} />
                                                         <p className="name-song">{item.nameSong}</p>
                                                     </td>
-                                                    <td>Ngày đầu tiên</td>
-                                                    <td>6 day ago</td>
+                                                    <td>{namePlaylist}</td>
+                                                    <td>{moment(item.createdAt).fromNow()}</td>
                                                     <td>{item.timePlay}</td>
                                                     <td>
                                                         <Tippy

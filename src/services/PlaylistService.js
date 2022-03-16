@@ -10,6 +10,11 @@ const getEditPlaylist = (id) => {
     return axios.get(`/api/get-edit-playlist?id=${id}`)
 }
 
+const getDetailPlaylist = (id) => {
+    return axios.get(`/api/get-detail-playlist?id=${id}`)
+}
+
+
 const createNewPlaylistService = (data) => {
     return axios.post('/api/create-new-playlist', data)
 }
@@ -46,5 +51,6 @@ export {
     deleteSongInPlaylist,
     getEditPlaylist,
     editPlaylistService,
-    deletePlaylistService
+    deletePlaylistService,
+    getDetailPlaylist
 };

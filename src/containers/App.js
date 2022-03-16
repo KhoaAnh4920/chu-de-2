@@ -47,9 +47,6 @@ class App extends Component {
     };
 
     componentDidMount() {
-        console.log("Is login: ", this.props.isLoggedInUser)
-        console.log("Check: ", window.location.href);
-
         this.handlePersistorState();
     }
 
@@ -73,7 +70,7 @@ class App extends Component {
         let { isLoggedInUser } = this.state;
         let { listSongs } = this.props;
 
-        console.log("Check app: ", listSongs);
+        console.log("listSongs: ", listSongs)
 
         return (
             <Fragment>
@@ -95,15 +92,6 @@ class App extends Component {
                                     <Route path={path.SEARCH} component={(SearchPage)} />
                                     <Route path={path.LIKE_SONG} component={(LikedSongPage)} />
                                     <Route path={path.LIBARY} component={(Libary)} />
-
-                                    {/* <Route path={path.HOME} exact component={(HomePage)} />
-                                <Route path={path.LOGIN} component={(Login)} />
-                                <Route path={path.ADMIN} component={(System)} />
-                                <Route path={path.ALL} component={(allProduct)} />
-                                <Route path={path.PLAYLIST} component={(Playlist)} />
-                                <Route path={path.SEARCH} component={(SearchPage)} />
-                                <Route path={path.LIKE_SONG} component={(LikedSongPage)} />
-                                <Route path={path.LIBARY} component={(Libary)} /> */}
                                 </Switch>
                             </CustomScrollbars>
 
