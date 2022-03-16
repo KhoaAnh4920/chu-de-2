@@ -53,6 +53,23 @@ let getEditAlbum = async (req, res) => {
     }
 }
 
+let getDetailAlbum = async (req, res) => {
+    let id = req.query.id;
+    if (id) {
+        let album = await AlbumService.getDetailAlbum(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            album
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
 let handleEditAlbum = async (req, res) => {
     let data = req.body;
     let message = await AlbumService.updateAlbum(data);
@@ -80,5 +97,6 @@ module.exports = {
     handleCreateNewSongInAlbum,
     getEditAlbum,
     handleEditAlbum,
-    handleDeleteAlbum
+    handleDeleteAlbum,
+    getDetailAlbum
 }

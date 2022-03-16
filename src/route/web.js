@@ -63,6 +63,7 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-song-in-album', AlbumController.handleDeleteSongInAlbum);
     router.post('/api/create-new-song-in-albums', AlbumController.handleCreateNewSongInAlbum);
     router.get('/api/get-edit-album', AlbumController.getEditAlbum);
+    router.get('/api/get-detail-album', AlbumController.getDetailAlbum);
     router.put('/api/edit-album', AlbumController.handleEditAlbum);
     router.delete('/api/delete-album', AlbumController.handleDeleteAlbum);
 

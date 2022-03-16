@@ -229,6 +229,27 @@ let getEditAlbum = (id) => {
     })
 }
 
+let getDetailAlbum = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let album = await db.Albums.findAll({
+                where: { id: id },
+                include: [
+                    { model: db.Artists, as: 'AlbumOfArtists', attributes: ['id', 'fullName'] },
+                    { model: db.Songs, as: 'AlbumForSongs' },
+                    { model: db.Genres, as: 'AlbumGenre', attributes: ['id', 'genresName'] },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(album);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let updateAlbum = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -342,5 +363,6 @@ module.exports = {
     createNewSongInAlbum,
     getEditAlbum,
     updateAlbum,
-    deleteAlbum
+    deleteAlbum,
+    getDetailAlbum
 }
