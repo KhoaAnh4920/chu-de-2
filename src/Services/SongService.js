@@ -94,16 +94,54 @@ let createNewSong = (file, data) => {
 }
 
 
-let getAllSongs = () => {
+let getAllSongs = (limit) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let song = await db.Songs.findAll({
+            if (limit === 'ALL') {
+                let song = await db.Songs.findAll({
+                    include: [
+                        { model: db.Artists, as: 'SongOfArtists' },
+                        { model: db.Genres, as: 'GenresSong', attributes: ['genresName'] },
+                    ],
+                    order: [
+                        ['id', 'DESC'],
+                    ],
+                    raw: false,
+                    nest: true
+                });
+
+                resolve(song);
+            } else {
+                let song = await db.Songs.findAll({
+                    limit: limit,
+                    include: [
+                        { model: db.Artists, as: 'SongOfArtists' },
+                        { model: db.Genres, as: 'GenresSong', attributes: ['genresName'] },
+                    ],
+                    order: [
+                        ['id', 'DESC'],
+                    ],
+                    raw: false,
+                    nest: true
+                });
+
+                resolve(song);
+            }
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getEditSong = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let song = await db.Songs.findOne({
+                where: { id: id },
                 include: [
                     { model: db.Artists, as: 'SongOfArtists' },
-                    { model: db.Genres, as: 'GenresSong', attributes: ['genresName'] },
-                ],
-                order: [
-                    ['id', 'DESC'],
+                    { model: db.Genres, as: 'GenresSong', attributes: ['id', 'genresName'] },
                 ],
                 raw: false,
                 nest: true
@@ -116,7 +154,7 @@ let getAllSongs = () => {
     })
 }
 
-let getEditSong = (id) => {
+let getDetailSong = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let song = await db.Songs.findOne({
@@ -353,5 +391,6 @@ module.exports = {
     deleteSong,
     getAllSongsByArtists,
     getAllSongsByArtistsGenres,
-    getAllSongsByGenres
+    getAllSongsByGenres,
+    getDetailSong
 }

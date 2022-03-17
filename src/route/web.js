@@ -51,6 +51,7 @@ let initWebRoutes = (app) => {
     router.post('/api/create-new-song', upload.single('fileSong'), SongController.handleCreateNewSongs);
     router.get('/api/get-all-songs', SongController.getAllSongs);
     router.get('/api/get-edit-song', SongController.getEditSong);
+    router.get('/api/get-detail-song', SongController.getDetailSong);
     router.put('/api/edit-song', upload.single('fileSong'), SongController.handleEditSong);
     router.delete('/api/delete-song', SongController.handleDeleteSong);
 
@@ -71,6 +72,8 @@ let initWebRoutes = (app) => {
     // Playlist //
     router.post('/api/create-new-playlist', PlaylistControler.handleCreateNewPlaylist);
     router.get('/api/get-all-playlist', PlaylistControler.getAllPlaylist);
+    router.get('/api/get-playlist-by-keyword', PlaylistControler.getPlaylistByKeyword);
+    router.get('/api/get-playlist-by-genres', PlaylistControler.getPlaylistByGenres);
     router.get('/api/get-random-playlist', PlaylistControler.getRandomPlaylist);
     router.post('/api/create-new-song-in-playlist', PlaylistControler.handleCreateNewSongInPlaylist);
     router.delete('/api/delete-song-in-playlist', PlaylistControler.handleDeleteSongInPlaylist);

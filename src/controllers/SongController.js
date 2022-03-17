@@ -11,7 +11,8 @@ let handleCreateNewSongs = async (req, res) => {
 
 let getAllSongs = async (req, res) => {
     try {
-        let data = await SongService.getAllSongs();
+        let limit = req.query.limit;
+        let data = await SongService.getAllSongs(limit);
         return res.status(200).json(data);
     } catch (e) {
         console.log('Get all roles error: ', e)
@@ -26,6 +27,23 @@ let getEditSong = async (req, res) => {
     let id = req.query.id;
     if (id) {
         let song = await SongService.getEditSong(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            song
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
+let getDetailSong = async (req, res) => {
+    let id = req.query.id;
+    if (id) {
+        let song = await SongService.getDetailSong(id);
         return res.status(200).json({
             errCode: 0,
             errMessage: 'OK',
@@ -119,5 +137,6 @@ module.exports = {
     getAllSongsByArtists,
     getAllSongsByArtistsGenres,
     getAllSongsByArtistsGenres,
-    getAllSongsByGenres
+    getAllSongsByGenres,
+    getDetailSong
 }

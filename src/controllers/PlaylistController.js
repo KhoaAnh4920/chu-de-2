@@ -66,6 +66,40 @@ let getEditPlaylist = async (req, res) => {
     }
 }
 
+let getPlaylistByKeyword = async (req, res) => {
+    let kw = req.query.kw;
+    if (kw) {
+        let playlist = await PlaylistService.getPlaylistByKeyword(kw);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            playlist
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
+let getPlaylistByGenres = async (req, res) => {
+    let id = req.query.id;
+    if (id) {
+        let playlist = await PlaylistService.getPlaylistByGenres(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            playlist
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
 let getDetailPlaylist = async (req, res) => {
     let id = req.query.id;
     if (id) {
@@ -112,5 +146,7 @@ module.exports = {
     handleDeletePlaylist,
     handleEditPlaylist,
     getDetailPlaylist,
-    getRandomPlaylist
+    getRandomPlaylist,
+    getPlaylistByKeyword,
+    getPlaylistByGenres
 }

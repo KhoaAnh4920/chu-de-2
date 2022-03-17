@@ -1,6 +1,8 @@
 import db from "../models/index";
 require('dotenv').config();
 import { sequelize } from "../models/index";
+const Sequelize = require('sequelize');
+const op = Sequelize.Op;
 var cloudinary = require('cloudinary').v2;
 
 
@@ -259,6 +261,46 @@ let getEditPlaylist = (id) => {
     })
 }
 
+let getPlaylistByGenres = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let playlist = await db.Playlists.findAll({
+                where: { genresId: id },
+                include: [
+                    { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(playlist);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getPlaylistByKeyword = (kw) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let playlist = await db.Playlists.findAll({
+                where: {
+                    playlistName: { [op.iLike]: `%${kw}%` },
+                },
+                include: [
+                    { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(playlist);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let getDetailPlaylist = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -397,5 +439,7 @@ module.exports = {
     deletePlaylist,
     updatePlaylist,
     getDetailPlaylist,
-    getRandomPlaylist
+    getRandomPlaylist,
+    getPlaylistByKeyword,
+    getPlaylistByGenres
 }
