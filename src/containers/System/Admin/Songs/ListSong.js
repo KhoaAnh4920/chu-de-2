@@ -45,7 +45,7 @@ class ListSong extends Component {
 
 
     fetchAllSong = async () => {
-        let songData = await getAllSong();
+        let songData = await getAllSong('ALL');
 
         if (songData) {
             let result = songData.map((item, index) => {

@@ -40,7 +40,7 @@ class AddAlbum extends Component {
     async componentDidMount() {
         let dataArtists = await getAllArtists();
         let dataGenres = await getAllGenres();
-        let dataSongs = await getAllSong();
+        let dataSongs = await getAllSong('ALL');
 
         if (dataArtists && dataGenres && dataSongs) {
             let listArtists = this.buildDataInputSelect(dataArtists.artists, 'ARTISTS');

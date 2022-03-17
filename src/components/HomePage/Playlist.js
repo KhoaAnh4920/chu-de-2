@@ -260,7 +260,7 @@ class Playlist extends Component {
                                                                 <img src={item.image} style={{ width: '40px', height: '40px' }} />
                                                             </div>
                                                             <div className='title-song' style={{ height: 'flex' }}>
-                                                                <p className="name-song" style={{ fontSize: '17px', marginBottom: '0px', paddingLeft: '10px' }}>{item.nameSong}</p>
+                                                                <p className="name-song" style={{ fontSize: '17px', marginBottom: '0px', marginTop: '0px', paddingLeft: '10px' }}>{item.nameSong}</p>
                                                                 <p style={{ marginBottom: '0px', paddingLeft: '10px' }}>AAAA</p>
                                                             </div>
 

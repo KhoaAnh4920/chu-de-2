@@ -10,10 +10,10 @@ import Header from '../Share/Header';
 import Sidebar from '../Share/Sidebar';
 import PlayBar from '../Share/PlayBar';
 import $ from "jquery";
-import imgHotHit from '../../assets/images/music/HotHit.jpg';
 import { getAllArtists } from '../../services/ArtistsService';
-import { getAllAlbums } from '../../services/AlbumService'
-import { getAllPlaylist } from '../../services/PlaylistService';
+import { getAllAlbums } from '../../services/AlbumService';
+import { getAllSong } from '../../services/SongService'
+import { getAllPlaylist, getPlaylistByKeyword, getPlaylistByGenres } from '../../services/PlaylistService';
 
 
 class allProduct extends Component {
@@ -69,8 +69,77 @@ class allProduct extends Component {
                 })
             }
         }
+        if (url.indexOf("/all/top-mix") !== -1) {
+            let listTopMix = await getPlaylistByKeyword('Mix');
+            if (listTopMix) {
+                this.setState({
+                    listTopMix: listTopMix.playlist,
+                    listArtists: [],
+                    listAllbum: [],
+                    listPlaylist: [],
+                    listMadeForYou: []
+                })
+            }
+        }
+        if (url.indexOf("/all/us-uk") !== -1) {
+            let allUsUk = await getPlaylistByGenres(6);
+            if (allUsUk) {
+                this.setState({
+                    listUsUk: allUsUk.playlist,
+                    listArtists: [],
+                    listAllbum: [],
+                    listPlaylist: [],
+                    listMadeForYou: [],
+                    listTopMix: []
+                })
+            }
+        }
+        if (url.indexOf("/all/new-song") !== -1) {
+            let allnewSong = await getAllSong(10);
+            if (allnewSong) {
+                this.setState({
+                    allnewSong: allnewSong,
+                    listArtists: [],
+                    listAllbum: [],
+                    listPlaylist: [],
+                    listMadeForYou: [],
+                    listTopMix: [],
+                    listUsUk: []
+                })
+            }
+        }
+        if (url.indexOf("/all/chill-playlist") !== -1) {
+            let allnewSong = await getAllSong(10);
+            if (allnewSong) {
+                this.setState({
+                    allnewSong: allnewSong,
+                    listArtists: [],
+                    listAllbum: [],
+                    listPlaylist: [],
+                    listMadeForYou: [],
+                    listTopMix: [],
+                    listUsUk: []
+                })
+            }
+        }
+        if (url.indexOf("/all/chill-playlist") !== -1) {
+            let allChill = await getPlaylistByGenres(3);
 
-        console.log(this.state);
+            if (allChill) {
+                this.setState({
+                    listChill: allChill.playlist,
+                    listUsUk: [],
+                    listArtists: [],
+                    listAllbum: [],
+                    listPlaylist: [],
+                    listMadeForYou: [],
+                    listTopMix: [],
+                    allnewSong: []
+                })
+            }
+
+            console.log(this.state)
+        }
 
     }
 
@@ -99,9 +168,13 @@ class allProduct extends Component {
         this.props.history.push(`/album/${id}`)
     }
 
+    handleDetailSong = (id) => {
+        this.props.history.push(`/detail-song/${id}`)
+    }
+
 
     render() {
-        let { listArtists, listPlaylist, listMadeForYou } = this.state;
+        let { listArtists, listPlaylist, listMadeForYou, listTopMix, listUsUk, allnewSong, listChill } = this.state;
 
 
         return (
@@ -143,7 +216,63 @@ class allProduct extends Component {
 
                                         {listMadeForYou && listMadeForYou.map((item, index) => {
                                             return (
-                                                <div className='cart-music col-2' onClick={() => this.handlePlaylist(item.id)} >
+                                                <div className='cart-music col-2' onClick={() => this.handlePlaylist(item.id)} key={index} >
+                                                    <div className='music-img'>
+                                                        <img src={item.image} />
+                                                        <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                    </div>
+                                                    <div className='music-name'>{item.playlistName}</div>
+                                                    <div className='music-description'>{item.description}</div>
+                                                </div>
+                                            )
+                                        })}
+
+                                        {listTopMix && listTopMix.map((item, index) => {
+                                            return (
+                                                <div className='cart-music col-2' onClick={() => this.handlePlaylist(item.id)} key={index}>
+                                                    <div className='music-img'>
+                                                        <img src={item.image} />
+                                                        <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                    </div>
+                                                    <div className='music-name'>{item.playlistName}</div>
+                                                    <div className='music-description'>{item.description}</div>
+                                                </div>
+                                            )
+
+                                        })}
+
+                                        {listUsUk && listUsUk.map((item, index) => {
+                                            return (
+                                                <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)} >
+                                                    <div className='music-img'>
+                                                        <img src={item.image} />
+                                                        <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                    </div>
+                                                    <div className='music-name'>{item.playlistName}</div>
+                                                    <div className='music-description'>{item.description}</div>
+                                                </div>
+                                            )
+                                        })}
+
+                                        {allnewSong && allnewSong.map((item, index) => {
+
+                                            return (
+                                                <div className='cart-music col-2' key={index} onClick={() => this.handleDetailSong(item.id)} >
+                                                    <div className='music-img'>
+                                                        <img src={item.image} />
+                                                        <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                    </div>
+                                                    <div className='music-name'>{item.nameSong}</div>
+                                                    <div className='music-description'>{item.SongOfArtists[0].fullName}</div>
+                                                </div>
+                                            )
+
+                                        })}
+
+                                        {listChill && listChill.map((item, index) => {
+
+                                            return (
+                                                <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)}>
                                                     <div className='music-img'>
                                                         <img src={item.image} />
                                                         <div className='button-play'><i class='fas fa-play'></i> </div>

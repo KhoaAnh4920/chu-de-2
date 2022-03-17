@@ -22,6 +22,7 @@ import SearchPage from '../components/HomePage/SearchPage';
 import LikedSongPage from '../components/HomePage/LikedSongPage';
 import Libary from '../components/HomePage/Libary';
 import DetailArtists from '../components/HomePage/DetailArtists';
+import DetailSong from '../components/HomePage/DetailSong';
 
 
 
@@ -89,7 +90,12 @@ class App extends Component {
                                     <Route path={path.ALL_ARTISTS} component={(allProduct)} />
                                     <Route path={path.ALL_PLAYLISTS} component={(allProduct)} />
                                     <Route path={path.ALL_MADE_FOR_YOU} component={(allProduct)} />
+                                    <Route path={path.ALL_TOP_MIX} component={(allProduct)} />
+                                    <Route path={path.ALL_US_UK} component={(allProduct)} />
+                                    <Route path={path.ALL_NEW_SONG} component={(allProduct)} />
+                                    <Route path={path.ALL_CHILL_PLAYLIST} component={(allProduct)} />
                                     <Route path={path.DETAIL_ARTISTS} component={(DetailArtists)} />
+                                    <Route path={path.DETAIL_SONG} component={(DetailSong)} />
                                     <Route path={path.SIGNUP} component={userIsNotAuthenticated(SignUp)} />
                                     <Route path={path.ADMIN} component={adminIsAuthenticated(System)} />
                                     <Route path={path.PLAYLIST} component={(Playlist)} />

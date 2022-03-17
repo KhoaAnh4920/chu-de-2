@@ -65,7 +65,7 @@ class ModalAddSong extends Component {
                     listGenres = this.buildDataInputSelect(arr, 'GENRES');
                     dataSong = dataSong.song;
                 } else {
-                    dataSong = await getAllSong();
+                    dataSong = await getAllSong('ALL');
                     listGenres = [{ 'label': 'Tất cả', 'value': 0 }];
                 }
 

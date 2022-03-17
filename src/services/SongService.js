@@ -3,8 +3,8 @@ import axios from '../axios';
 // Móc API //
 
 
-const getAllSong = () => {
-    return axios.get(`/api/get-all-songs`)
+const getAllSong = (limit) => {
+    return axios.get(`/api/get-all-songs?limit=${limit}`)
 }
 
 const getAllSongsByArtists = (artistsId) => {
@@ -21,6 +21,10 @@ const getAllSongsByArtistsGenres = (artistsId, genresId) => {
 
 const getEditSong = (id) => {
     return axios.get(`/api/get-edit-song?id=${id}`)
+}
+
+const getDetailSong = (id) => {
+    return axios.get(`/api/get-detail-song?id=${id}`)
 }
 
 const createNewSongService = (data, config) => {
@@ -47,5 +51,6 @@ export {
     deleteSongService,
     getAllSongsByArtists,
     getAllSongsByArtistsGenres,
-    getAllSongsByGenres
+    getAllSongsByGenres,
+    getDetailSong
 }; 

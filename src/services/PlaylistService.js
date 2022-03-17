@@ -10,6 +10,14 @@ const getEditPlaylist = (id) => {
     return axios.get(`/api/get-edit-playlist?id=${id}`)
 }
 
+const getPlaylistByGenres = (id) => {
+    return axios.get(`/api/get-playlist-by-genres?id=${id}`)
+}
+
+const getPlaylistByKeyword = (kw) => {
+    return axios.get(`/api/get-playlist-by-keyword?kw=${kw}`)
+}
+
 const getDetailPlaylist = (id) => {
     return axios.get(`/api/get-detail-playlist?id=${id}`)
 }
@@ -57,5 +65,7 @@ export {
     editPlaylistService,
     deletePlaylistService,
     getDetailPlaylist,
-    getRandomPlaylist
+    getRandomPlaylist,
+    getPlaylistByKeyword,
+    getPlaylistByGenres
 };
