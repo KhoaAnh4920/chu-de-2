@@ -6,6 +6,11 @@ let handleCreateNewPlaylist = async (req, res) => {
     return res.status(200).json(message);
 }
 
+let handleCreateNewPlaylistUser = async (req, res) => {
+    let message = await PlaylistService.createNewPlaylistUser(req.body);
+    return res.status(200).json(message);
+}
+
 
 let getAllPlaylist = async (req, res) => {
     try {
@@ -44,8 +49,24 @@ let handleDeleteSongInPlaylist = async (req, res) => {
     return res.status(200).json(message);
 }
 
+let handleDeleteSongInPlaylistForUser = async (req, res) => {
+    if (!req.body.playlistId || !req.body.songId) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: "Missing id"
+        })
+    }
+    let message = await PlaylistService.deleteSongInPlaylistForUser(req.body.playlistId, req.body.songId);
+    return res.status(200).json(message);
+}
+
 let handleCreateNewSongInPlaylist = async (req, res) => {
     let message = await PlaylistService.createNewSongInPlaylist(req.body);
+    return res.status(200).json(message);
+}
+
+let handleCreateNewSongInPlaylistForUser = async (req, res) => {
+    let message = await PlaylistService.createNewSongInPlaylistForUser(req.body);
     return res.status(200).json(message);
 }
 
@@ -87,6 +108,23 @@ let getPlaylistByGenres = async (req, res) => {
     let id = req.query.id;
     if (id) {
         let playlist = await PlaylistService.getPlaylistByGenres(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'OK',
+            playlist
+        })
+    } else {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Mising id',
+        })
+    }
+}
+
+let getAllPlaylistByUserId = async (req, res) => {
+    let id = req.query.id;
+    if (id) {
+        let playlist = await PlaylistService.getAllPlaylistByUserId(id);
         return res.status(200).json({
             errCode: 0,
             errMessage: 'OK',
@@ -148,5 +186,9 @@ module.exports = {
     getDetailPlaylist,
     getRandomPlaylist,
     getPlaylistByKeyword,
-    getPlaylistByGenres
+    getPlaylistByGenres,
+    handleCreateNewPlaylistUser,
+    getAllPlaylistByUserId,
+    handleCreateNewSongInPlaylistForUser,
+    handleDeleteSongInPlaylistForUser
 }

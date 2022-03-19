@@ -6,7 +6,8 @@ import ArtistsController from "../controllers/ArtistsController";
 import SongController from "../controllers/SongController";
 import AlbumController from "../controllers/AlbumController";
 import PlaylistControler from '../controllers/PlaylistController';
-
+import HistorySong from '../controllers/HistorySong';
+import LikeSongController from '../controllers/LikeSongController';
 
 
 let router = express.Router();
@@ -50,10 +51,25 @@ let initWebRoutes = (app) => {
     let upload = multer();
     router.post('/api/create-new-song', upload.single('fileSong'), SongController.handleCreateNewSongs);
     router.get('/api/get-all-songs', SongController.getAllSongs);
+    router.get('/api/get-random-songs', SongController.getRandomSongs);
     router.get('/api/get-edit-song', SongController.getEditSong);
     router.get('/api/get-detail-song', SongController.getDetailSong);
+    router.get('/api/get-song-by-keyword', SongController.getSongByKeyword);
     router.put('/api/edit-song', upload.single('fileSong'), SongController.handleEditSong);
     router.delete('/api/delete-song', SongController.handleDeleteSong);
+    router.get('/api/get-song-current', SongController.getSongCurrent);
+    router.get('/api/get-song-by-name', SongController.getSongByName);
+    router.put('/api/edit-song-count', SongController.handleEditSongCount);
+
+
+    //history
+    router.put('/api/save-song-history', HistorySong.handleSaveHistorySong);
+    router.get('/api/get-song-history-by-idUser', HistorySong.getSongHistoryByIDUser);
+    //like song
+    router.put('/api/save-song-like', LikeSongController.handleSaveLikeSong);
+    router.get('/api/get-song-like-by-idUser', LikeSongController.getSongLikeByIDUser);
+
+
 
     // CRUD Albums //
     router.get('/api/get-all-songs-by-artists', SongController.getAllSongsByArtists);
@@ -71,12 +87,16 @@ let initWebRoutes = (app) => {
 
     // Playlist //
     router.post('/api/create-new-playlist', PlaylistControler.handleCreateNewPlaylist);
+    router.post('/api/create-new-playlist-user', PlaylistControler.handleCreateNewPlaylistUser);
     router.get('/api/get-all-playlist', PlaylistControler.getAllPlaylist);
+    router.get('/api/get-all-playlist-by-userId', PlaylistControler.getAllPlaylistByUserId);
     router.get('/api/get-playlist-by-keyword', PlaylistControler.getPlaylistByKeyword);
     router.get('/api/get-playlist-by-genres', PlaylistControler.getPlaylistByGenres);
     router.get('/api/get-random-playlist', PlaylistControler.getRandomPlaylist);
     router.post('/api/create-new-song-in-playlist', PlaylistControler.handleCreateNewSongInPlaylist);
+    router.post('/api/create-new-song-in-playlist-for-user', PlaylistControler.handleCreateNewSongInPlaylistForUser);
     router.delete('/api/delete-song-in-playlist', PlaylistControler.handleDeleteSongInPlaylist);
+    router.delete('/api/delete-song-in-playlist-for-user', PlaylistControler.handleDeleteSongInPlaylistForUser);
     router.get('/api/get-edit-playlist', PlaylistControler.getEditPlaylist);
     router.get('/api/get-detail-playlist', PlaylistControler.getDetailPlaylist);
     router.put('/api/edit-playlist', PlaylistControler.handleEditPlaylist);

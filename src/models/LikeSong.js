@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
             // define association here//
 
             // bảng trung gian quan hệ nhiều nhiều //
-            LikeSong.belongsTo(models.Users, { foreignKey: 'userId', targetKey: 'id', as: 'Users' });
-            LikeSong.belongsTo(models.Songs, { foreignKey: 'songId', targetKey: 'id', as: 'Songs' });
+            LikeSong.belongsTo(models.Users, { foreignKey: 'userId', targetKey: 'id', as: 'UserLike' });
+            LikeSong.belongsTo(models.Songs, { foreignKey: 'songId', targetKey: 'id', as: 'SongLike' });
 
 
         }

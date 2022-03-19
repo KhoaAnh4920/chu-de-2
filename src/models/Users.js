@@ -18,6 +18,9 @@ module.exports = (sequelize, DataTypes) => {
       // Một user có nhiều lịch sử nghe //
       Users.hasMany(models.HistoryListen, { foreignKey: 'userId', as: 'UserHistory' })
 
+      // Một user có nhiều lượt like nhạc //
+      Users.hasMany(models.LikeSong, { foreignKey: 'userId', as: 'UserLike' })
+
       // Một user có nhiều playlists //
       Users.hasMany(models.Playlists, { foreignKey: 'userId', as: 'UserPlaylist' })
 

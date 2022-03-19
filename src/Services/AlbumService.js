@@ -36,8 +36,6 @@ let uploadCloud = (data, fName) => {
 
 let totalTimeLengthAlbums = (songData) => {
     let totalTime = 0;
-
-    console.log(songData);
     if (songData) {
         songData.map((item) => {
             totalTime += item.timePlay;
@@ -55,8 +53,6 @@ let createNewAlbum = (data) => {
             let image = '';
 
             let albumTimeLength = await totalTimeLengthAlbums(data.songsData);
-
-            console.log('albumTimeLength: ', albumTimeLength)
 
             if (data.image && data.fileName) {
                 // upload cloud //
@@ -236,7 +232,12 @@ let getDetailAlbum = (id) => {
                 where: { id: id },
                 include: [
                     { model: db.Artists, as: 'AlbumOfArtists', attributes: ['id', 'fullName'] },
-                    { model: db.Songs, as: 'AlbumForSongs' },
+                    {
+                        model: db.Songs, as: 'AlbumForSongs',
+                        include: [
+                            { model: db.Artists, as: 'SongOfArtists' },
+                        ],
+                    },
                     { model: db.Genres, as: 'AlbumGenre', attributes: ['id', 'genresName'] },
                 ],
                 raw: false,

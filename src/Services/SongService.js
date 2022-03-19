@@ -3,7 +3,10 @@ const DatauriParser = require("datauri/parser");
 const parser = new DatauriParser();
 const path = require('path')
 require('dotenv').config();
+import { sequelize } from "../models/index";
 var cloudinary = require('cloudinary').v2;
+const Sequelize = require('sequelize');
+const op = Sequelize.Op;
 
 
 cloudinary.config({
@@ -133,6 +136,76 @@ let getAllSongs = (limit) => {
         }
     })
 }
+
+
+let getRandomSongs = (limit) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (limit === 'ALL') {
+                let song = await db.Songs.findAll({
+                    include: [
+                        { model: db.Artists, as: 'SongOfArtists' },
+                        { model: db.Genres, as: 'GenresSong', attributes: ['genresName'] },
+                    ],
+
+                    order: sequelize.random(),
+                    raw: false,
+                    nest: true
+                });
+
+                resolve(song);
+            } else {
+                let song = await db.Songs.findAll({
+                    limit: limit,
+                    include: [
+                        { model: db.Artists, as: 'SongOfArtists' },
+                        { model: db.Genres, as: 'GenresSong', attributes: ['genresName'] },
+                    ],
+                    order: [
+                        ['id', 'DESC'],
+                    ],
+                    order: sequelize.random(),
+                    raw: false,
+                    nest: true
+                });
+
+                resolve(song);
+            }
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getSongByKeyword = (kw) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let songs = await db.Songs.findAll({
+                limit: 10,
+                where: {
+                    [op.or]: [{ nameSong: { [op.iLike]: `%${kw}%` } }, { description: { [op.iLike]: `%${kw}%` } }]
+                },
+                include: [
+                    {
+                        model: db.Artists, as: 'SongOfArtists',
+                    },
+                    {
+                        model: db.Genres, as: 'GenresSong', attributes: ['genresName'],
+
+                    },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(songs);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 
 let getEditSong = (id) => {
     return new Promise(async (resolve, reject) => {
@@ -380,6 +453,75 @@ let deleteSong = (id) => {
 
 
 
+//Doi //
+let updateSongCount = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.id) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'missing required parameter nè'
+                });
+            }
+            let song = await db.Songs.findOne({
+                where: { id: data.id },
+                raw: false
+            })
+            if (song) {
+                // user.firstName = data.firstName;
+                // user.lastName = data.lastName;
+                // user.address = data.address;
+                // user.roleId = data.roleId;
+                // user.positionId = data.positionId;
+                // user.gender = data.gender;
+                // user.phoneNumber = data.phoneNumber;
+
+                // await db.User.save({
+                //     firstName: data.firstName,
+                //     lastName = data.lastName,
+                //     address = data.address
+                // })
+                song.countListen = data.countListen;
+                await song.save();
+                // let allUser = await db.User.findAll();
+                resolve({
+                    errCode: 0,
+                    message: 'update the song succeed'
+                });
+            }
+            else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "user not found"
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+//Doi //
+let getSongByName = (nameInput) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let song = await db.Songs.findOne({
+                where: { nameSong: { [op.iLike]: `%${nameInput}%` } },
+                include: [
+                    { model: db.Artists, as: 'SongOfArtists' },
+                    { model: db.Genres, as: 'GenresSong', attributes: ['id', 'genresName'] },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(song);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+
 
 
 
@@ -392,5 +534,9 @@ module.exports = {
     getAllSongsByArtists,
     getAllSongsByArtistsGenres,
     getAllSongsByGenres,
-    getDetailSong
+    getDetailSong,
+    getRandomSongs,
+    getSongByKeyword,
+    updateSongCount,
+    getSongByName
 }

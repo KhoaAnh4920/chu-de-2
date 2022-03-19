@@ -40,7 +40,6 @@ let uploadCloud = (data, fName) => {
 let totalTimeLengthAlbums = (songData) => {
     let totalTime = 0;
 
-    console.log(songData);
     if (songData) {
         songData.map((item) => {
             totalTime += item.timePlay;
@@ -109,6 +108,41 @@ let createNewPlaylist = (data) => {
         }
     })
 }
+
+
+let createNewPlaylistUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let image = 'https://res.cloudinary.com/dpo9d3otr/image/upload/v1647595665/Image/albums/newPlaylist_fcpnhl.png';
+
+
+            await db.Playlists.create({
+                playlistName: "My Playlist ",
+                genresId: null,
+                image: image,
+                public_id_image: '',
+                description: "",
+                userId: data.id
+            }).then(function (x) {
+                if (x.id) {
+                    resolve({
+                        errCode: 0,
+                        errMessage: 'OK',
+                        playlistId: x.id
+                    }); // return 
+                }
+            });
+            resolve({
+                errCode: 1,
+                errMessage: 'Missing playlistId'
+            }); // return 
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 
 
 let getAllPlaylist = () => {
@@ -206,6 +240,44 @@ let deleteSongInPlaylist = (playlistId, songId) => {
     })
 }
 
+
+
+let deleteSongInPlaylistForUser = (playlistId, songId) => {
+    return new Promise(async (resolve, reject) => {
+
+        let song = await db.Songs.findOne({
+            where: { id: songId },
+            raw: false
+        })
+        let playlist = await db.Playlists.findOne({
+            where: { id: playlistId },
+            raw: false
+        })
+        if (song && playlist) {
+            let timePlay = song.timePlay;
+            playlist.playlistTimeLength -= timePlay;
+
+            await playlist.save();
+            // Xoa bang trung gian //
+            await db.PlaylistSong.destroy({
+                where: { playlistId: playlistId, songId: songId }
+            })
+
+            resolve({
+                errCode: 0,
+                errMessage: "Delete song in playlist ok"
+            })
+        } else {
+            resolve({
+                errCode: 2,
+                errMessage: "Playlist hoặc Bài hát không tồn tại"
+            })
+        }
+
+    })
+}
+
+
 let createNewSongInPlaylist = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -241,12 +313,62 @@ let createNewSongInPlaylist = (data) => {
     })
 }
 
+let createNewSongInPlaylistForUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let playlist = await db.Playlists.findOne({
+                where: { id: data.playlistId },
+                raw: false
+            })
+
+            if (data.nameSong && data.id) {
+                playlist.playlistTimeLength += data.timePlay;
+
+
+                await db.PlaylistSong.create({
+                    playlistId: data.playlistId,
+                    songId: data.id
+                });
+                await playlist.save();
+            }
+
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            }); // return 
+
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 
 let getEditPlaylist = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let playlist = await db.Playlists.findOne({
                 where: { id: id },
+                include: [
+                    { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
+                ],
+                raw: false,
+                nest: true
+            });
+
+            resolve(playlist);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getAllPlaylistByUserId = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let playlist = await db.Playlists.findAll({
+                where: { userId: id },
                 include: [
                     { model: db.Genres, as: 'PlaylistGenre', attributes: ['id', 'genresName'] },
                 ],
@@ -441,5 +563,10 @@ module.exports = {
     getDetailPlaylist,
     getRandomPlaylist,
     getPlaylistByKeyword,
-    getPlaylistByGenres
-}
+    getPlaylistByGenres,
+    createNewPlaylistUser,
+    getAllPlaylistByUserId,
+    createNewSongInPlaylistForUser,
+    deleteSongInPlaylistForUser
+
+}  

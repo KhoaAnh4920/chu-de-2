@@ -138,7 +138,11 @@ let getDetailArtists = (id) => {
                 where: { id: id },
                 include: [
                     { model: db.Country, as: 'ArtistsCountry' },
-                    { model: db.Songs, as: 'ArtistsForSong' },
+                    {
+                        model: db.Songs, as: 'ArtistsForSong', include: [
+                            { model: db.Artists, as: 'SongOfArtists' }
+                        ]
+                    },
                     { model: db.Albums, as: 'ArtistsForAlbums' },
                 ],
                 raw: false,
