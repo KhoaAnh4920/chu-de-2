@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import Sidebar from '../Share/Sidebar';
 import Header from '../Share/Header';
 import Footer from '../Share/Footer';
+import { getAllSong } from '../../../services/SongService';
+import { getAllPlaylist } from '../../../services/PlaylistService';
+import { getAllGenres } from '../../../services/GenresService';
+import { getAllArtists } from '../../../services/ArtistsService';
 
 
 class Dashboard extends Component {
@@ -11,12 +15,67 @@ class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            count: '',
+            countPlay: '',
+            countGen: '',
+            countArt: ''
         }
     }
 
-    componentDidMount() {
-    }
+    async componentDidMount() {
 
+
+        let dataPlay = await getAllPlaylist();
+        let dataGen = await getAllGenres();
+        let dataArt = await getAllArtists();
+        let countGen = 0;
+        let countPlay = 0;
+        let count = 0;
+        let countArt = 0;
+        const arr = [];
+
+
+        let data = await getAllSong('ALL');
+
+
+        for (var d in data) {
+            arr.push([d, data[d]]);
+        }
+        for (let i = 1; i <= arr.length; i++) {
+            count++;
+        }
+
+
+        const arrPlay = [];
+        for (var b in dataPlay.playlist) {
+            arrPlay.push([b, dataPlay.playlist[b]]);
+        }
+        const arrGen = [];
+        for (var g in dataGen.genres) {
+            arrGen.push([g, dataGen.genres[g]]);
+        }
+        const arrArt = [];
+        for (var a in dataArt.artists) {
+            arrArt.push([a, dataArt.artists[a]]);
+        }
+
+        for (let i = 1; i <= arrPlay.length; i++) {
+            countPlay++;
+        }
+        for (let i = 1; i <= arrGen.length; i++) {
+            countGen++;
+        }
+        for (let i = 1; i <= arrArt.length; i++) {
+            countArt++;
+        }
+        this.setState({
+            count: count,
+            countPlay: countPlay,
+            countGen: countGen,
+            countArt: countArt
+        })
+
+    }
     componentDidUpdate(prevProps, prevState) {
     }
 
@@ -38,7 +97,7 @@ class Dashboard extends Component {
                             {/* Container Fluid*/}
                             <div className="container-fluid" id="container-wrapper">
                                 <div className="d-sm-flex align-items-center justify-content-between mb-4">
-                                    <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
+                                    <h1 className="h3 mb-0 text-gray-800">Trang Quản Trị Nhạc Spotifake</h1>
                                     <ol className="breadcrumb">
                                         <li className="breadcrumb-item"><a href="./">Home</a></li>
                                         <li className="breadcrumb-item active" aria-current="page">Dashboard</li>
@@ -51,15 +110,11 @@ class Dashboard extends Component {
                                             <div className="card-body">
                                                 <div className="row align-items-center">
                                                     <div className="col mr-2">
-                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">Earnings (Monthly)</div>
-                                                        <div className="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                                        <div className="mt-2 mb-0 text-muted text-xs">
-                                                            <span className="text-success mr-2"><i className="fa fa-arrow-up" /> 3.48%</span>
-                                                            <span>Since last month</span>
-                                                        </div>
+                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">Số Lượng Bài Hát</div>
+                                                        <div className="h5 mb-0 font-weight-bold text-gray-800" >{this.state.count} Bài Hát</div>
                                                     </div>
                                                     <div className="col-auto">
-                                                        <i className="fas fa-calendar fa-2x text-primary" />
+                                                        <i className="fas fa-music fa-2x text-primary" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -71,15 +126,11 @@ class Dashboard extends Component {
                                             <div className="card-body">
                                                 <div className="row no-gutters align-items-center">
                                                     <div className="col mr-2">
-                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">Sales</div>
-                                                        <div className="h5 mb-0 font-weight-bold text-gray-800">650</div>
-                                                        <div className="mt-2 mb-0 text-muted text-xs">
-                                                            <span className="text-success mr-2"><i className="fas fa-arrow-up" /> 12%</span>
-                                                            <span>Since last years</span>
-                                                        </div>
+                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">Số Lượng Playlist</div>
+                                                        <div className="h5 mb-0 font-weight-bold text-gray-800"> {this.state.countPlay} Playlist</div>
                                                     </div>
                                                     <div className="col-auto">
-                                                        <i className="fas fa-shopping-cart fa-2x text-success" />
+                                                        <i className="fas fa-guitar fa-2x text-success" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -91,15 +142,11 @@ class Dashboard extends Component {
                                             <div className="card-body">
                                                 <div className="row no-gutters align-items-center">
                                                     <div className="col mr-2">
-                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">New User</div>
-                                                        <div className="h5 mb-0 mr-3 font-weight-bold text-gray-800">366</div>
-                                                        <div className="mt-2 mb-0 text-muted text-xs">
-                                                            <span className="text-success mr-2"><i className="fas fa-arrow-up" /> 20.4%</span>
-                                                            <span>Since last month</span>
-                                                        </div>
+                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">Số lượng thể loại</div>
+                                                        <div className="h5 mb-0 mr-3 font-weight-bold text-gray-800">{this.state.countGen} Thể Loại</div>
                                                     </div>
                                                     <div className="col-auto">
-                                                        <i className="fas fa-users fa-2x text-info" />
+                                                        <i className="fas fa-play fa-2x text-info" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -111,15 +158,11 @@ class Dashboard extends Component {
                                             <div className="card-body">
                                                 <div className="row no-gutters align-items-center">
                                                     <div className="col mr-2">
-                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">Pending Requests</div>
-                                                        <div className="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                                        <div className="mt-2 mb-0 text-muted text-xs">
-                                                            <span className="text-danger mr-2"><i className="fas fa-arrow-down" /> 1.10%</span>
-                                                            <span>Since yesterday</span>
-                                                        </div>
+                                                        <div className="text-xs font-weight-bold text-uppercase mb-1">số lượng nghệ sĩ</div>
+                                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{this.state.countArt} Nghệ Sĩ</div>
                                                     </div>
                                                     <div className="col-auto">
-                                                        <i className="fas fa-comments fa-2x text-warning" />
+                                                        <i className="fas fa-users fa-2x text-info" />
                                                     </div>
                                                 </div>
                                             </div>

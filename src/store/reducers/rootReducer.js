@@ -23,7 +23,7 @@ const adminPersistConfig = {
 const userPersistConfig = {
     ...persistCommonConfig,
     key: 'user',
-    whitelist: ['isLoggedInUser', 'userInfo', 'listSongs']
+    whitelist: ['isLoggedInUser', 'userInfo', 'listSongs', 'listPlaylistOfUser']
 };
 
 export default (history) => combineReducers({

@@ -46,7 +46,7 @@ class allProduct extends Component {
             }
         }
         if (url.indexOf("/all/playlist") !== -1) {
-            console.log(url.indexOf("/all/playlist"))
+
             let listPlaylist = await getAllPlaylist();
             if (listPlaylist) {
                 this.setState({
@@ -58,7 +58,7 @@ class allProduct extends Component {
             }
         }
         if (url.indexOf("/all/made-for-you") !== -1) {
-            console.log(url.indexOf("/all/made-for-you"))
+
             let listMadeForYou = await getAllPlaylist();
             if (listMadeForYou) {
                 this.setState({
@@ -138,7 +138,7 @@ class allProduct extends Component {
                 })
             }
 
-            console.log(this.state)
+
         }
 
     }
@@ -171,6 +171,9 @@ class allProduct extends Component {
     handleDetailSong = (id) => {
         this.props.history.push(`/detail-song/${id}`)
     }
+    handleDetailArtists = (id) => {
+        this.props.history.push(`/detail-artists/${id}`)
+    }
 
 
     render() {
@@ -190,7 +193,7 @@ class allProduct extends Component {
                                     <div className='list-item row'>
                                         {listArtists && listArtists.map((item, index) => {
                                             return (
-                                                <div className='cart-music col-2'  >
+                                                <div className='cart-music col-2' key={index} onClick={() => this.handleDetailArtists(item.id)} >
                                                     <div className='music-img'>
                                                         <img src={item.image} />
                                                         <div className='button-play'><i class='fas fa-play'></i> </div>

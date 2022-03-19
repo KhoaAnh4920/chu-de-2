@@ -6,7 +6,7 @@ import { history } from '../redux'
 import { userIsAuthenticated, userIsNotAuthenticated, adminIsAuthenticated, adminIsNotAuthenticated } from '../hoc/authentication';
 import CustomScrollbars from '../components/CustomScrollbars';
 import { path } from '../utils'
-
+import { ToastContainer } from 'react-toastify';
 import Home from '../routes/Home';
 import Login from '../routes/Login';
 import UserLogin from '../components/Auth/UserLogin';
@@ -23,6 +23,7 @@ import LikedSongPage from '../components/HomePage/LikedSongPage';
 import Libary from '../components/HomePage/Libary';
 import DetailArtists from '../components/HomePage/DetailArtists';
 import DetailSong from '../components/HomePage/DetailSong';
+import CreatePlaylist from '../components/HomePage/CreatePlaylist';
 
 
 
@@ -64,15 +65,18 @@ class App extends Component {
                 listSongs: this.props.listSongs
             })
         }
+
+        if (prevProps.typeSong !== this.props.typeSong) {
+            this.setState({
+                typeSong: this.props.typeSong
+            })
+        }
     }
 
     render() {
 
-        console.log('Check state: ', this.state.isLoggedInUser)
-        let { isLoggedInUser } = this.state;
+        let { isLoggedInUser, typeSong } = this.state;
         let { listSongs } = this.props;
-
-        console.log("listSongs: ", listSongs)
 
         return (
             <Fragment>
@@ -103,19 +107,32 @@ class App extends Component {
                                     <Route path={path.SEARCH} component={(SearchPage)} />
                                     <Route path={path.LIKE_SONG} component={(LikedSongPage)} />
                                     <Route path={path.LIBARY} component={(Libary)} />
+                                    <Route path={path.CREATE_PLAYLIST} component={(CreatePlaylist)} />
                                 </Switch>
                             </CustomScrollbars>
 
                         </span>
 
                     </div>
+
+                    <ToastContainer
+                        position="bottom-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                    />
                 </Router>
 
 
                 {(window.location.href.indexOf("/login") === -1 && window.location.href.indexOf("/admin") === -1 &&
                     window.location.href.indexOf("/sign-up") === -1) &&
 
-                    <PlayBar listSongs={listSongs} />
+                    <PlayBar listSongs={listSongs} typeSong={typeSong} />
                 }
 
             </Fragment>
@@ -128,7 +145,8 @@ const mapStateToProps = state => {
         started: state.app.started,
         isLoggedIn: state.admin.isLoggedIn,
         isLoggedInUser: state.user.isLoggedInUser,
-        listSongs: state.user.listSongs
+        listSongs: state.user.listSongs,
+        typeSong: state.user.typeSong
     };
 };
 

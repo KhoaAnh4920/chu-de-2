@@ -1,19 +1,37 @@
-.modal {
-    .modal-content {
-        .modal-header {
-            height     : 75px !important;
-            background : #fff !important;
-            padding-top: 20px !important;
-            color      : #000 !important;
-            font-weight: 700 !important;
-            font-size  : 13px !important;
-        }
+// .modal {
+//     .modal-content {
+//         .modal-header {
+//             height     : 75px !important;
+//             background : #fff !important;
+//             padding-top: 20px !important;
+//             color      : #000 !important;
+//             font-weight: 700 !important;
+//             font-size  : 13px !important;
+//         }
 
-        .modal-body {
-            label {
-                color      : #000;
-                font-weight: 580;
-            }
+//         .modal-body {
+//             label {
+//                 color      : #000;
+//                 font-weight: 580;
+//             }
+//         }
+//     }
+// }
+
+.modal-add-song-container {
+    .modal-add-song-header {
+        height     : 75px !important;
+        background : #fff !important;
+        padding-top: 20px !important;
+        color      : #000 !important;
+        font-weight: 700 !important;
+        font-size  : 13px !important;
+    }
+
+    .modal-add-song-body {
+        label {
+            color      : #000;
+            font-weight: 580;
         }
     }
 }

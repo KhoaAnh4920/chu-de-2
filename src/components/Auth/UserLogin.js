@@ -24,19 +24,18 @@ class UserLogin extends Component {
     }
 
     async componentDidUpdate(prevProps, prevState) {
-        console.log("Có chạy")
         if (prevState.userID !== this.state.userID && prevState.name !== this.name
             && prevState.email !== this.state.email && prevState.avatar !== this.state) {
-            console.log("Login fb ok");
+
             let result = await handleLoginSocial({
                 userID: this.state.userID,
                 name: this.state.name,
                 email: this.state.email,
                 avatar: this.state.avatar
             });
-            console.log("Check result: ", result);
+
             if (result && result.errCode === 0) {
-                console.log("Fire Redux Ok");
+
                 this.props.userLoginSuccess({
                     id: this.state.userID,
                     fullName: this.state.name,
@@ -79,7 +78,7 @@ class UserLogin extends Component {
             }
             if (data && data.errorCode === 0) {
                 console.log('---login ok---');
-                console.log(data.data);
+
                 //this.props.testRedux();
 
                 this.props.userLoginSuccess(data.data);
@@ -115,7 +114,7 @@ class UserLogin extends Component {
     }
 
     responseFacebook = (response) => {
-        console.log(response);
+
 
         if (response && response.userID) {
             this.setState({

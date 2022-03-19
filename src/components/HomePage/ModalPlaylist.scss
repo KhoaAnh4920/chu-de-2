@@ -1,0 +1,84 @@
+.modal-edit-playlist-user {
+
+    .modal-content {
+        border: none !important;
+
+        .editdetail {
+            background-color: #242424 !important;
+            padding         : 25px !important;
+            height          : 65px !important;
+            border          : none;
+
+            .modal-title {
+                font-size  : 20px !important;
+                font-weight: 700 !important;
+            }
+
+            .close {
+                color      : #fff;
+                font-weight: 700;
+                font-size  : 25px;
+            }
+        }
+
+        .modal-body-container {
+            border          : none;
+            background-color: #242424 !important;
+            padding         : 25px;
+
+            .modal-playlist-body {
+                display: flex;
+
+                .image-edit-playlist {
+                    img {
+                        width       : 180px;
+                        height      : 180px;
+                        margin-right: 20px;
+                    }
+                }
+
+                .input-container {
+                    width: 100%;
+
+                    .inputName {
+                        padding      : 7px;
+                        margin-bottom: 10px;
+                        width        : 100%;
+                    }
+
+                    .description-playlist {
+                        width : 100%;
+                        height: 135px;
+                    }
+                }
+            }
+        }
+
+        .modal-footer-container {
+            border          : none;
+            background-color: #242424 !important;
+            padding         : 25px;
+
+            .btn-save-edit {
+                background-color: #fff;
+                color           : #000;
+                width           : 90px;
+                border-radius   : 20px;
+                font-weight     : 700;
+                margin-bottom   : 20px;
+            }
+
+            .text-license {
+                font-size     : 0.6875rem;
+                line-height   : 1rem;
+                text-transform: none;
+                letter-spacing: normal;
+                color         : #fff;
+            }
+        }
+    }
+
+
+
+
+}

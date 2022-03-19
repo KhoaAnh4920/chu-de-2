@@ -3,7 +3,9 @@ import actionTypes from '../actions/actionTypes';
 const initialState = {
     isLoggedInUser: false,
     userInfo: null,
-    listSongs: []
+    listSongs: [],
+    listPlaylistOfUser: [],
+    typeSong: ''
 }
 
 const appReducer = (state = initialState, action) => {
@@ -25,11 +27,19 @@ const appReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggedInUser: false,
-                userInfo: null
+                userInfo: null,
+                listPlaylistOfUser: null
             }
 
         case actionTypes.PLAY_ALL_PLAYLIST:
             state.listSongs = action.listSongs;
+            state.typeSong = action.typeSong
+            return {
+                ...state,
+            }
+
+        case actionTypes.SAVE_NEW_PLAYLIST:
+            state.listPlaylistOfUser = action.dataPlaylist;
             return {
                 ...state,
             }

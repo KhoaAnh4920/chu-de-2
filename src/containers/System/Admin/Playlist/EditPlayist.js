@@ -131,11 +131,18 @@ class EditPlaylist extends Component {
 
     _handleImageChange = async (e) => {
         e.preventDefault();
-
         let reader = new FileReader();
         let file = e.target.files[0];
-
-        if (file) {
+        /*------------ Duck ------------*/
+        if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+            Swal.fire({
+                title: 'Missing data?',
+                text: "Sai định dạng ảnh!",
+                icon: 'warning',
+            })
+        }
+        /*------------ Duck ------------*/
+        else if (file) {
             let base64 = await CommonUtils.getBase64(file);
             reader.onloadend = () => {
                 this.setState({
@@ -190,7 +197,7 @@ class EditPlaylist extends Component {
                 fileName: this.state.fileName,
                 description: this.state.description,
                 id: this.state.id
-            });
+            }, 'ADMIN');
 
             this.setState({
                 isShowLoading: false,
@@ -339,7 +346,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        editPlaylist: (data) => dispatch(actions.editPlaylist(data)),
+        editPlaylist: (data, type) => dispatch(actions.editPlaylist(data, type)),
     };
 };
 

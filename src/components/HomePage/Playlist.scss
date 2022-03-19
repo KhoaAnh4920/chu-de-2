@@ -1,15 +1,20 @@
 .main-playlist {
-    display: block;
-    height : 100%;
-    left   : 0;
+    display   : block;
+    height    : 100%;
+    left      : 0;
+    overflow-x: hidden;
 
     position: absolute;
     top     : 0;
     width   : 100%;
+    padding : 10px;
 
     .content {
-        background: linear-gradient(135deg, rgb(8, 3, 34) 0%, rgb(41, 41, 66) 100%) !important;
-        display   : flex;
+        background    : linear-gradient(135deg, rgb(8, 3, 34) 0%, rgb(41, 41, 66) 100%) !important;
+        display       : flex;
+        padding-bottom: 10px;
+        padding-left  : 10px;
+        margin        : 0;
 
         .avatar {
 

@@ -20,7 +20,7 @@ import { getAllAlbums } from '../../services/AlbumService';
 import { getAllSong } from '../../services/SongService';
 import { getAllPlaylist, getRandomPlaylist, getPlaylistByKeyword, getPlaylistByGenres } from '../../services/PlaylistService';
 import { getAllArtists } from '../../services/ArtistsService';
-import moment from 'moment';
+import { saveHistorySong, getHistorySong } from "../../services/historySongService";
 
 
 class HomePage extends Component {
@@ -31,11 +31,16 @@ class HomePage extends Component {
             isPlaying: false,
             listPlaylist: [],
             listAlbums: [],
-            listMadeForYou: []
+            listMadeForYou: [],
+            userInfo: {},
+            listPlaylistOfUser: [],
+            listHistoryMusic: []
         }
     }
 
     async componentDidMount() {
+        let { isLoggedInUser, userInfo, listPlaylistOfUser } = this.props;
+
         let allPlaylist = await getAllPlaylist();
         let allAlums = await getAllAlbums();
         let allArtists = await getAllArtists();
@@ -46,17 +51,38 @@ class HomePage extends Component {
         let allChill = await getPlaylistByGenres(3);
 
 
-        console.log("allMadeForYou: ", allMadeForYou)
+
+        let result = allPlaylist.playlist.filter(item => item.userId === null)
+
         if (allAlums && allPlaylist && allArtists && allMadeForYou) {
             this.setState({
                 listAlbums: allAlums.albums,
-                listPlaylist: allPlaylist.playlist,
+                listPlaylist: result,
                 listArtists: allArtists.artists,
                 listMadeForYou: allMadeForYou.playlist,
                 listTopMix: allTopMix.playlist,
                 listUsUk: allUsUk.playlist,
                 newSongs: newSongs,
-                listChill: allChill.playlist
+                listChill: allChill.playlist,
+
+            })
+        }
+
+        if (userInfo) {
+            await this.props.fetchAllPlaylistByUser(userInfo.id)
+
+            // Doi //
+            let historyMusic = await getHistorySong(this.props.userInfo.id);
+            var uniq = {};
+            historyMusic = historyMusic.filter(obj => !uniq[obj.songId] && (uniq[obj.songId] = true));
+            // Doi //
+
+
+            await this.setState({
+                isLogin: isLoggedInUser,
+                userInfo,
+                listPlaylistOfUser,
+                listHistoryMusic: historyMusic
             })
         }
 
@@ -95,7 +121,7 @@ class HomePage extends Component {
 
 
         let { listAlbums, listPlaylist, listArtists,
-            listMadeForYou, listTopMix, listUsUk, newSongs, listChill } = this.state
+            listMadeForYou, listTopMix, listUsUk, newSongs, listChill, listHistoryMusic } = this.state
 
         return (
             <>
@@ -183,47 +209,34 @@ class HomePage extends Component {
 
                                     </div>
                                 </div>
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Recently played</h4>
-                                        <NavLink activeClassName="active1" to="/all/recent-play" exact>SEE ALL</NavLink>
-                                    </div>
-                                    <div className='list-item row'>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
+                                {listHistoryMusic && Object.keys(listHistoryMusic).length > 0
+                                    &&
+                                    <div className='list-music-container'>
+                                        <div className='title-list'>
+                                            <h4>Recently played</h4>
                                         </div>
+                                        <div className='list-item row'>
+                                            {listHistoryMusic.slice(0, 6).map((item, index) => {
+                                                if (index >= 0) {
+                                                    return (
+                                                        <div className='cart-music col-2'
+                                                            onClick={() => this.handleDetailSong(item.SongHistory.id)}
+                                                        >
+                                                            <div className='music-img'>
+                                                                <img src={item.SongHistory.image} />
+                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                            </div>
+                                                            <div className='music-name'>{item.SongHistory.nameSong}</div>
+                                                            <div className='music-description'>{item.SongHistory.description}</div>
+                                                        </div>
+                                                    )
+                                                }
+                                            })}
 
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
                                         </div>
                                     </div>
-                                </div>
+                                }
+
 
 
 
@@ -249,31 +262,6 @@ class HomePage extends Component {
                                             }
                                         })}
 
-                                        {/* 
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div>
-                                        <div className='cart-music col-2' >
-                                            <div className='music-img'>
-                                                <img src={imgHotHit} />
-                                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                                            </div>
-                                            <div className='music-name'>Hot Hits Vietnam</div>
-                                            <div className='music-description'>Đông với Tây, đây là những ca khúc...</div>
-                                        </div> */}
                                     </div>
                                 </div>
 
@@ -374,13 +362,15 @@ class HomePage extends Component {
 const mapStateToProps = state => {
     return {
         isLoggedInUser: state.user.isLoggedInUser,
-        listPlaylist: state.admin.listPlaylist
+        listPlaylist: state.admin.listPlaylist,
+        userInfo: state.user.userInfo
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         fetchAllPlaylist: () => dispatch(actions.fetchAllPlaylist()),
+        fetchAllPlaylistByUser: (id) => dispatch(actions.fetchAllPlaylistByUser(id)),
     };
 };
 

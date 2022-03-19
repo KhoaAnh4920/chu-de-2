@@ -241,10 +241,12 @@ class ModalAddSong extends Component {
                     className={'modal-add-song-container'}
                     size='lg'
                 >
-                    <ModalHeader toggle={() => this.toggle()}>
+                    <ModalHeader toggle={() => this.toggle()}
+                        className={'modal-add-song-header'}
+                    >
                         Add Song
                     </ModalHeader>
-                    <ModalBody>
+                    <ModalBody className={'modal-add-song-body'}>
 
                         <div className="form-group">
                             <label htmlFor="exampleInputEmail1">Ca sĩ</label>

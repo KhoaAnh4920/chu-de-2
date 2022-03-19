@@ -52,7 +52,7 @@ class ListAlbum extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.listAlbums !== this.props.listAlbums) {
-            console.log(this.props.listAlbums);
+
             let listAlbums = this.props.listAlbums;
 
             if (listAlbums) {

@@ -92,47 +92,6 @@ class FanAlsoLike extends Component {
 
                         })}
 
-                        {/* <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div>
-                        <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div>
-                        <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div>
-                        <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div>
-                        <div className='cart-music col-2' >
-                            <div className='artist-img'>
-                                <img src={sol7} />
-                                <div className='button-play'><i class='fas fa-play'></i> </div>
-                            </div>
-                            <div className='music-name'>Sol 7</div>
-                            <div className='music-description'>Nghệ sĩ</div>
-                        </div> */}
-
 
                     </div>
                 </div>

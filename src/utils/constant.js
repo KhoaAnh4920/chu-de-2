@@ -19,6 +19,7 @@ export const path = {
     SEARCH: '/search',
     LIKE_SONG: '/liked-song',
     LIBARY: '/libary',
+    CREATE_PLAYLIST: '/create-playlist/:id'
 };
 
 export const languages = {

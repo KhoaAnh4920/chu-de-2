@@ -36,6 +36,13 @@ class DefaultClass extends Component {
         this.props.history.goBack();
     }
 
+    handleLogout = async () => {
+        this.props.processLogoutUser();
+
+        this.props.history.push('/')
+
+    }
+
 
     render() {
         let { userInfo, isLoggedInUser, processLogoutUser } = this.props;
@@ -58,7 +65,7 @@ class DefaultClass extends Component {
                                     <span className='user-fullname'>{userInfo.fullName}</span>
                                 </div>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a className="dropdown-item" onClick={processLogoutUser}>Log out</a>
+                                    <a className="dropdown-item" onClick={() => this.handleLogout()}>Log out</a>
                                 </div>
                             </div>
                         </>
@@ -76,13 +83,15 @@ class DefaultClass extends Component {
 const mapStateToProps = state => {
     return {
         isLoggedInUser: state.user.isLoggedInUser,
-        userInfo: state.user.userInfo
+        userInfo: state.user.userInfo,
+        listPlaylistOfUser: state.user.listPlaylistOfUser,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         processLogoutUser: () => dispatch(actions.processLogoutUser()),
+        fetchAllPlaylistByUser: (id) => dispatch(actions.fetchAllPlaylistByUser(id)),
     };
 };
 

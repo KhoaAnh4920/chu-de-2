@@ -10,7 +10,6 @@ import "slick-carousel/slick/slick-theme.css";
 import Header from '../Share/Header';
 import Sidebar from '../Share/Sidebar';
 import { Route, Switch, NavLink, Link } from 'react-router-dom';
-import PlayBar from '../Share/PlayBar';
 import $ from "jquery";
 import sol7 from '../../assets/images/artist/sol7.jpg';
 import Tippy from '@tippyjs/react';
@@ -18,8 +17,9 @@ import 'tippy.js/themes/light.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import { toast } from 'react-toastify';
-import ModelUser from './ModelUser';
+import './AboutArtists.scss'
 import Lightbox from 'react-image-lightbox';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
 
 const customStyles = {
@@ -96,41 +96,56 @@ class AboutArtist extends Component {
         })
     }
 
+    toggle = () => {
+        this.props.toggleFromParent();
+    }
+
     render() {
         let visible = this.state.visible;
         let isOpen = this.state.isOpen;
         console.log('check isopen img: ', isOpen);
+
+        let { image, description } = this.props;
+
+
         return (
             <>
 
-                <div className='list-music-container'>
-                    <div className='title-list' style={{ borderBottom: '1px solid gray' }}>
-                        <h4>About</h4>
-                    </div>
-                    <ModelUser isOpen={this.state.isOpenModalUser}
-                        toggleFromParent={this.toggleUserModal} />
-                    <div className="about-content" >
-                        <div className="about-img">
-                            <img src={sol7} style={{ width: '204px', height: '204px' }}
-                                onClick={() => this.handleOpenImage()} />
-                        </div>
-                        <div onClick={() => this.handleAddNewUser()}>
-                            <div className="about-titleInfo" >
-                                72,702 monthly listeners
+                <Modal isOpen={this.props.isOpen}
+                    toggle={() => this.toggle()}
+
+                    className={'modal-about-container'}
+                    style={{
+                        marginTop: '200px',
+
+                    }}
+                    size='lg'
+                >
+                    <ModalHeader toggle={() => this.toggle()}
+                        className={'modal-header-about'}
+                    >
+                    </ModalHeader>
+                    <ModalBody
+                        className={'modal-body-about'}
+                        style={{
+                            maxHeight: 'calc(100vh - 210px)',
+                            overflowY: 'auto',
+                            overflowX: 'hidden',
+                            background: '#121212'
+                        }}
+                    >
+                        <div className='row about-artists'>
+                            <div className='img-artists col-4'>
+                                <img src={image} />
                             </div>
-                            <div className="about-info">
-                                Sol7 tên thật Vương Ngọc Tân, sinh ra và lớn lên tại Bồng Sơn - Hoài Nhơn - Bình Định.
-                                Năm 2012 Sol7 cùng TB thành lập DCOD gồm những thành viên Yuno, Dope B, V$oul, từ đó kết nạp thêm nhiều thành viên như P$mall, Mkid, A$er, Lonie, Nbin...và cho đến nay
+                            <div className='content-artists col-8'>
+                                {description}
                             </div>
                         </div>
-                    </div>
-                    {this.state.isOpen === true &&
-                        <Lightbox
-                            mainSrc={sol7}
-                            onCloseRequest={() => this.setState({ isOpen: false })}
-                        />
-                    }
-                </div>
+
+                    </ModalBody>
+
+                </Modal>
 
             </>
         )

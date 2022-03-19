@@ -1,0 +1,40 @@
+.modal-about-container {
+    margin-top: 20px;
+
+    .modal-header-about {
+        padding         : 5px !important;
+        border          : none;
+        height          : 30px !important;
+        background-color: #121212 !important;
+
+        .close {
+            margin-right: 8px;
+            color       : #fff;
+            font-size   : 23px;
+        }
+    }
+
+    .modal-body-about {
+        max-height      : calc(100vh - 210px);
+        overflow        : hidden;
+        background-color: #121212 !important;
+        color           : #fff;
+        font-weight     : 500;
+        line-height     : 20px;
+
+        .img-artists {
+            display: flex;
+
+            img {
+                width        : 204px;
+                height       : 204px;
+                margin       : 0 auto;
+                border-radius: 50%;
+            }
+        }
+
+        .content-artists {
+            padding: 18px;
+        }
+    }
+}

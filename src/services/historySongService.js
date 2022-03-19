@@ -7,10 +7,6 @@ const getAllSong = (limit) => {
     return axios.get(`/api/get-all-songs?limit=${limit}`)
 }
 
-const getRandomSongs = (limit) => {
-    return axios.get(`/api/get-random-songs?limit=${limit}`)
-}
-
 const getAllSongsByArtists = (artistsId) => {
     return axios.get(`/api/get-all-songs-by-artists?artistsId=${artistsId}`)
 }
@@ -25,10 +21,6 @@ const getAllSongsByArtistsGenres = (artistsId, genresId) => {
 
 const getEditSong = (id) => {
     return axios.get(`/api/get-edit-song?id=${id}`)
-}
-
-const getSongByKeyword = (kw) => {
-    return axios.get(`/api/get-song-by-keyword?kw=${kw}`)
 }
 
 const getDetailSong = (id) => {
@@ -50,26 +42,16 @@ const deleteSongService = (id) => {
         }
     });
 }
-
 const editSongCount = (data) => {
     return axios.put('/api/edit-song-count', data)
 }
-const getSongByName = (nameSong) => {
-    return axios.get(`/api/get-song-by-name?nameSong=${nameSong}`);
+const saveHistorySong = (data) => {
+    return axios.put('/api/save-song-history', data)
 }
-
+const getHistorySong = (id) => {
+    return axios.get(`/api/get-song-history-by-idUser?id=${id}`)
+}
 export {
-    createNewSongService,
-    getAllSong,
-    getEditSong,
-    editSongService,
-    deleteSongService,
-    getAllSongsByArtists,
-    getAllSongsByArtistsGenres,
-    getAllSongsByGenres,
-    getDetailSong,
-    getRandomSongs,
-    getSongByKeyword,
-    editSongCount,
-    getSongByName
+    saveHistorySong,
+    getHistorySong
 }; 

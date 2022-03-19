@@ -315,7 +315,7 @@ export const fetchAllPlaylistsFailed = () => ({
     type: actionTypes.fetchAllPlaylistsFailed
 })
 
-export const editPlaylist = (data) => {
+export const editPlaylist = (data, type) => {
     return async (dispatch, getState) => {
         try {
             if (!data) {
@@ -325,7 +325,10 @@ export const editPlaylist = (data) => {
             let res = await editPlaylistService(data);
             if (res && res.errCode == 0) {
                 toast.success("Cập nhật thành công");
-                dispatch(push('/admin/list-playlist'))
+                if (type === 'ADMIN')
+                    dispatch(push('/admin/list-playlist'))
+                else
+                    dispatch(push(`/create-playlist/${data.id}`))
             } else {
                 toast.error("Cập nhật thất bại");
             }

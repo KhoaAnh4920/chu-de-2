@@ -173,7 +173,17 @@ class AddAlbum extends Component {
         let reader = new FileReader();
         let file = e.target.files[0];
 
-        if (file) {
+        /*------------ Duck ------------*/
+        if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+            Swal.fire({
+                title: 'Missing data?',
+                text: "Sai định dạng ảnh!",
+                icon: 'warning',
+            })
+        }
+        /*------------ Duck ------------*/
+
+        else if (file) {
             let base64 = await CommonUtils.getBase64(file);
             reader.onloadend = () => {
                 this.setState({
@@ -244,7 +254,6 @@ class AddAlbum extends Component {
         }
 
     }
-
 
 
     render() {

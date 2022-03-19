@@ -10,19 +10,14 @@ import "slick-carousel/slick/slick-theme.css";
 import Header from '../Share/Header';
 import Sidebar from '../Share/Sidebar';
 import { Route, Switch, NavLink, Link } from 'react-router-dom';
-import PlayBar from '../Share/PlayBar';
-import $ from "jquery";
-import imgHotHit from '../../assets/images/music/HotHit.jpg';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-import FanAlsoLike from './FanAlsoLike';
-import AboutArtist from './AboutArtist';
-import sol7 from '../../assets/images/artist/sol7.jpg'
 import * as actions from "../../store/actions";
-import { getDetailPlaylist } from "../../services/PlaylistService"
+import { getDetailPlaylist, createNewSongInPlaylistForUser } from "../../services/PlaylistService"
 import { getDetailAlbum } from "../../services/AlbumService"
+import { toast } from 'react-toastify';
 import moment from 'moment';
 
 
@@ -33,7 +28,8 @@ class Playlist extends Component {
         super(props);
         this.state = {
             isPlaying: false,
-            visible: false
+            visible: false,
+            isOpenModal: false
         }
     }
     fancyTimeFormat = (duration, type) => {
@@ -71,22 +67,25 @@ class Playlist extends Component {
 
     async componentDidMount() {
 
-        console.log(this.props.match.url)
+        let { isLoggedInUser, userInfo } = this.props;
 
         let url = this.props.match.url
 
-        console.log(url.indexOf("play-list"))
         if (url.indexOf("play-list") !== -1) {
             if (this.props.match && this.props.match.params && this.props.match.params.id) {
                 let detailPlaylist = await getDetailPlaylist(+this.props.match.params.id)
 
-                console.log("detailPlaylist: ", detailPlaylist.playlist[0].SongInPlaylist);
                 if (detailPlaylist && detailPlaylist.playlist) {
 
                     let result = detailPlaylist.playlist[0].SongInPlaylist.map(item => {
                         if (!isNaN(item.timePlay)) {
                             item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
                         }
+                        item.nameForSong = "";
+                        item.SongOfArtists.map((x, y) => {
+                            item.nameForSong = item.nameForSong + x.fullName + ', ';
+                        })
+                        item.nameForSong = item.nameForSong.replace(/,(\s+)?$/, '');
                         return item;
                     })
 
@@ -100,7 +99,7 @@ class Playlist extends Component {
                         description: detailPlaylist.playlist[0].description,
                         countSongs: Object.keys(detailPlaylist.playlist[0].SongInPlaylist).length,
                         playlistTimeLength: playlistTimeLength,
-                        type: 'Playlist'
+                        type: 'Playlist',
                     })
                 }
             }
@@ -108,14 +107,18 @@ class Playlist extends Component {
             if (this.props.match && this.props.match.params && this.props.match.params.id) {
                 let detailAlbum = await getDetailAlbum(+this.props.match.params.id)
 
-
-                console.log("detailAlbum: ", detailAlbum);
                 if (detailAlbum && detailAlbum.album) {
 
                     let result = detailAlbum.album[0].AlbumForSongs.map(item => {
                         if (!isNaN(item.timePlay)) {
                             item.timePlay = this.fancyTimeFormat(item.timePlay, 'SONGS');
                         }
+
+                        item.nameForSong = "";
+                        item.SongOfArtists.map((x, y) => {
+                            item.nameForSong = item.nameForSong + x.fullName + ', ';
+                        })
+                        item.nameForSong = item.nameForSong.replace(/,(\s+)?$/, '');
                         return item;
                     })
 
@@ -129,33 +132,16 @@ class Playlist extends Component {
                         description: detailAlbum.album[0].description,
                         countSongs: Object.keys(detailAlbum.album[0].AlbumForSongs).length,
                         playlistTimeLength: albumTimeLength,
-                        type: 'Album'
+                        type: 'Album',
                     })
-
-
                 }
             }
         }
-
-
-
-        console.log(this.state)
     }
 
     componentDidUpdate(prevProps, prevState) {
     }
 
-
-    handleKeoTha = (e) => {
-        var min = e.target.min,
-            max = e.target.max,
-            val = e.target.value;
-
-
-        $(e.target).css({
-            'backgroundSize': (val - min) * 100 / (max - min) + '% 100%'
-        });
-    }
     toogleBtnTippy = () => {
         if (!this.state.isLogin) {
             let visible = this.state.visible;
@@ -167,25 +153,51 @@ class Playlist extends Component {
     }
 
     playAllPlaylist = async (listSongs) => {
-        console.log(listSongs);
-
-        await this.props.playAllPlaylist(listSongs);
+        await this.props.playAllPlaylist(listSongs, 'ALL');
     }
 
     playSong = async (pos, listSongs) => {
-        // alert(pos);
-        // await this.props.playAllPlaylist([]);
-
         let result = listSongs.filter((item, index) => index >= pos)
-        await this.props.playAllPlaylist(result);
+        await this.props.playAllPlaylist(result, 'ALL');
     }
 
+    toggleUserModal = () => {
+        this.setState({
+            isOpenModal: !this.state.isOpenModal,
+        })
+    }
+
+    handleClickAddSongPlaylist = async (dataSong, idPlaylist) => {
+
+        if (dataSong && idPlaylist) {
+            dataSong.playlistId = idPlaylist;
+
+            let response = await createNewSongInPlaylistForUser(dataSong);
+            if (response && response.errCode == 0) {
+                toast.success("Them thanh cong")
+            } else {
+                toast.success("Failed")
+            }
+        }
+    }
+
+    handleAddToQueue = async (detailSong) => {
+
+
+        let result = [];
+        if (detailSong) {
+            result.push(detailSong);
+        }
+        await this.props.playAllPlaylist(result, 'QUEUE');
+    }
 
     render() {
         let visible = this.state.visible;
 
         let { listSongs, namePlaylist, image, description, countSongs, playlistTimeLength } = this.state
+        let { listPlaylistOfUser } = this.props
 
+        console.log("Render: ", listPlaylistOfUser)
         return (
             <>
                 <div className="wrap">
@@ -216,146 +228,79 @@ class Playlist extends Component {
                                 </div>
                                 <div className="like-song">
                                     <div className='button-playlist' onClick={() => this.playAllPlaylist(listSongs)}><i class='fas fa-play'></i> </div>
-                                    <div className='button-like'>
-                                        <NavLink activeClassName="" to="/liked-song" exact><i class='fas fa-heart'></i></NavLink>
-                                    </div>
-                                    <div className='button-other'>
-                                        <Tippy
-                                            delay={200} theme='dark' visible={visible}
-                                            placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
-                                            content={
-                                                <div style={{ minWidth: '200px' }}>
-                                                    <h5>Add to queue</h5>
-                                                    <h5> Go to play audio</h5>
-                                                    <h5>Add your Libary</h5>
-                                                    <h5>Share</h5>
-                                                    <h5> About</h5>
-                                                    <h5> Open App</h5>
-                                                </div>
-                                            }>
-                                            <p className="nav__text" onClick={() => this.toogleBtnTippy()}> ... </p>
-                                        </Tippy>
-
-                                    </div>
                                 </div>
-                                <table class="table table-dark table-hover" style={{ backgroundColor: '#1a1a1a', paddingLeft: '20px' }}>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Title</th>
-                                            <th scope="col">Album</th>
-                                            <th scope="col">Date Add</th>
-                                            <th scope='col'><i className="fa fa-clock"></i></th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {listSongs && listSongs.map((item, index) => {
-                                            return (
-                                                <tr key={index} onClick={() => this.playSong(index, listSongs)}>
-                                                    <th scope="row">{index + 1}</th>
-                                                    <td className="info-song-play">
-                                                        <div className='content-song' style={{ display: 'flex' }}>
-                                                            <div className='img-song'>
-                                                                <img src={item.image} style={{ width: '40px', height: '40px' }} />
-                                                            </div>
-                                                            <div className='title-song' style={{ height: 'flex' }}>
-                                                                <p className="name-song" style={{ fontSize: '17px', marginBottom: '0px', marginTop: '0px', paddingLeft: '10px' }}>{item.nameSong}</p>
-                                                                <p style={{ marginBottom: '0px', paddingLeft: '10px' }}>AAAA</p>
-                                                            </div>
-
-
-                                                        </div>
-
-                                                    </td>
-                                                    <td>{namePlaylist}</td>
-                                                    <td>{moment(item.createdAt).fromNow()}</td>
-                                                    <td>{item.timePlay}</td>
-                                                    <td>
-                                                        <Tippy
-                                                            delay={200} theme='dark' trigger='click'
-                                                            placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
-                                                            content={
-                                                                <div style={{ minWidth: '200px', cursor: 'pointer' }}>
-                                                                    <h5>Add to queue</h5>
-                                                                    <h5> Go to play audio</h5>
-                                                                    <h5>Add your Libary</h5>
-                                                                    <h5>Share</h5>
-                                                                    <h5> About</h5>
-                                                                    <h5> Open App</h5>
+                                <div className='table-list-song' style={{ padding: '33px' }}>
+                                    <table class="table table-dark table-hover" style={{ backgroundColor: '#1a1a1a', paddingLeft: '20px' }}>
+                                        <thead >
+                                            <tr>
+                                                <th scope="col" style={{ borderTop: 'none' }}>#</th>
+                                                <th scope="col" style={{ borderTop: 'none' }}>Title</th>
+                                                <th scope="col" style={{ borderTop: 'none' }}>Album</th>
+                                                <th scope="col" style={{ borderTop: 'none' }}>Date Add</th>
+                                                <th scope='col' style={{ borderTop: 'none' }}><i className="fa fa-clock"></i></th>
+                                                <th scope="col" style={{ borderTop: 'none' }}></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {listSongs && listSongs.map((item, index) => {
+                                                return (
+                                                    <tr key={index} style={{ borderTop: 'none' }}>
+                                                        <td scope="row" style={{ borderTop: 'none' }} onClick={() => this.playSong(index, listSongs)}>{index + 1}</td>
+                                                        <td className="info-song-play" style={{ borderTop: 'none' }} onClick={() => this.playSong(index, listSongs)}>
+                                                            <div className='content-song' style={{ display: 'flex' }}>
+                                                                <div className='img-song'>
+                                                                    <img src={item.image} style={{ width: '40px', height: '40px' }} />
                                                                 </div>
-                                                            }>
-                                                            <p className="nav__text" style={{ cursor: 'pointer', fontWeight: '1000' }}> . . . </p>
-                                                        </Tippy>
-                                                    </td>
-                                                </tr>
-                                            )
+                                                                <div className='title-song' style={{ height: 'flex' }}>
+                                                                    <p className="name-song" style={{ fontSize: '17px', marginBottom: '0px', marginTop: '0px', paddingLeft: '10px' }}>{item.nameSong}</p>
+                                                                    <p style={{ marginBottom: '0px', paddingLeft: '10px', color: '#b3b3b3', fontSize: '13px', marginTop: '5px' }}>{item.nameForSong}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ borderTop: 'none' }}>{namePlaylist}</td>
+                                                        <td style={{ borderTop: 'none' }}>{moment(item.createdAt).fromNow()}</td>
+                                                        <td style={{ borderTop: 'none' }}>{item.timePlay}</td>
+                                                        <td style={{ borderTop: 'none' }}>
+                                                            <Tippy
+                                                                delay={200} theme='dark' trigger='click'
+                                                                placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
+                                                                content={
+                                                                    <div style={{ minWidth: '200px', cursor: 'pointer', paddingLeft: '10px' }}>
+                                                                        <h5 style={{ paddingLeft: '10px' }} onClick={() => this.handleAddToQueue(item)}>Add to queue</h5>
 
-                                        })}
+                                                                        <div className="btn-group dropleft">
+                                                                            <h5 type="button" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                Add your Libary
+                                                                            </h5>
+                                                                            <div className="dropdown-menu" style={{ backgroundColor: '#333', color: '#fff', padding: '10px', width: '200px' }}>
+                                                                                {/* Dropdown menu links */}
+                                                                                <h5 style={{ borderBottom: '1px solid #5c5c5c' }}>Create New Playlist</h5>
+                                                                                {listPlaylistOfUser && listPlaylistOfUser.map((playlist, indexPlaylist) => {
+                                                                                    return (
+                                                                                        <>
+                                                                                            <h5 key={indexPlaylist} onClick={() => this.handleClickAddSongPlaylist(item, playlist.id)}>{playlist.playlistName}</h5>
+                                                                                        </>
+                                                                                    )
+                                                                                })}
 
-                                        {/* <tr>
-                                            <th scope="row">2</th>
-                                            <td className="info-song-play">
-                                                <img src={imgHotHit} style={{ width: '40px', height: '40px' }} />
-                                                <p className="name-song">Ngày đầu tiên</p>
-                                            </td>
-                                            <td>Ngày đầu tiên</td>
-                                            <td>6 day ago</td>
-                                            <td>3:28</td>
-                                            <td>
-                                                <Tippy
-                                                    delay={200} theme='dark' trigger='click'
-                                                    placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
-                                                    content={
-                                                        <div style={{ minWidth: '200px', cursor: 'pointer' }}>
-                                                            <h5>Add to queue</h5>
-                                                            <h5> Go to play audio</h5>
-                                                            <h5>Add your Libary</h5>
-                                                            <h5>Share</h5>
-                                                            <h5> About</h5>
-                                                            <h5> Open App</h5>
-                                                        </div>
-                                                    }>
-                                                    <p className="nav__text" style={{ cursor: 'pointer', fontWeight: '1000' }}> . . . </p>
-                                                </Tippy>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td className="info-song-play">
-                                                <img src={imgHotHit} style={{ width: '40px', height: '40px' }} />
-                                                <p className="name-song">Ngày đầu tiên</p>
-                                            </td>
-                                            <td>Ngày đầu tiên</td>
-                                            <td>6 day ago</td>
-                                            <td>3:28</td>
-                                            <td>
-                                                <Tippy
-                                                    delay={200} theme='dark' trigger='click'
-                                                    placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
-                                                    content={
-                                                        <div style={{ minWidth: '200px', cursor: 'pointer' }}>
-                                                            <h5>Add to queue</h5>
-                                                            <h5> Go to play audio</h5>
-                                                            <h5>Add your Libary</h5>
-                                                            <h5>Share</h5>
-                                                            <h5> About</h5>
-                                                            <h5> Open App</h5>
-                                                        </div>
-                                                    }>
-                                                    <p className="nav__text" style={{ cursor: 'pointer', fontWeight: '1000' }}> . . . </p>
-                                                </Tippy>
-                                            </td>
-                                        </tr> */}
-                                    </tbody>
-                                </table>
-                                {/* <div className=''>
-                                    SEE ALL
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                }>
+                                                                <p className="nav__text" style={{ cursor: 'pointer', fontWeight: '1000' }}> . . . </p>
+                                                            </Tippy>
+                                                        </td>
+                                                    </tr>
+                                                )
+
+                                            })}
+
+
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <hr />
-                                <FanAlsoLike />
-                                <hr /> */}
-                                {/* <AboutArtist /> */}
+
                             </div>
                         </div>
                     </div >
@@ -371,14 +316,16 @@ const mapStateToProps = state => {
     return {
         isLoggedInUser: state.user.isLoggedInUser,
         listPlaylist: state.admin.listPlaylist,
-
+        userInfo: state.user.userInfo,
+        listPlaylistOfUser: state.user.listPlaylistOfUser
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         fetchAllPlaylist: () => dispatch(actions.fetchAllPlaylist()),
-        playAllPlaylist: (listSongs) => dispatch(actions.playAllPlaylist(listSongs)),
+        playAllPlaylist: (listSongs, typeSong) => dispatch(actions.playAllPlaylist(listSongs, typeSong)),
+        fetchAllPlaylistByUser: (id) => dispatch(actions.fetchAllPlaylistByUser(id)),
     };
 };
 

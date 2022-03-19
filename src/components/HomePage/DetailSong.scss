@@ -135,6 +135,46 @@
             }
         }
 
+        .button-activelike {
+            padding-left: 16px;
+            margin-top  : 10px;
+            cursor      : pointer;
+
+            //background-color: red;
+            &:hover {
+                font-weight: lighter;
+                transform  : scale(1.05);
+                color      : #f0fff0;
+            }
+
+            i {
+                color    : rgb(231, 15, 15);
+                font-size: 60px;
+
+            }
+        }
+
+        .button-dislike {
+            padding-left: 16px;
+            margin-top  : 10px;
+            cursor      : pointer;
+
+            &:hover {
+                font-weight: lighter;
+                transform  : scale(1.05);
+                color      : #f0fff0;
+            }
+
+            i {
+                color    : white;
+                font-size: 60px;
+
+                &:hover {
+                    color: rgb(247, 244, 244);
+                }
+            }
+        }
+
         .button-other {
             padding-left: 26px;
             cursor      : pointer;

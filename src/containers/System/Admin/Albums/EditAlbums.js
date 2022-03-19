@@ -136,7 +136,17 @@ class EditAlbum extends Component {
         let reader = new FileReader();
         let file = e.target.files[0];
 
-        if (file) {
+        /*------------ Duck ------------*/
+        if (!file.name.match(/\.(mp3)$/)) {
+            Swal.fire({
+                title: 'Missing data?',
+                text: "Sai định dạng âm thanh!",
+                icon: 'warning',
+            })
+        }
+        /*------------ Duck ------------*/
+
+        else if (file) {
             let base64 = await CommonUtils.getBase64(file);
             reader.onloadend = () => {
                 this.setState({

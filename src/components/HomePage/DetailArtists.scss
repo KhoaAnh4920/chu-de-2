@@ -1,15 +1,20 @@
-.main-playlist {
-    display: block;
-    height : 100%;
-    left   : 0;
+.main-artists {
+    display   : block;
+    height    : 100%;
+    left      : 0;
+    overflow-x: hidden;
 
     position: absolute;
     top     : 0;
     width   : 100%;
+    padding : 10px;
 
     .content {
-        background: linear-gradient(135deg, rgb(8, 3, 34) 0%, rgb(41, 41, 66) 100%) !important;
-        display   : flex;
+        background    : linear-gradient(135deg, rgb(8, 3, 34) 0%, rgb(41, 41, 66) 100%) !important;
+        display       : flex;
+        padding-bottom: 10px;
+        padding-left  : 10px;
+        margin        : 0;
 
         .avatar {
 
@@ -25,7 +30,7 @@
             }
         }
 
-        .title-playlist {
+        .title-artists {
             margin-top: 240px;
             color     : white;
             width     : 70%;
@@ -115,4 +120,64 @@
             margin-top  : 18px;
         }
     }
+
+    .about-container {
+        padding-left: 30px;
+
+        .title-about {
+            color        : #fff;
+            font-weight  : 700;
+            margin-bottom: 30px;
+        }
+
+        .content-about {
+            width             : 700px;
+            height            : 360px;
+            background-color  : #282828;
+            padding           : 20px;
+            display           : flex;
+            flex-direction    : column;
+            -webkit-transition: all .4s ease-in-out;
+            -moz-transition   : all .4s ease-in-out;
+            -o-transition     : all .4s ease-in-out;
+            -ms-transition    : all .4s ease-in-out;
+
+            .image-about-artists {
+                height: 204px;
+
+                img {
+                    width        : 204px;
+                    height       : 204px;
+                    border-radius: 50%;
+                }
+            }
+
+            .description-about {
+                margin-top : 30px;
+                color      : #fff;
+                font-size  : 15px;
+                font-weight: 700;
+                line-height: 25px;
+
+                span {
+                    display      : inline-block;
+                    width        : 630px;
+                    white-space  : nowrap;
+                    overflow     : hidden !important;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            &:hover {
+                -webkit-transform: scale(1.2);
+                transform        : scale(1.2, 1.2);
+                -ms-transform    : scale(1.2, 1.2);
+                /* IE 9 */
+                -webkit-transform: scale(1.02, 1.02);
+                /* Safari and Chrome */
+            }
+        }
+    }
+
+
 }
