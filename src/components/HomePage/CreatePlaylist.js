@@ -41,6 +41,7 @@ class CreatePlaylist extends Component {
             dataSearch: null,
             playlistId: '',
             visible: false,
+            image: 'https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png'
         }
     }
 
@@ -62,6 +63,7 @@ class CreatePlaylist extends Component {
             this.setState({
                 listSongs: result,
                 playlistName: dataPlaylist.playlist[0].playlistName,
+                image: (dataPlaylist.playlist[0].image) ? dataPlaylist.playlist[0].image : this.state.image,
                 listSongsOfUser: dataPlaylist.playlist[0].SongInPlaylist,
                 playlistId: id,
                 dataPlaylist: dataPlaylist.playlist[0]
@@ -100,6 +102,7 @@ class CreatePlaylist extends Component {
                 playlistName: dataPlaylist.playlist[0].playlistName,
                 listSongsOfUser: dataPlaylist.playlist[0].SongInPlaylist,
                 playlistId: id,
+                image: (dataPlaylist.playlist[0].image) ? dataPlaylist.playlist[0].image : this.state.image,
                 dataPlaylist: dataPlaylist.playlist[0]
             })
 
@@ -163,6 +166,14 @@ class CreatePlaylist extends Component {
                 dataSearch: result
             })
         }
+    }
+
+    handleAddToQueue = async (detailSong) => {
+        let result = [];
+        if (detailSong) {
+            result.push(detailSong);
+        }
+        await this.props.playAllPlaylist(result, 'QUEUE');
     }
 
 
@@ -313,7 +324,7 @@ class CreatePlaylist extends Component {
 
 
     render() {
-        let { showList, listSongs, dataSearch, songKw, playlistName, listSongsOfUser, dataPlaylist, visible, playlistId } = this.state;
+        let { showList, listSongs, dataSearch, songKw, playlistName, listSongsOfUser, dataPlaylist, visible, playlistId, image } = this.state;
         let { userInfo, isLoggedInUser } = this.props;
 
 
@@ -332,7 +343,7 @@ class CreatePlaylist extends Component {
                             />
 
                             <div className="wrapcontent">
-                                <img className='imgLikedPage ' src='https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png' onClick={() => { this.handleCLickImge() }}></img>
+                                <img className='imgLikedPage ' src={image} onClick={() => { this.handleCLickImge() }}></img>
                                 <div className='title-playlist '>PLAYLIST
                                     <div className='title-likedsong' onClick={() => { this.handleCLickImge() }}>{playlistName}</div>
                                     {userInfo && isLoggedInUser &&
@@ -391,7 +402,7 @@ class CreatePlaylist extends Component {
                                                                     placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
                                                                     content={
                                                                         <div style={{ minWidth: '200px', cursor: 'pointer' }}>
-                                                                            <h5>Add to queue</h5>
+                                                                            <h5 onClick={() => this.handleAddToQueue(item)}>Add to queue</h5>
                                                                             <h5 onClick={() => this.handleClickRemoveSong(item)}>Remove from this Libary</h5>
                                                                         </div>
                                                                     }>
@@ -481,7 +492,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        playAllPlaylist: (detailSong) => dispatch(actions.playAllPlaylist(detailSong)),
+        playAllPlaylist: (listSongs, typeSong) => dispatch(actions.playAllPlaylist(listSongs, typeSong)),
         createNewPlaylistUser: () => dispatch(actions.createNewPlaylistUser()),
         editPlaylist: (data, type) => dispatch(actions.editPlaylist(data, type)),
         fetchAllPlaylistByUser: (id) => dispatch(actions.fetchAllPlaylistByUser(id)),
