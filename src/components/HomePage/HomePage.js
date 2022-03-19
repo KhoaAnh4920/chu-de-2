@@ -52,14 +52,16 @@ class HomePage extends Component {
 
 
 
-        let result = allPlaylist.playlist.filter(item => item.userId === null)
+        allPlaylist = allPlaylist.playlist.filter(item => item.userId === null)
+        allMadeForYou = allMadeForYou.playlist.filter(item => item.userId === null)
+
 
         if (allAlums && allPlaylist && allArtists && allMadeForYou) {
             this.setState({
                 listAlbums: allAlums.albums,
-                listPlaylist: result,
+                listPlaylist: allPlaylist,
                 listArtists: allArtists.artists,
-                listMadeForYou: allMadeForYou.playlist,
+                listMadeForYou: allMadeForYou,
                 listTopMix: allTopMix.playlist,
                 listUsUk: allUsUk.playlist,
                 newSongs: newSongs,
