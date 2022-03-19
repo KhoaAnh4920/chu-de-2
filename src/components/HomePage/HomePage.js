@@ -21,6 +21,7 @@ import { getAllSong } from '../../services/SongService';
 import { getAllPlaylist, getRandomPlaylist, getPlaylistByKeyword, getPlaylistByGenres } from '../../services/PlaylistService';
 import { getAllArtists } from '../../services/ArtistsService';
 import { saveHistorySong, getHistorySong } from "../../services/historySongService";
+import LoadingOverlay from "react-loading-overlay";
 
 
 class HomePage extends Component {
@@ -34,7 +35,8 @@ class HomePage extends Component {
             listMadeForYou: [],
             userInfo: {},
             listPlaylistOfUser: [],
-            listHistoryMusic: []
+            listHistoryMusic: [],
+            isShowLoading: true
         }
     }
 
@@ -66,7 +68,7 @@ class HomePage extends Component {
                 listUsUk: allUsUk.playlist,
                 newSongs: newSongs,
                 listChill: allChill.playlist,
-
+                isShowLoading: false
             })
         }
 
@@ -84,7 +86,8 @@ class HomePage extends Component {
                 isLogin: isLoggedInUser,
                 userInfo,
                 listPlaylistOfUser,
-                listHistoryMusic: historyMusic
+                listHistoryMusic: historyMusic,
+                isShowLoading: false
             })
         }
 
@@ -127,109 +130,36 @@ class HomePage extends Component {
 
         return (
             <>
+                <LoadingOverlay
+                    active={this.state.isShowLoading}
+                    spinner
+                    text='Vui lòng chờ trong giây lát...'
+                >
+                    <div className="wrap">
+                        <div className="list-area">
+                            <Sidebar />
+                            <div className="main">
+                                <Header />
 
-                <div className="wrap">
-                    <div className="list-area">
-                        <Sidebar />
-                        <div className="main">
-                            <Header />
-
-                            <div className="main__wrap">
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Lựa chọn của Spotifake</h4>
-                                        <NavLink activeClassName="active1" to="/all/playlist" exact>SEE ALL</NavLink>
-                                    </div>
-                                    <div className='list-item row'>
-                                        {listPlaylist.map((item, index) => {
-                                            if (index < 6) {
-                                                return (
-                                                    <div className='cart-music col-2' onClick={() => this.handlePlaylist(item.id)} key={index}>
-                                                        <div className='music-img'>
-                                                            <img src={item.image} />
-                                                            <div className='button-play'
-                                                                onClick={() => this.handlePlaylist(item.id)}
-                                                            ><i class='fas fa-play'></i> </div>
-                                                        </div>
-                                                        <div className='music-name'>{item.playlistName}</div>
-                                                        <div className='music-description'>{item.description}</div>
-                                                    </div>
-                                                )
-                                            }
-                                        })}
-
-                                    </div>
-                                </div>
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Albums hot</h4>
-                                    </div>
-                                    <div className='list-item row'>
-
-                                        {listAlbums.map((item, index) => {
-                                            if (index < 6) {
-                                                return (
-                                                    <div className='cart-music col-2' key={index} onClick={() => this.handleAlbum(item.id)}>
-                                                        <div className='music-img'>
-                                                            <img src={item.image} />
-                                                            <div className='button-play'><i class='fas fa-play'></i> </div>
-                                                        </div>
-                                                        <div className='music-name'>{item.albumName}</div>
-                                                        <div className='music-description'>{item.description}</div>
-                                                    </div>
-                                                )
-                                            }
-
-                                        })}
-
-                                    </div>
-                                </div>
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Made for you</h4>
-                                        <NavLink activeClassName="active1" to="/all/made-for-you" exact>SEE ALL</NavLink>
-                                    </div>
-                                    <div className='list-item row'>
-                                        {listMadeForYou && listMadeForYou.map((item, index) => {
-                                            if (index < 6) {
-                                                return (
-                                                    <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)} >
-                                                        <div className='music-img'>
-                                                            <img src={item.image} />
-                                                            <div className='button-play'><i class='fas fa-play'></i> </div>
-                                                        </div>
-                                                        <div className='music-name'>{item.playlistName}</div>
-                                                        <div className='music-description'>{item.description}</div>
-                                                    </div>
-                                                )
-                                            }
-
-
-                                        })}
-
-
-
-                                    </div>
-                                </div>
-                                {listHistoryMusic && Object.keys(listHistoryMusic).length > 0
-                                    &&
+                                <div className="main__wrap">
                                     <div className='list-music-container'>
                                         <div className='title-list'>
-                                            <h4>Recently played</h4>
+                                            <h4>Lựa chọn của Spotifake</h4>
+                                            <NavLink activeClassName="active1" to="/all/playlist" exact>SEE ALL</NavLink>
                                         </div>
                                         <div className='list-item row'>
-                                            {listHistoryMusic.slice(0, 6).map((item, index) => {
-                                                if (index >= 0) {
+                                            {listPlaylist.map((item, index) => {
+                                                if (index < 6) {
                                                     return (
-                                                        <div className='cart-music col-2'
-                                                            onClick={() => this.handleDetailSong(item.SongHistory.id)}
-                                                        >
+                                                        <div className='cart-music col-2' onClick={() => this.handlePlaylist(item.id)} key={index}>
                                                             <div className='music-img'>
-                                                                <img src={item.SongHistory.image} />
-                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                                <img src={item.image} />
+                                                                <div className='button-play'
+                                                                    onClick={() => this.handlePlaylist(item.id)}
+                                                                ><i class='fas fa-play'></i> </div>
                                                             </div>
-                                                            <div className='music-name'>{item.SongHistory.nameSong}</div>
-                                                            <div className='music-description'>{item.SongHistory.description}</div>
+                                                            <div className='music-name'>{item.playlistName}</div>
+                                                            <div className='music-description'>{item.description}</div>
                                                         </div>
                                                     )
                                                 }
@@ -237,123 +167,203 @@ class HomePage extends Component {
 
                                         </div>
                                     </div>
-                                }
+                                    <div className='list-music-container'>
+                                        <div className='title-list'>
+                                            <h4>Albums hot</h4>
+                                        </div>
+                                        <div className='list-item row'>
 
-
-
-
-                                {/* Your Top Mix */}
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Your Top Mix</h4>
-                                        <NavLink activeClassName="active1" to="/all/top-mix" exact>SEE ALL</NavLink>
-                                    </div>
-                                    <div className='list-item row'>
-                                        {listTopMix && listTopMix.map((item, index) => {
-                                            if (index < 6) {
-                                                return (
-                                                    <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)}>
-                                                        <div className='music-img'>
-                                                            <img src={item.image} />
-                                                            <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            {listAlbums.map((item, index) => {
+                                                if (index < 6) {
+                                                    return (
+                                                        <div className='cart-music col-2' key={index} onClick={() => this.handleAlbum(item.id)}>
+                                                            <div className='music-img'>
+                                                                <img src={item.image} />
+                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                            </div>
+                                                            <div className='music-name'>{item.albumName}</div>
+                                                            <div className='music-description'>{item.description}</div>
                                                         </div>
-                                                        <div className='music-name'>{item.playlistName}</div>
-                                                        <div className='music-description'>{item.description}</div>
-                                                    </div>
-                                                )
-                                            }
-                                        })}
+                                                    )
+                                                }
 
-                                    </div>
-                                </div>
+                                            })}
 
-                                {/* Âu Mỹ Nổi Bật */}
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Âu Mỹ Nổi Bật</h4>
-                                        <NavLink activeClassName="active1" to="/all/us-uk" exact>SEE ALL</NavLink>
+                                        </div>
                                     </div>
-                                    <div className='list-item row'>
-                                        {listUsUk && listUsUk.map((item, index) => {
-                                            if (index < 6) {
-                                                return (
-                                                    <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)} >
-                                                        <div className='music-img'>
-                                                            <img src={item.image} />
-                                                            <div className='button-play'><i class='fas fa-play'></i> </div>
+                                    <div className='list-music-container'>
+                                        <div className='title-list'>
+                                            <h4>Made for you</h4>
+                                            <NavLink activeClassName="active1" to="/all/made-for-you" exact>SEE ALL</NavLink>
+                                        </div>
+                                        <div className='list-item row'>
+                                            {listMadeForYou && listMadeForYou.map((item, index) => {
+                                                if (index < 6) {
+                                                    return (
+                                                        <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)} >
+                                                            <div className='music-img'>
+                                                                <img src={item.image} />
+                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                            </div>
+                                                            <div className='music-name'>{item.playlistName}</div>
+                                                            <div className='music-description'>{item.description}</div>
                                                         </div>
-                                                        <div className='music-name'>{item.playlistName}</div>
-                                                        <div className='music-description'>{item.description}</div>
-                                                    </div>
-                                                )
-                                            }
-                                        })}
+                                                    )
+                                                }
 
 
+                                            })}
+
+
+
+                                        </div>
                                     </div>
-                                </div>
+                                    {listHistoryMusic && Object.keys(listHistoryMusic).length > 0
+                                        &&
+                                        <div className='list-music-container'>
+                                            <div className='title-list'>
+                                                <h4>Recently played</h4>
+                                            </div>
+                                            <div className='list-item row'>
+                                                {listHistoryMusic.slice(0, 6).map((item, index) => {
+                                                    if (index >= 0) {
+                                                        return (
+                                                            <div className='cart-music col-2'
+                                                                onClick={() => this.handleDetailSong(item.SongHistory.id)}
+                                                            >
+                                                                <div className='music-img'>
+                                                                    <img src={item.SongHistory.image} />
+                                                                    <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                                </div>
+                                                                <div className='music-name'>{item.SongHistory.nameSong}</div>
+                                                                <div className='music-description'>{item.SongHistory.description}</div>
+                                                            </div>
+                                                        )
+                                                    }
+                                                })}
 
-                                {/* Bài Hát Mới Nhất */}
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Bài Hát Mới Nhất</h4>
-                                        <NavLink activeClassName="active1" to="/all/new-song" exact>SEE ALL</NavLink>
-                                    </div>
-                                    <div className='list-item row'>
-                                        {newSongs && newSongs.map((item, index) => {
-                                            if (index < 6) {
-                                                return (
-                                                    <div className='cart-music col-2' key={index} onClick={() => this.handleDetailSong(item.id)} >
-                                                        <div className='music-img'>
-                                                            <img src={item.image} />
-                                                            <div className='button-play'><i class='fas fa-play'></i> </div>
+                                            </div>
+                                        </div>
+                                    }
+
+
+
+
+                                    {/* Your Top Mix */}
+                                    <div className='list-music-container'>
+                                        <div className='title-list'>
+                                            <h4>Your Top Mix</h4>
+                                            <NavLink activeClassName="active1" to="/all/top-mix" exact>SEE ALL</NavLink>
+                                        </div>
+                                        <div className='list-item row'>
+                                            {listTopMix && listTopMix.map((item, index) => {
+                                                if (index < 6) {
+                                                    return (
+                                                        <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)}>
+                                                            <div className='music-img'>
+                                                                <img src={item.image} />
+                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                            </div>
+                                                            <div className='music-name'>{item.playlistName}</div>
+                                                            <div className='music-description'>{item.description}</div>
                                                         </div>
-                                                        <div className='music-name'>{item.nameSong}</div>
-                                                        <div className='music-description'>{item.SongOfArtists[0].fullName}</div>
-                                                    </div>
-                                                )
+                                                    )
+                                                }
+                                            })}
 
-                                            }
-
-                                        })}
-
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Chill */}
-                                <div className='list-music-container'>
-                                    <div className='title-list'>
-                                        <h4>Chill</h4>
-                                        <NavLink activeClassName="active1" to="/all/chill-playlist" exact>SEE ALL</NavLink>
-                                    </div>
-                                    <div className='list-item row'>
-                                        {listChill && listChill.map((item, index) => {
-                                            if (index < 6) {
-                                                return (
-                                                    <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)}>
-                                                        <div className='music-img'>
-                                                            <img src={item.image} />
-                                                            <div className='button-play'><i class='fas fa-play'></i> </div>
+                                    {/* Âu Mỹ Nổi Bật */}
+                                    <div className='list-music-container'>
+                                        <div className='title-list'>
+                                            <h4>Âu Mỹ Nổi Bật</h4>
+                                            <NavLink activeClassName="active1" to="/all/us-uk" exact>SEE ALL</NavLink>
+                                        </div>
+                                        <div className='list-item row'>
+                                            {listUsUk && listUsUk.map((item, index) => {
+                                                if (index < 6) {
+                                                    return (
+                                                        <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)} >
+                                                            <div className='music-img'>
+                                                                <img src={item.image} />
+                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                            </div>
+                                                            <div className='music-name'>{item.playlistName}</div>
+                                                            <div className='music-description'>{item.description}</div>
                                                         </div>
-                                                        <div className='music-name'>{item.playlistName}</div>
-                                                        <div className='music-description'>{item.description}</div>
-                                                    </div>
-                                                )
-                                            }
-                                        })}
+                                                    )
+                                                }
+                                            })}
 
 
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* ARTISTS */}
-                                <FanAlsoLike listArtists={listArtists} />
+                                    {/* Bài Hát Mới Nhất */}
+                                    <div className='list-music-container'>
+                                        <div className='title-list'>
+                                            <h4>Bài Hát Mới Nhất</h4>
+                                            <NavLink activeClassName="active1" to="/all/new-song" exact>SEE ALL</NavLink>
+                                        </div>
+                                        <div className='list-item row'>
+                                            {newSongs && newSongs.map((item, index) => {
+                                                if (index < 6) {
+                                                    return (
+                                                        <div className='cart-music col-2' key={index} onClick={() => this.handleDetailSong(item.id)} >
+                                                            <div className='music-img'>
+                                                                <img src={item.image} />
+                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                            </div>
+                                                            <div className='music-name'>{item.nameSong}</div>
+                                                            <div className='music-description'>{item.SongOfArtists[0].fullName}</div>
+                                                        </div>
+                                                    )
+
+                                                }
+
+                                            })}
+
+                                        </div>
+                                    </div>
+
+                                    {/* Chill */}
+                                    <div className='list-music-container'>
+                                        <div className='title-list'>
+                                            <h4>Chill</h4>
+                                            <NavLink activeClassName="active1" to="/all/chill-playlist" exact>SEE ALL</NavLink>
+                                        </div>
+                                        <div className='list-item row'>
+                                            {listChill && listChill.map((item, index) => {
+                                                if (index < 6) {
+                                                    return (
+                                                        <div className='cart-music col-2' key={index} onClick={() => this.handlePlaylist(item.id)}>
+                                                            <div className='music-img'>
+                                                                <img src={item.image} />
+                                                                <div className='button-play'><i class='fas fa-play'></i> </div>
+                                                            </div>
+                                                            <div className='music-name'>{item.playlistName}</div>
+                                                            <div className='music-description'>{item.description}</div>
+                                                        </div>
+                                                    )
+                                                }
+                                            })}
+
+
+                                        </div>
+                                    </div>
+
+                                    {/* ARTISTS */}
+                                    <FanAlsoLike listArtists={listArtists} />
+                                </div>
                             </div>
                         </div>
+                        {/* PlayBar */}
+                        {/* < PlayBar /> */}
                     </div>
-                    {/* PlayBar */}
-                    {/* < PlayBar /> */}
-                </div>
+                </LoadingOverlay>
+
+
 
             </>
         )

@@ -148,8 +148,9 @@ class UserLogin extends Component {
                             <div className='col-3'></div>
                             <div className='login-container col-6'>
                                 <p className='textLogin'>To continue, log in to Spotify.</p>
-                                {/* <button className='btn btn-login-facebook'><i class="fab fa-facebook-square"></i>CONTINUE WITH FACEBOOK</button> */}
-                                <div className='social-login'>
+                                <button className='btn btn-login-facebook'><i class="fab fa-facebook-square"></i>CONTINUE WITH FACEBOOK</button>
+                                {/* <div className='social-login'>
+                              
                                     <FacebookLogin
                                         appId="1099784044200990"
                                         autoLoad={true}
@@ -158,7 +159,7 @@ class UserLogin extends Component {
                                         cssClass="btn btn-login-facebook"
                                         icon={<i class="fab fa-facebook-square"></i>}
                                         callback={this.responseFacebook} />
-                                </div>
+                                </div> */}
 
                                 <div className='dash-or'>
                                     <hr className='dash-hr' />

@@ -22,6 +22,7 @@ import {
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import Swal from 'sweetalert2';
+import LoadingOverlay from "react-loading-overlay";
 
 
 
@@ -41,7 +42,8 @@ class CreatePlaylist extends Component {
             dataSearch: null,
             playlistId: '',
             visible: false,
-            image: 'https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png'
+            image: 'https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png',
+            isShowLoading: true
         }
     }
 
@@ -66,7 +68,8 @@ class CreatePlaylist extends Component {
                 image: (dataPlaylist.playlist[0].image) ? dataPlaylist.playlist[0].image : this.state.image,
                 listSongsOfUser: dataPlaylist.playlist[0].SongInPlaylist,
                 playlistId: id,
-                dataPlaylist: dataPlaylist.playlist[0]
+                dataPlaylist: dataPlaylist.playlist[0],
+                isShowLoading: false
             })
         }
     }
@@ -103,7 +106,8 @@ class CreatePlaylist extends Component {
                 listSongsOfUser: dataPlaylist.playlist[0].SongInPlaylist,
                 playlistId: id,
                 image: (dataPlaylist.playlist[0].image) ? dataPlaylist.playlist[0].image : this.state.image,
-                dataPlaylist: dataPlaylist.playlist[0]
+                dataPlaylist: dataPlaylist.playlist[0],
+                isShowLoading: false
             })
 
         }
@@ -180,6 +184,9 @@ class CreatePlaylist extends Component {
     handleAddSongInPlaylist = async (data) => {
 
         if (data) {
+            this.setState({
+                isShowLoading: true
+            })
             data.playlistId = this.state.playlistId;
 
             let response = await createNewSongInPlaylistForUser(data);
@@ -203,7 +210,8 @@ class CreatePlaylist extends Component {
                 await this.setState({
                     listSongsOfUser: dataPlaylist.playlist[0].SongInPlaylist,
                     listSongs: result,
-                    dataPlaylist: dataPlaylist.playlist[0]
+                    dataPlaylist: dataPlaylist.playlist[0],
+                    isShowLoading: false
                 })
 
                 toast.success("Them thanh cong")
@@ -215,8 +223,12 @@ class CreatePlaylist extends Component {
 
     handleClickRemoveSong = async (data) => {
         if (data) {
-            let playlistId = this.state.playlistId;
+            this.setState({
+                isShowLoading: true
+            })
 
+
+            let playlistId = this.state.playlistId;
             let response = await removeSongInPlaylistForUser(playlistId, data.id);
 
             if (response && response.errCode == 0) {
@@ -238,7 +250,8 @@ class CreatePlaylist extends Component {
                 await this.setState({
                     listSongsOfUser: dataPlaylist.playlist[0].SongInPlaylist,
                     listSongs: result,
-                    dataPlaylist: dataPlaylist.playlist[0]
+                    dataPlaylist: dataPlaylist.playlist[0],
+                    isShowLoading: false
                 })
 
                 toast.success("Xóa thanh cong")
@@ -283,6 +296,9 @@ class CreatePlaylist extends Component {
 
 
         if (data) {
+            this.setState({
+                isShowLoading: true
+            })
             await this.props.editPlaylist({
                 playlistName: data.playlistName,
                 image: data.image,
@@ -295,6 +311,7 @@ class CreatePlaylist extends Component {
                 isOpenModal: false,
                 playlistName: data.playlistName,
                 image: data.image,
+                isShowLoading: false
             })
             await this.props.fetchAllPlaylistByUser(this.props.userInfo.id)
         }
@@ -309,7 +326,6 @@ class CreatePlaylist extends Component {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 let res = await deletePlaylistService(playlistId);
-
 
                 if (res && res.errCode === 0) {
                     await this.props.fetchAllPlaylistByUser(this.props.userInfo.id);
@@ -330,154 +346,162 @@ class CreatePlaylist extends Component {
 
         return (
             <>
-                <div className="wrapLikedSong">
-                    <div className="list-area">
-                        <Sidebar />
-                        <div className="main">
-                            <Header />
-                            <ModalPlayList
-                                isOpen={this.state.isOpenModal}
-                                toggleFromParent={this.toggleUserModal}
-                                dataPlaylist={dataPlaylist}
-                                saveEditPlaylist={this.saveEditPlaylist}
-                            />
+                <LoadingOverlay
+                    active={this.state.isShowLoading}
+                    spinner
+                    text='Vui lòng chờ trong giây lát...'
+                >
 
-                            <div className="wrapcontent">
-                                <img className='imgLikedPage ' src={image} onClick={() => { this.handleCLickImge() }}></img>
-                                <div className='title-playlist '>PLAYLIST
-                                    <div className='title-likedsong' onClick={() => { this.handleCLickImge() }}>{playlistName}</div>
-                                    {userInfo && isLoggedInUser &&
-                                        <p style={{ marginTop: '20px' }}>{userInfo.fullName}</p>
+                    <div className="wrapLikedSong">
+                        <div className="list-area">
+                            <Sidebar />
+                            <div className="main">
+                                <Header />
+                                <ModalPlayList
+                                    isOpen={this.state.isOpenModal}
+                                    toggleFromParent={this.toggleUserModal}
+                                    dataPlaylist={dataPlaylist}
+                                    saveEditPlaylist={this.saveEditPlaylist}
+                                />
+
+                                <div className="wrapcontent">
+                                    <img className='imgLikedPage ' src={image} onClick={() => { this.handleCLickImge() }}></img>
+                                    <div className='title-playlist '>PLAYLIST
+                                        <div className='title-likedsong' onClick={() => { this.handleCLickImge() }}>{playlistName}</div>
+                                        {userInfo && isLoggedInUser &&
+                                            <p style={{ marginTop: '20px' }}>{userInfo.fullName}</p>
+                                        }
+
+                                    </div>
+                                </div>
+                                <div className="like-song">
+                                    {listSongsOfUser && Object.keys(listSongsOfUser).length > 0 &&
+                                        <div className='button-playlist' onClick={() => this.playAllPlaylist(listSongsOfUser)}><i class='fas fa-play'></i> </div>
                                     }
 
+                                    <div className='button-other'>
+                                        <Menu menuButton={<MenuButton className={'btn-three-dots'}>...</MenuButton>} transition>
+                                            <MenuItem onClick={() => this.handleDeletePlaylist(playlistId)} className={'delete-playlist'}>Delete Playlist</MenuItem>
+                                        </Menu>
+
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="like-song">
-                                {listSongsOfUser && Object.keys(listSongsOfUser).length > 0 &&
-                                    <div className='button-playlist' onClick={() => this.playAllPlaylist(listSongsOfUser)}><i class='fas fa-play'></i> </div>
+                                {listSongsOfUser && listSongsOfUser.length > 0 &&
+                                    <>
+
+                                        <div className='table-song-of-user' style={{ padding: '33px' }}>
+                                            <table class="table table-dark table-hover" style={{ backgroundColor: '#1a1a1a', paddingLeft: '20px' }}>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style={{ borderTop: 'none' }}>#</th>
+                                                        <th scope="col" style={{ borderTop: 'none' }}>Title</th>
+                                                        <th scope='col' style={{ borderTop: 'none' }}><i className="fa fa-clock"></i></th>
+                                                        <th scope="col" style={{ borderTop: 'none' }}></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {listSongsOfUser.map((item, index) => {
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td scope="row" style={{ borderTop: 'none' }} onClick={() => this.playSong(item)}>{index + 1}</td>
+                                                                <td className="info-song-play" style={{ borderTop: 'none' }} onClick={() => this.playSong(item)}>
+                                                                    <div className='content-song' style={{ display: 'flex' }}>
+                                                                        <div className='img-song'>
+                                                                            <img src={item.image} style={{ width: '40px', height: '40px' }} />
+                                                                        </div>
+                                                                        <div className='title-song' style={{ height: 'flex' }}>
+                                                                            <p className="name-song" style={{ fontSize: '17px', marginBottom: '0px', marginTop: '0px', paddingLeft: '10px' }}>{item.nameSong}</p>
+                                                                            <p style={{ marginBottom: '0px', paddingLeft: '10px', color: '#b3b3b3', fontSize: '13px', marginTop: '5px' }}>{item.nameArtistsForSong}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+
+
+                                                                <td style={{ borderTop: 'none' }}>{this.fancyTimeFormat(item.timePlay, 'SONGS')}</td>
+                                                                <td style={{ borderTop: 'none' }}>
+                                                                    <Tippy
+                                                                        delay={200} theme='dark' trigger='click'
+                                                                        placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
+                                                                        content={
+                                                                            <div style={{ minWidth: '200px', cursor: 'pointer' }}>
+                                                                                <h5 onClick={() => this.handleAddToQueue(item)}>Add to queue</h5>
+                                                                                <h5 onClick={() => this.handleClickRemoveSong(item)}>Remove from this Libary</h5>
+                                                                            </div>
+                                                                        }>
+                                                                        <p className="nav__text" style={{ cursor: 'pointer', fontWeight: '1000' }}> . . . </p>
+                                                                    </Tippy>
+                                                                </td>
+                                                            </tr>
+                                                        )
+
+                                                    })}
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+                                    </>
+
                                 }
 
-                                <div className='button-other'>
-                                    <Menu menuButton={<MenuButton className={'btn-three-dots'}>...</MenuButton>} transition>
-                                        <MenuItem onClick={() => this.handleDeletePlaylist(playlistId)} className={'delete-playlist'}>Delete Playlist</MenuItem>
-                                    </Menu>
+                                {showList === false ?
+                                    <>
+                                        <div className='title-searchsong '>Let's find something for your playlist</div>
+                                        <input className='input-search'
+                                            type='text'
+                                            placeholder='Search for songs or espisodes'
+                                            onChange={(event) => this.handleOnChangeInput(event, 'songKw')}
+                                        />
+                                        <button className='X' onClick={() => this.handleShowHide()}>
+                                            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/VisualEditor_-_Icon_-_Close_-_white.svg/1200px-VisualEditor_-_Icon_-_Close_-_white.svg.png' width="40px" height="45px"></img>
+                                        </button>
+                                        {dataSearch &&
+                                            <div className='listSong' style={{ marginTop: '30px' }}>
+                                                <h3>Result For {songKw}</h3>
 
-                                </div>
+                                                <table id="customers" style={{ width: "100%" }}>
+                                                    {dataSearch.map((item, index) => {
+                                                        return (
+                                                            <tr key={index} >
+                                                                <td style={{ width: "50px" }} onClick={() => this.playSong(item)}><img className='imgSong' src={item.image} width="50px" /></td>
+                                                                <td className='nameSong' onClick={() => this.playSong(item)}> {item.nameSong} <p className='artistName'>{item.nameOfSong}</p></td>
+                                                                <td className='theloai'>{item.GenresSong.genresName}</td>
+                                                                <button className='addsong' onClick={() => this.handleAddSongInPlaylist(item)} >ADD</button>
+                                                            </tr>
+                                                        )
+
+                                                    })}
+
+
+                                                </table></div>
+                                        }
+
+                                    </>
+                                    :
+                                    <div className='listSong'>
+                                        <h3>Recommended</h3>
+                                        <button className='btnFindSong' onClick={() => this.handleShowHide()}>FIND SONGS</button>
+                                        <table id="customers" style={{ width: "100%" }}>
+                                            {listSongs && listSongs.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td style={{ width: "50px" }}><img className='imgSong' src={item.image} width="50px" onClick={() => this.playSong(item)} /></td>
+                                                        <td className='nameSong' onClick={() => this.playSong(item)}> {item.nameSong} <p className='artistName'>{item.nameOfSong}</p></td>
+                                                        <td className='theloai'>{item.GenresSong.genresName}</td>
+                                                        <button className='addsong' onClick={() => this.handleAddSongInPlaylist(item)}>ADD</button>
+                                                    </tr>
+                                                )
+
+                                            })}
+
+                                        </table></div>
+                                }
                             </div>
-                            {listSongsOfUser && listSongsOfUser.length > 0 &&
-                                <>
-
-                                    <div className='table-song-of-user' style={{ padding: '33px' }}>
-                                        <table class="table table-dark table-hover" style={{ backgroundColor: '#1a1a1a', paddingLeft: '20px' }}>
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col" style={{ borderTop: 'none' }}>#</th>
-                                                    <th scope="col" style={{ borderTop: 'none' }}>Title</th>
-                                                    <th scope='col' style={{ borderTop: 'none' }}><i className="fa fa-clock"></i></th>
-                                                    <th scope="col" style={{ borderTop: 'none' }}></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {listSongsOfUser.map((item, index) => {
-                                                    return (
-                                                        <tr key={index}>
-                                                            <td scope="row" style={{ borderTop: 'none' }} onClick={() => this.playSong(item)}>{index + 1}</td>
-                                                            <td className="info-song-play" style={{ borderTop: 'none' }} onClick={() => this.playSong(item)}>
-                                                                <div className='content-song' style={{ display: 'flex' }}>
-                                                                    <div className='img-song'>
-                                                                        <img src={item.image} style={{ width: '40px', height: '40px' }} />
-                                                                    </div>
-                                                                    <div className='title-song' style={{ height: 'flex' }}>
-                                                                        <p className="name-song" style={{ fontSize: '17px', marginBottom: '0px', marginTop: '0px', paddingLeft: '10px' }}>{item.nameSong}</p>
-                                                                        <p style={{ marginBottom: '0px', paddingLeft: '10px', color: '#b3b3b3', fontSize: '13px', marginTop: '5px' }}>{item.nameArtistsForSong}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-
-
-                                                            <td style={{ borderTop: 'none' }}>{this.fancyTimeFormat(item.timePlay, 'SONGS')}</td>
-                                                            <td style={{ borderTop: 'none' }}>
-                                                                <Tippy
-                                                                    delay={200} theme='dark' trigger='click'
-                                                                    placement={'bottom'} animation='perspective' offset={[40, 20]} interactive={true}
-                                                                    content={
-                                                                        <div style={{ minWidth: '200px', cursor: 'pointer' }}>
-                                                                            <h5 onClick={() => this.handleAddToQueue(item)}>Add to queue</h5>
-                                                                            <h5 onClick={() => this.handleClickRemoveSong(item)}>Remove from this Libary</h5>
-                                                                        </div>
-                                                                    }>
-                                                                    <p className="nav__text" style={{ cursor: 'pointer', fontWeight: '1000' }}> . . . </p>
-                                                                </Tippy>
-                                                            </td>
-                                                        </tr>
-                                                    )
-
-                                                })}
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-
-                                </>
-
-                            }
-
-                            {showList === false ?
-                                <>
-                                    <div className='title-searchsong '>Let's find something for your playlist</div>
-                                    <input className='input-search'
-                                        type='text'
-                                        placeholder='Search for songs or espisodes'
-                                        onChange={(event) => this.handleOnChangeInput(event, 'songKw')}
-                                    />
-                                    <button className='X' onClick={() => this.handleShowHide()}>
-                                        <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/VisualEditor_-_Icon_-_Close_-_white.svg/1200px-VisualEditor_-_Icon_-_Close_-_white.svg.png' width="40px" height="45px"></img>
-                                    </button>
-                                    {dataSearch &&
-                                        <div className='listSong' style={{ marginTop: '30px' }}>
-                                            <h3>Result For {songKw}</h3>
-
-                                            <table id="customers" style={{ width: "100%" }}>
-                                                {dataSearch.map((item, index) => {
-                                                    return (
-                                                        <tr key={index} >
-                                                            <td style={{ width: "50px" }} onClick={() => this.playSong(item)}><img className='imgSong' src={item.image} width="50px" /></td>
-                                                            <td className='nameSong' onClick={() => this.playSong(item)}> {item.nameSong} <p className='artistName'>{item.nameOfSong}</p></td>
-                                                            <td className='theloai'>{item.GenresSong.genresName}</td>
-                                                            <button className='addsong' onClick={() => this.handleAddSongInPlaylist(item)} >ADD</button>
-                                                        </tr>
-                                                    )
-
-                                                })}
-
-
-                                            </table></div>
-                                    }
-
-                                </>
-                                :
-                                <div className='listSong'>
-                                    <h3>Recommended</h3>
-                                    <button className='btnFindSong' onClick={() => this.handleShowHide()}>FIND SONGS</button>
-                                    <table id="customers" style={{ width: "100%" }}>
-                                        {listSongs && listSongs.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td style={{ width: "50px" }}><img className='imgSong' src={item.image} width="50px" onClick={() => this.playSong(item)} /></td>
-                                                    <td className='nameSong' onClick={() => this.playSong(item)}> {item.nameSong} <p className='artistName'>{item.nameOfSong}</p></td>
-                                                    <td className='theloai'>{item.GenresSong.genresName}</td>
-                                                    <button className='addsong' onClick={() => this.handleAddSongInPlaylist(item)}>ADD</button>
-                                                </tr>
-                                            )
-
-                                        })}
-
-                                    </table></div>
-                            }
                         </div>
                     </div>
-                </div>
+                </LoadingOverlay>
+
 
             </>
         )
