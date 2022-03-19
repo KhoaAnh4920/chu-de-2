@@ -12,8 +12,14 @@ let app = express();
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
 
+    const allowedOrigins = ['https://spotifakeplus.herokuapp.com', 'http://spotifakeplus.herokuapp.com'];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'https://spotifakeplus.herokuapp.com');
+    // res.setHeader('Access-Control-Allow-Origin', 'https://spotifakeplus.herokuapp.com');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
