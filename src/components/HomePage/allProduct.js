@@ -14,6 +14,10 @@ import { getAllArtists } from '../../services/ArtistsService';
 import { getAllAlbums } from '../../services/AlbumService';
 import { getAllSong } from '../../services/SongService'
 import { getAllPlaylist, getPlaylistByKeyword, getPlaylistByGenres } from '../../services/PlaylistService';
+import * as actions from "../../store/actions";
+
+
+
 
 
 class allProduct extends Component {
@@ -32,6 +36,7 @@ class allProduct extends Component {
 
     async componentDidMount() {
 
+
         let url = this.props.match.url;
 
         if (url.indexOf("/all/artist") !== -1) {
@@ -48,9 +53,12 @@ class allProduct extends Component {
         if (url.indexOf("/all/playlist") !== -1) {
 
             let listPlaylist = await getAllPlaylist();
+
+            listPlaylist = listPlaylist.playlist.filter(item => item.userId === null)
+
             if (listPlaylist) {
                 this.setState({
-                    listPlaylist: listPlaylist.playlist,
+                    listPlaylist: listPlaylist,
                     listArtists: [],
                     listAllbum: [],
                     listMadeForYou: []
@@ -60,9 +68,13 @@ class allProduct extends Component {
         if (url.indexOf("/all/made-for-you") !== -1) {
 
             let listMadeForYou = await getAllPlaylist();
+
+            listMadeForYou = listMadeForYou.playlist.filter(item => item.userId === null)
+
+
             if (listMadeForYou) {
                 this.setState({
-                    listMadeForYou: listMadeForYou.playlist,
+                    listMadeForYou: listMadeForYou,
                     listArtists: [],
                     listAllbum: [],
                     listPlaylist: [],
@@ -95,20 +107,6 @@ class allProduct extends Component {
             }
         }
         if (url.indexOf("/all/new-song") !== -1) {
-            let allnewSong = await getAllSong(10);
-            if (allnewSong) {
-                this.setState({
-                    allnewSong: allnewSong,
-                    listArtists: [],
-                    listAllbum: [],
-                    listPlaylist: [],
-                    listMadeForYou: [],
-                    listTopMix: [],
-                    listUsUk: []
-                })
-            }
-        }
-        if (url.indexOf("/all/chill-playlist") !== -1) {
             let allnewSong = await getAllSong(10);
             if (allnewSong) {
                 this.setState({
@@ -301,11 +299,16 @@ class allProduct extends Component {
 
 const mapStateToProps = state => {
     return {
+        isLoggedInUser: state.user.isLoggedInUser,
+        listPlaylist: state.admin.listPlaylist,
+        userInfo: state.user.userInfo
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        fetchAllPlaylist: () => dispatch(actions.fetchAllPlaylist()),
+        fetchAllPlaylistByUser: (id) => dispatch(actions.fetchAllPlaylistByUser(id)),
     };
 };
 
