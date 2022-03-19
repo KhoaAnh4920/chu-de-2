@@ -102,7 +102,7 @@ class Login extends Component {
                                                             className="form-control"
                                                             id="exampleInputEmail"
                                                             aria-describedby="emailHelp"
-                                                            placeholder="Enter Email Address"
+                                                            placeholder="Enter Email Address --- Email: khoadido@gmail.com"
                                                             value={this.state.username}
                                                             onChange={(event) => this.handleOnChangeUsername(event)}
 
@@ -113,7 +113,7 @@ class Login extends Component {
                                                             type="password"
                                                             className="form-control"
                                                             value={this.state.password}
-                                                            placeholder='Enter your password'
+                                                            placeholder='Enter your password --- password: 123456'
                                                             onChange={(event) => this.handleOnChangePassword(event)}
                                                             onKeyDown={(event) => this.handleKeyDown(event)}
                                                         />
