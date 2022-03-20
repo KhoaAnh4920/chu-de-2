@@ -26,7 +26,9 @@ class ModalAddSong extends Component {
     async componentDidMount() {
 
         if (this.props.type === 'Albums') {
-            let data = this.props.listAlbums[0];
+            let id = this.props.albumId
+            let data = this.props.listAlbums.filter(item => item.id == id);
+            data = data[0];
 
             if (data.AlbumOfArtists && data.AlbumGenre) {
                 let arr = [];
@@ -51,7 +53,9 @@ class ModalAddSong extends Component {
                 })
             }
         } else {
-            let data = this.props.listPlaylist[0];
+            let id = this.props.playlistId
+            let data = this.props.listPlaylist.filter(item => item.id == id);
+            data = data[0];
 
             let dataArtists = await getAllArtists();
             let dataSong = [];
@@ -148,7 +152,10 @@ class ModalAddSong extends Component {
 
         let { type } = this.props;
         if (type === 'Playlist') {
-            let dataPlaylist = this.props.listPlaylist[0];
+            let id = this.props.playlistId
+            let data = this.props.listPlaylist.filter(item => item.id == id);
+            let dataPlaylist = data[0];
+            console.log("Check props: ", this.props.listPlaylist)
             let { selectedArtists, selectedGenres } = this.state;
 
             if (name.name === 'selectedArtists') {
@@ -181,6 +188,8 @@ class ModalAddSong extends Component {
                         })
 
                     })
+
+                    console.log("Check result: ", result)
                     // Lọc bài bị trùng //
                     var uniq = {};
                     result = result.filter(obj => !uniq[obj.value] && (uniq[obj.value] = true));

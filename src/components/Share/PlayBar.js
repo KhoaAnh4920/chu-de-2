@@ -67,6 +67,20 @@ class PlayBar extends Component {
 
     }
 
+    customDownloader = (downloadInfo) => {
+        console.log(downloadInfo)
+        let name = downloadInfo.src;
+        let fileName = name.substring(0, name.lastIndexOf("."))
+
+        fileName = fileName.substring(fileName.lastIndexOf("/") + 1)
+        const link = document.createElement('a')
+        link.href = downloadInfo.src // a.mp3
+        link.download = fileName || 'unknown.mp3'
+        document.body.appendChild(link)
+        link.click()
+    }
+
+
 
     render() {
         let { listSongs } = this.state;
@@ -85,6 +99,8 @@ class PlayBar extends Component {
                     quietUpdate
                     clearPriorAudioLists={(typeSong === 'QUEUE') ? false : true}
                     autoPlayInitLoadPlayList={false}
+
+                    customDownloader={this.customDownloader}
 
                 />
 

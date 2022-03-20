@@ -235,7 +235,7 @@ class DetailPlaylist extends Component {
                             listPlaylist={listPlaylist}
                             createNewSong={this.createNewSong}
                             type="Playlist"
-
+                            playlistId={this.state.playlistId}
                         />
                     }
 

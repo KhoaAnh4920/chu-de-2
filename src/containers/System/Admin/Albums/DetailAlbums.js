@@ -235,6 +235,7 @@ class DetailAlbums extends Component {
                             listAlbums={listAlbums}
                             createNewSong={this.createNewSong}
                             type="Albums"
+                            albumId={this.state.albumId}
                         />
                     }
 
