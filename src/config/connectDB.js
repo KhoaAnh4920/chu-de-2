@@ -19,10 +19,10 @@ const sequelize = new Sequelize(process.env.DB_DATABASE_NAME,
     dialect: 'postgres',
     logging: false,
     dialectOptions: {
-        ssl: {
-            require: true,
-            rejectUnauthorized: false
-        }
+        // ssl: {
+        //     require: true,
+        //     rejectUnauthorized: false
+        // }
     },
     query: {
         "raw": true

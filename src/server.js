@@ -12,7 +12,7 @@ let app = express();
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
 
-    const allowedOrigins = ['https://spotifakeplus.herokuapp.com', 'http://spotifakeplus.herokuapp.com'];
+    const allowedOrigins = ['https://spotifakeplus.herokuapp.com', 'http://spotifakeplus.herokuapp.com', 'http://localhost:3000'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);

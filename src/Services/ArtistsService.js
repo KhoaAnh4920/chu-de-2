@@ -245,10 +245,10 @@ let deleteArtists = (id) => {
             nest: true
         });
 
-        resolve({
-            errCode: 3,
-            errMessage: 'Không thể xóa ca sĩ đã có bài hát'
-        })
+        // resolve({
+        //     errCode: 3,
+        //     errMessage: 'Không thể xóa ca sĩ đã có bài hát'
+        // })h
 
         if (song && song.id) {
             resolve({
